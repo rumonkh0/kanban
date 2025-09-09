@@ -214,7 +214,7 @@ function page() {
       <div>
         <div className="flex justify-between mb-4">
           <h2 className="typo-b1">Clients</h2>
-          <Link href="#" className="typo-cta text-text2">
+          <Link to="#" className="typo-cta text-text2">
             See All
           </Link>
         </div>

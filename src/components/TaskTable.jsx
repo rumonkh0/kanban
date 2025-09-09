@@ -176,7 +176,7 @@ function ClientTable() {
               </div>
             </Td>
             <Td className="text-left last:rounded-r-[4px]">
-              <Link href="/clients/client-details">
+              <Link to="/clients/client-details">
                 <button className="p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm">
                   <Icon name="menu" size={20} />
                 </button>

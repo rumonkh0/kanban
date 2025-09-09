@@ -34,6 +34,17 @@ import ProjectNotes from "./pages/projects/manage/Notes";
 import AddNote from "./pages/projects/manage/AddNote";
 import ProjectActivity from "./pages/projects/manage/Activity";
 
+import HrLayout from "./pages/hr";
+import TeamMember from "./pages/hr/teamMember/TeamMember";
+import TeamMemberForm from "./pages/hr/teamMember/TeamMemberForm";
+import TeamMemberDetails from "./pages/hr/teamMember/TeamMemberDetails";
+import DepartmentTable from "./pages/hr/department/DepartmentTable";
+import DepartmentForm from "./pages/hr/department/DepartmentForm";
+import AppreciationTable from "./pages/hr/appreciation/AppreciationTable";
+import AppreciationForm from "./pages/hr/appreciation/AppreciationForm";
+import RoleTable from "./pages/hr/role/RoleTable";
+import RoleForm from "./pages/hr/role/RoleForm";
+
 function App() {
   return (
     <Routes>
@@ -85,6 +96,38 @@ function App() {
         </Route>
 
         <Route path="tasks" element={<ProjectTask />} />
+
+        <Route path="hr" element={<HrLayout />}>
+          <Route index element={<Navigate to="/hr/team-members" replace />} />
+          <Route path="team-members" element={<TeamMember />} />
+          <Route path="add-team-member" element={<TeamMemberForm />} />
+          <Route path="team-member/:id" element={<TeamMemberDetails />} />
+          <Route
+            path="team-member/:id/edit"
+            element={<TeamMemberForm edit title="Edit Team Member Details" />}
+          />
+
+          <Route path="department" element={<DepartmentTable />} />
+          <Route path="add-department" element={<DepartmentForm />} />
+          <Route
+            path="department/:id/edit"
+            element={<DepartmentForm edit title="Edit Department" />}
+          />
+
+          <Route path="appreciation" element={<AppreciationTable />} />
+          <Route path="add-appreciation" element={<AppreciationForm />} />
+          <Route
+            path="appreciation/:id/edit"
+            element={<AppreciationForm edit title="Edit Appreciation" />}
+          />
+
+          <Route path="role" element={<RoleTable />} />
+          <Route path="add-role" element={<RoleForm />} />
+          <Route
+            path="role/:id/edit"
+            element={<RoleForm edit title="Edit Role" />}
+          />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Route>

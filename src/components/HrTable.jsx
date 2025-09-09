@@ -66,7 +66,7 @@ function ClientTable() {
             {/* Client Name with Avatar */}
             <Td className="first:rounded-l-[4px]" data={teamMember.membersId} />
             <Td>
-              <Link href="/hr/team-members/member-details">
+              <Link to="/hr/team-members/member-details">
                 <ImageName
                   image="/images/profile.png"
                   username={teamMember.name}
@@ -105,10 +105,10 @@ function ClientTable() {
                   isOpen={activeMenu === index}
                   onClose={() => setActiveMenu(null)}
                   menuItems={[
-                    { label: "View", href: "/hr/team-members/member-details" },
+                    { label: "View", href: "/hr/team-member/3" },
                     {
                       label: "Edit",
-                      onClick: () => console.log("Edit clicked"),
+                      href: "/hr/team-member/3/edit",
                     },
                     {
                       label: "Delete",
