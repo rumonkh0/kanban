@@ -12,7 +12,7 @@ import {
   Pie,
 } from "recharts";
 import { ChartHeader } from "@/components/Component";
-import ClientTable from "@/components/ClientTable";
+import ClientTable from "@/pages/clients/ClientTable";
 import { Link } from "react-router";
 import Icon from "@/components/Icon";
 function page() {

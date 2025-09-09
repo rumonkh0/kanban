@@ -1,4 +1,4 @@
-import ClientTable from "@/components/ClientTable";
+import ClientTable from "./ClientTable"
 import Icon from "@/components/Icon"
 import { Link } from "react-router";
 

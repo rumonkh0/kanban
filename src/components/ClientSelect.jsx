@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
 import Icon from "./Icon";
 import { RedButton } from "./Component";
 
@@ -49,7 +48,7 @@ export default function ClientSelect({ onSelect, label, className, required }) {
       >
         {selectedClient ? (
           <div className="flex items-center gap-2">
-            <Image
+            <img
               src={selectedClient.avatar}
               alt={selectedClient.name}
               width={32}
@@ -98,7 +97,7 @@ export default function ClientSelect({ onSelect, label, className, required }) {
                 }}
                 className="w-full h-16 p-2 flex items-center gap-2 rounded-lg hover:bg-brand transition-colors group"
               >
-                <Image
+                <img
                   src={client.avatar}
                   alt={client.name}
                   width={40}

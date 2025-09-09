@@ -1,0 +1,369 @@
+import { ChartHeader, Icon } from "@/components/Component";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+} from "recharts";
+
+function Overview() {
+  const chartData = [
+    { name: "Progress", value: 80, color: "#5EB7E0" },
+    { name: "not done", value: 20, color: "#7B7B7B" },
+  ];
+  const tasks = [
+    { name: "Complete", sales: 2, color: "#8FC951" },
+    { name: "In Progress", sales: 1, color: "#5EB7E0" },
+    { name: "On Hold", sales: 1, color: "#A88AED" },
+    { name: "Cancelled", sales: 1, color: "#FE4E4D" },
+  ];
+  const data = [
+    { name: "Project Cost", sales: 4000, color: "#5EB7E0" },
+    { name: "Payment", sales: 500, color: "#FE4E4D" },
+    { name: "Earning", sales: 250, color: "#8FC951" },
+  ];
+  const revenue = [
+    { name: "Made", sales: 4000, color: "#8FC951" },
+    { name: "Savings", sales: 500, color: "#A88AED" },
+    { name: "Taxes", sales: 250, color: "#5EB7E0" },
+  ];
+  const budget = [
+    { name: "Project Budget", sales: 4000, color: "#5EB7E0" },
+    { name: "Team Payment", sales: 500, color: "#FE4E4D" },
+    { name: "Project Advance", sales: 250, color: "#A88AED" },
+    { name: "Earning", sales: 250, color: "#8FC951" },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <BorderDiv className="h-50">
+        <div className="flex gap-4 items-stretch">
+          <div className="flex-1 h-[168px] relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="95%" // push center down so we see top half
+                  startAngle={180}
+                  endAngle={0}
+                  innerRadius={130} // 0 => full pie; set >0 for semi-donut
+                  outerRadius={150} // use percentage to keep it responsive
+                  paddingAngle={0} // no gaps between slices
+                  stroke="none" // remove slice border
+                  labelLine={false} // we use legend instead of labels on slices
+                >
+                  {chartData.map((entry, i) => (
+                    <Cell key={`cell-${i}`} fill={entry.color} />
+                  ))}
+                </Pie>
+
+                <Tooltip
+                  formatter={(value) =>
+                    // format numbers like $4,000 etc — change as needed
+                    typeof value === "number"
+                      ? `$${value.toLocaleString()}`
+                      : value
+                  }
+                  contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute bottom-0 left-1/2 -translate-1/2 flex flex-col justify-center">
+              <h2 className="typo-h4 mb-4 text-center">80%</h2>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#5EB7E0]"></div>{" "}
+                <p className="typo-b3">In Progress</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-[194px] flex flex-col justify-between">
+            <div className="flex flex-col gap-4">
+              <p className="typo-b2 text-text2">Start Date:</p>
+              <h2 className="typo-h4">Aug 3, 2025 </h2>
+            </div>
+            <div className="flex flex-col gap-4">
+              <p className="typo-b2 text-text2">Deadline:</p>
+              <h2 className="typo-h4 text-brand">Aug 3, 2025 </h2>
+            </div>
+          </div>
+        </div>
+      </BorderDiv>
+      <BorderDiv className="h-50 flex items-center gap-4">
+        <img
+          src={"/images/profile.png"}
+          alt="profile"
+          className="h-full aspect-square object-cover rounded-sm"
+        />
+        <div className="flex flex-col gap-2">
+          <div className="typo-h4">Gustave Koelpin</div>
+          <div className="typo-b2 text-text2">@example</div>
+          <div className="typo-b2 text-text2">Total Project: 4</div>
+          <div className="typo-b2 text-text2">Active Project: 2</div>
+          <div className="w-[134px] h-8 flex items-center justify-center gap-2 border border-text2 rounded-sm">
+            <div className="w-2 h-2 bg-success rounded-full"></div>
+            <div className="typo-b3">complete</div>
+            <div>
+              <Icon name="arrow" />
+            </div>
+          </div>
+        </div>
+      </BorderDiv>
+      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
+        {/* Header */}
+        <div className="flex justify-between">
+          <ChartHeader primaryLabel="Project Task:" keyValue="4" />
+        </div>
+
+        {/* Chart */}
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={tasks}
+                dataKey="sales"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                innerRadius={0}
+                stroke="none"
+                outerRadius={150}
+                paddingAngle={0}
+                // labelLine={false}
+              >
+                {tasks.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value) => `${value}`}
+                contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Legend */}
+        <div className="flex justify-center gap-4 flex-wrap">
+          {tasks.map((item) => {
+            return (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="typo-b3">
+                  {item.name}: {item.sales}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        {/* Header */}
+        <div className="flex justify-between">
+          <ChartHeader primaryLabel="Project Budget:" keyValue="$5,400" />
+        </div>
+
+        {/* Chart */}
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={data}
+              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+            >
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(tick) =>
+                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                }
+              />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
+              />
+
+              {/* Bars with individual colors */}
+              <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
+                {data.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} cursor="none" />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Legend */}
+        <div className="flex justify-center gap-4 flex-wrap">
+          {data.map((item) => {
+            return (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{
+                    backgroundColor: item.color,
+                  }}
+                ></div>
+                <span className="typo-b3">{item.name}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        {/* Header */}
+        <div className="flex justify-between">
+          <ChartHeader primaryLabel="Revenue:" keyValue="$5,400" />
+        </div>
+
+        {/* Chart */}
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={revenue}
+              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+            >
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(tick) =>
+                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                }
+              />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
+              />
+
+              {/* Bars with individual colors */}
+              <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
+                {revenue.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} cursor="none" />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Legend */}
+        <div className="flex justify-center gap-4 flex-wrap">
+          {revenue.map((item) => {
+            const total = data.reduce((sum, d) => sum + d.sales, 0);
+            const percentage = ((item.sales / total) * 100).toFixed(0);
+
+            return (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{
+                    backgroundColor: item.color,
+                  }}
+                ></div>
+                <span className="typo-b3">
+                  {percentage}% {item.name}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        {/* Header */}
+        <div className="flex justify-between">
+          <ChartHeader
+            primaryLabel="Project Track:"
+            keyValue="$5,400"
+            secondaryLabel="Project Budget"
+          />
+          <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
+            <div className="typo-b3 flex-1 text-center">Team Members</div>
+            <div>
+              <Icon name="arrow" />
+            </div>
+          </div>
+        </div>
+
+        {/* Chart */}
+        <div className="flex-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={budget}
+              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+            >
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(tick) =>
+                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                }
+              />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
+              />
+
+              {/* Bars with individual colors */}
+              <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
+                {budget.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} cursor="none" />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Legend */}
+        <div className="flex justify-center gap-4 flex-wrap">
+          {budget.map((item) => {
+            return (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{
+                    backgroundColor: item.color,
+                  }}
+                ></div>
+                <span className="typo-b3">{item.name}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const BorderDiv = ({ className, children }) => (
+  <div
+    className={`border-2 border-divider rounded-lg bg-surface2 p-4 ${
+      className || ""
+    }`}
+  >
+    {children}
+  </div>
+);
+
+export default Overview;

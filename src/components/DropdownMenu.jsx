@@ -1,6 +1,4 @@
-"use client";
 import { Link } from "react-router";
-import React from "react";
 
 export default function DropdownMenu({
   isOpen,
@@ -34,7 +32,7 @@ export default function DropdownMenu({
             return (
               <Link
                 key={index}
-                href={item.href}
+                to={item.href}
                 onClick={onClose}
                 className="block"
               >

@@ -1,0 +1,39 @@
+import { Link, Outlet, useLocation } from "react-router";
+
+function ProjectManage() {
+  const location = useLocation();
+  const pathname = location.pathname;
+  const menuItems = [
+    { label: "Overview", href: "/projects/manage/overview" },
+    { label: "Members", href: "/projects/manage/members" },
+    { label: "Files", href: "/projects/manage/files" },
+    { label: "Tasks", href: "/projects/manage/tasks" },
+    { label: "Payment", href: "/projects/manage/payment" },
+    { label: "Team Payment", href: "/projects/manage/team-payment" },
+    { label: "Notes", href: "/projects/manage/notes" },
+    { label: "Activity", href: "/projects/manage/activity" },
+  ];
+
+  return (
+    <div>
+      <div className="w-full flex justify-between h-12 mb-4 typo-cta border-b-2  border-divider text-text2 z-10">
+        {menuItems.map((item) => (
+          <Link
+            key={item.label}
+            to={item.href}
+            className={`h-full px-4 flex justify-center items-center transition-colors hover:text-text ${
+              pathname === item.href
+                ? " border-b-2 text-text border-brand"
+                : "text-text2"
+            }`}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </div>
+      <Outlet />
+    </div>
+  );
+}
+
+export default ProjectManage;
