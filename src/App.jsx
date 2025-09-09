@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { Routes, Route, Navigate } from "react-router";
+import Private from "@/pages/dashboard/Private";
+import NotFound from "@/pages/NotFound";
+import Advanced from "@/pages/dashboard/advanced";
+import Clients from "@/pages/dashboard/advanced/Clients";
+
+import RootLayout from "./Layout";
+import Overview from "./pages/dashboard/advanced/Overview";
+import Projects from "./pages/dashboard/advanced/Projects";
+import Tasks from "./pages/dashboard/advanced/Tasks";
+import Hr from "./pages/dashboard/advanced/Hr";
+import Finance from "./pages/dashboard/advanced/Finance";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<RootLayout />}>
+        <Route index element={<Navigate to="/dashboard/private" replace />} />
+
+        <Route path="dashboard/private" element={<Private />} />
+        <Route path="dashboard/advanced" element={<Advanced />}>
+          <Route
+            index
+            element={<Navigate to="/dashboard/advanced/overview" replace />}
+          />
+          <Route path="overview" element={<Overview />} />
+          <Route path="clients" element={<Clients />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="tasks" element={<Tasks />} />
+          <Route path="hr" element={<Hr />} />
+          <Route path="finance" element={<Finance />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
 }
 
-export default App
+export default App;

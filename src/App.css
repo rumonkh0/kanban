@@ -1,44 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import "tailwindcss";
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --surface: #040404;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "Plus Jakarta Sans", sans-serif;
+  --color-surface: var(--surface);
+  --color-surface2: #0e0e0e;
+  --color-divider: #1f1f1f;
+  --color-text: #ffffff;
+  --color-text2: #7b7b7b;
+  --color-brand: #fe4e4d;
+  --color-success: #8fc951;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ededed;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+body {
+  background: var(--surface);
+  color: var(--foreground);
+  /* font-family: var(--font-sans) */
+  @apply font-sans;
 }
 
-.card {
-  padding: 2em;
+.typo-h1 {
+  @apply font-bold;
+  font-size: 48px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
 }
 
-.read-the-docs {
-  color: #888;
+.typo-h2 {
+  @apply font-bold;
+  font-size: 40px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
+}
+
+.typo-h3 {
+  @apply font-bold;
+  font-size: 32px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
+}
+
+.typo-h4 {
+  @apply font-bold;
+  font-size: 24px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
+}
+
+.typo-cta {
+  @apply font-normal;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+}
+
+.typo-b1 {
+  @apply font-normal;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.005em;
+}
+
+.typo-b2 {
+  @apply font-normal;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.005em;
+}
+
+.typo-b3 {
+  @apply font-normal;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+}
+
+::-webkit-scrollbar {
+  height: 4px; /* horizontal bar height */
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #7b7b7b; /* track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #fe4e4d; /* scrollbar thumb color */
+  border-radius: 10px;
 }
