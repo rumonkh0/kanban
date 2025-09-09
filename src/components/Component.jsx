@@ -37,7 +37,7 @@ export const Back = ({ children }) => {
   const navigate = useNavigate();
 
   return (
-    <button onClick={() => navigate.back()} className="cursor-pointer">
+    <button onClick={() => navigate(-1)} className="cursor-pointer">
       {children}
     </button>
   );

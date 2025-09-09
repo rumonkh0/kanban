@@ -1,7 +1,6 @@
-import React from "react";
 import { Link } from "react-router";
 import Icon from "@/components/Icon";
-import { ImageName, Table, Td, Th, Thead } from "./Component";
+import { ImageName, Table, Td, Th, Thead } from "../../components/Component";
 
 function ClientTable() {
   const clients = [
@@ -107,7 +106,7 @@ function ClientTable() {
           >
             {/* Client Name with Avatar */}
             <Td className="first:rounded-l-[4px]">
-              <Link href="/clients/client-details">
+              <Link to="/clients/3">
                 <ImageName
                   image="/images/profile.png"
                   username={project.clientName}
@@ -135,7 +134,7 @@ function ClientTable() {
             </Td>
             <Td data={project.lastUpdate} />
             <Td className="text-left last:rounded-r-[4px]">
-              <Link href="/clients/client-details">
+              <Link to="/clients/3">
                 <button className="p-2 rounded-full cursor-pointer hover:bg-surface2/60">
                   <Icon name="menu" size={20} />
                 </button>
