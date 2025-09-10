@@ -40,8 +40,8 @@ const menuItems = [
     label: "Finance",
     icon: "notes",
     children: [
-      { label: "Paid By", to: "/finance/paid-by" },
-      { label: "Paid To", to: "/finance/paid-to" },
+      { label: "Paid By", to: "/finance/payment" },
+      { label: "Paid To", to: "/finance/team-payment" },
     ],
   },
   {

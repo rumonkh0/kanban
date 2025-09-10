@@ -1,7 +1,5 @@
 import "./App.css";
 import { Routes, Route, Navigate } from "react-router";
-import PaidFrom from "@/components/PaidFrom";
-import PaidTo from "@/components/PaidTo";
 import NotFound from "@/pages/NotFound";
 
 import RootLayout from "./Layout";
@@ -28,8 +26,8 @@ import ProjectOverview from "./pages/projects/manage/Overview";
 import ProjectMembers from "./pages/projects/manage/Members";
 import ProjectFiles from "./pages/projects/manage/Files";
 import ProjectTask from "./pages/projects/manage/Tasks";
-import ProjectTeamPayment from "./pages/projects/manage/TeamPayment";
-import ProjectPayment from "./pages/projects/manage/Payment";
+import TeamPayment from "./pages/finance/TeamPayment";
+import Payment from "./pages/finance/Payment";
 import ProjectNotes from "./pages/projects/manage/Notes";
 import AddNote from "./pages/projects/manage/AddNote";
 import ProjectActivity from "./pages/projects/manage/Activity";
@@ -44,6 +42,16 @@ import AppreciationTable from "./pages/hr/appreciation/AppreciationTable";
 import AppreciationForm from "./pages/hr/appreciation/AppreciationForm";
 import RoleTable from "./pages/hr/role/RoleTable";
 import RoleForm from "./pages/hr/role/RoleForm";
+import PaidByForm from "./pages/finance/PaidByForm";
+import PaidToForm from "./pages/finance/PaidToForm";
+
+import FinanceLayout from "./pages/finance";
+import ServiceLayout from "./pages/services";
+import TableLayout from "./pages/services/TableLayout";
+import MainTracker from "./pages/services/MainTracker";
+import ServiceDetails from "./pages/services/ServiceDetails";
+import AddTracker from "./pages/services/AddTracker";
+import AddService from "./pages/services/AddService";
 
 function App() {
   return (
@@ -84,15 +92,18 @@ function App() {
             <Route path="members" element={<ProjectMembers />} />
             <Route path="files" element={<ProjectFiles />} />
             <Route path="tasks" element={<ProjectTask />} />
-            <Route path="payment" element={<ProjectPayment />} />
-            <Route path="team-payment" element={<ProjectTeamPayment />} />
+            <Route path="payment" element={<Payment />} />
+            <Route
+              path="team-payment"
+              element={<TeamPayment toHref="/projects/paid-to" />}
+            />
             <Route path="notes" element={<ProjectNotes />} />
             <Route path="activity" element={<ProjectActivity />} />
           </Route>
           <Route path=":id/edit" element={<ProjectForm edit />} />
           <Route path="add-note" element={<AddNote />} />
-          <Route path="paid-by" element={<PaidFrom />} />
-          <Route path="paid-to" element={<PaidTo />} />
+          <Route path="paid-by" element={<PaidByForm />} />
+          <Route path="paid-to" element={<PaidToForm />} />
         </Route>
 
         <Route path="tasks" element={<ProjectTask />} />
@@ -127,6 +138,30 @@ function App() {
             path="role/:id/edit"
             element={<RoleForm edit title="Edit Role" />}
           />
+        </Route>
+
+        <Route path="finance" element={<FinanceLayout />}>
+          <Route index element={<Navigate to="/finance/payment" replace />} />
+          <Route path="payment" element={<Payment />} />
+          <Route
+            path="team-payment"
+            element={<TeamPayment toHref="/finance/paid-to" />}
+          />
+          <Route path="paid-by" element={<PaidByForm />} />
+          <Route path="paid-to" element={<PaidToForm />} />
+        </Route>
+
+        <Route path="services" element={<ServiceLayout />}>
+          <Route element={<TableLayout />}>
+            <Route
+              index
+              element={<Navigate to="/services/main-tracker" replace />}
+            />
+            <Route path="main-tracker" element={<MainTracker />} />
+            <Route path="service-details" element={<ServiceDetails />} />
+          </Route>
+          <Route path="add-tracker" element={<AddTracker />} />
+          <Route path="add-service" element={<AddService />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
