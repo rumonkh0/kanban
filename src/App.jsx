@@ -56,6 +56,9 @@ import AddService from "./pages/services/AddService";
 import SettingLayout from "./pages/settings";
 import CompanySetting from "./pages/settings/CompanySetting";
 import BusinessAdress from "./pages/settings/BusinessAdress";
+import ProfileSetting from "./pages/settings/ProfileSetting";
+import SecuritySetting from "./pages/settings/SecuritySetting";
+import ThemeSetting from "./pages/settings/ThemeSetting";
 
 function App() {
   return (
@@ -174,9 +177,9 @@ function App() {
           <Route index element={<Navigate to="/settings/company" replace />} />
           <Route path="company" element={<CompanySetting />} />
           <Route path="business" element={<BusinessAdress />} />
-          {/* <Route path="profile" element={<ProfileSetting />} /> */}
-          {/* <Route path="security" element={<SecuritySetting />} /> */}
-          {/* <Route path="theme" element={<ThemeSetting />} /> */}
+          <Route path="profile" element={<ProfileSetting />} />
+          <Route path="security" element={<SecuritySetting />} />
+          <Route path="theme" element={<ThemeSetting />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

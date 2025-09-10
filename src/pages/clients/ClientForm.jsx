@@ -122,7 +122,6 @@ function ClientForm({ edit }) {
               />
             </FormField>
 
-            {/* Date of Birth */}
             <FormField label="Date of Birth">
               <div className="relative">
                 <Input type="date" placeholder="Select Date" />

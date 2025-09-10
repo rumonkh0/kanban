@@ -90,8 +90,14 @@ export const ImageName = ({ image, username, designation }) => (
   </div>
 );
 
-export const FormField = ({ label, required, children, className }) => (
-  <div className={`flex flex-col gap-2 ${className || ""}`}>
+export const FormField = ({
+  label,
+  required,
+  children,
+  gap = 2,
+  className,
+}) => (
+  <div className={`flex flex-col gap-${gap} ${className || ""}`}>
     <label className="typo-b2 text-text2">
       {label} {required && <span className="text-brand">*</span>}
     </label>

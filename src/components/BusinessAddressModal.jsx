@@ -29,14 +29,14 @@ function ServiceDetailsModal({ onClose }) {
             />
           </div>
         </FormField>
-        <FormField label="Company Email" required>
-          <Input placeholder="Enter Email" />
+        <FormField label="Location" required>
+          <Input placeholder="Enter Location" />
         </FormField>
-        <FormField label="Company Phone">
-          <Input placeholder="Enter Phone" />
+        <FormField label="Tax Name">
+          <Input placeholder="Enter Tax Name" />
         </FormField>
-        <FormField label="Company Phone">
-          <Input placeholder="Enter Phone" />
+        <FormField label="Tax Number">
+          <Input placeholder="Enter Tax Number" />
         </FormField>
         <FormField label="Address" className="col-span-2">
           <textarea
