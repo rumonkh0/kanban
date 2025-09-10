@@ -1,11 +1,16 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --surface: #040404;
+  --surface2: #0e0e0e;
+  --divider: #1f1f1f;
+  --text: #ffffff;
+  --text2: #7b7b7b;
+  --brand: #fe4e4d;
+  --success: #8fc951;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,56 +18,108 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #ededed;
+  }
 }
-a:hover {
-  color: #535bf2;
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "Plus Jakarta Sans", sans-serif;
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface2);
+  --color-divider: var(--divider);
+  --color-text: var(--text);
+  --color-text2: var(--text2);
+  --color-brand: var(--brand);
+  --color-success: var(--success);
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  background: var(--surface);
+  color: var(--foreground);
   min-width: 320px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  @apply font-sans;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+
+
+.typo-h1 {
+  @apply font-bold;
+  font-size: 48px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.typo-h2 {
+  @apply font-bold;
+  font-size: 40px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.typo-h3 {
+  @apply font-bold;
+  font-size: 32px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
+}
+
+.typo-h4 {
+  @apply font-bold;
+  font-size: 24px;
+  line-height: 130%;
+  letter-spacing: 0.005em;
+}
+
+.typo-cta {
+  @apply font-normal;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+}
+
+.typo-b1 {
+  @apply font-normal;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.005em;
+}
+
+.typo-b2 {
+  @apply font-normal;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0.005em;
+}
+
+.typo-b3 {
+  @apply font-normal;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--text2);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--brand);
+  border-radius: 20px;
 }

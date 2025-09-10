@@ -1,11 +1,15 @@
 import { Table, Th, Thead, Td, ImageName } from "@/components/Component";
+import Modal from "@/components/Modal";
+
 import DropdownMenu from "@/components/DropdownMenu";
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
 import { useState } from "react";
 import { Link } from "react-router";
+import TrackerDetailsModal from "../../components/TrackerDetailsModal";
 
 function MainTracker() {
+  const [trackerModal, setTrackerModal] = useState(false);
   const tableHeadings = [
     "Company Name",
     "Client",
@@ -37,7 +41,8 @@ function MainTracker() {
       Client: "John Doe",
       TeamMemberAssigned: "Akash",
       ProjectName: "Website Redesign",
-      Description: "Complete redesign of company website Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor?",
+      Description:
+        "Complete redesign of company website Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor?",
       Start: "2025-07-10",
       DueDate: "2025-08-15",
       Status: "In Progress",
@@ -128,8 +133,9 @@ function MainTracker() {
         <tbody>
           {trackers.map((tracker, index) => (
             <tr
+              onClick={() => setTrackerModal(true)}
               key={index}
-              className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+              className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors cursor-pointer"
             >
               <Td className="irst:rounded-l-[4px] min-w-45">
                 {tracker.CompanyName}
@@ -149,7 +155,9 @@ function MainTracker() {
                 />
               </Td>
               <Td className="min-w-45">{tracker.ProjectName}</Td>
-              <Td className="min-w-60"><div className="line-clamp-2">{tracker.Description}</div></Td>
+              <Td className="min-w-60">
+                <div className="line-clamp-2">{tracker.Description}</div>
+              </Td>
               <Td>{tracker.Start}</Td>
               <Td>{tracker.DueDate}</Td>
               <Td>
@@ -223,6 +231,9 @@ function MainTracker() {
           ))}
         </tbody>
       </Table>
+      <Modal isOpen={trackerModal} onClose={() => setTrackerModal(false)}>
+        <TrackerDetailsModal onClose={() => setTrackerModal(false)} />
+      </Modal>
     </>
   );
 }

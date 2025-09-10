@@ -53,6 +53,10 @@ import ServiceDetails from "./pages/services/ServiceDetails";
 import AddTracker from "./pages/services/AddTracker";
 import AddService from "./pages/services/AddService";
 
+import SettingLayout from "./pages/settings";
+import CompanySetting from "./pages/settings/CompanySetting";
+import BusinessAdress from "./pages/settings/BusinessAdress";
+
 function App() {
   return (
     <Routes>
@@ -162,6 +166,17 @@ function App() {
           </Route>
           <Route path="add-tracker" element={<AddTracker />} />
           <Route path="add-service" element={<AddService />} />
+        </Route>
+
+        <Route path="reports" element={<div>Reports</div>} />
+
+        <Route path="settings" element={<SettingLayout />}>
+          <Route index element={<Navigate to="/settings/company" replace />} />
+          <Route path="company" element={<CompanySetting />} />
+          <Route path="business" element={<BusinessAdress />} />
+          {/* <Route path="profile" element={<ProfileSetting />} /> */}
+          {/* <Route path="security" element={<SecuritySetting />} /> */}
+          {/* <Route path="theme" element={<ThemeSetting />} /> */}
         </Route>
 
         <Route path="*" element={<NotFound />} />

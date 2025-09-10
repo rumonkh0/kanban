@@ -1,11 +1,14 @@
 import { Table, Th, Thead, Td, ImageName } from "@/components/Component";
+import Modal from "@/components/Modal";
 import DropdownMenu from "@/components/DropdownMenu";
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
 import { useState } from "react";
 import { Link } from "react-router";
+import ServiceDetailsModal from "../../components/ServiceDetailsModal";
 
 function ServiceDetails() {
+  const [ServiceModal, setServiceModal] = useState(false)
   const services = [
     {
       service: "Social Media Page",
@@ -132,7 +135,7 @@ function ServiceDetails() {
                     menuItems={[
                       {
                         label: "View",
-                        href: "/services/edit-service",
+                        onClick: () => setServiceModal(true)  
                       },
                       {
                         label: "Edit",
@@ -150,6 +153,9 @@ function ServiceDetails() {
           ))}
         </tbody>
       </Table>
+      <Modal isOpen={ServiceModal} onClose={() => setServiceModal(false)}>
+        <ServiceDetailsModal onClose={() => setServiceModal(false)} />
+      </Modal>
     </>
   );
 }
