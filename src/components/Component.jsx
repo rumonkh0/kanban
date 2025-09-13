@@ -37,9 +37,9 @@ export const Back = ({ children }) => {
   const navigate = useNavigate();
 
   return (
-    <button onClick={() => navigate(-1)} className="cursor-pointer">
+    <div onClick={() => navigate(-1)} className="cursor-pointer">
       {children}
-    </button>
+    </div>
   );
 };
 
@@ -105,20 +105,33 @@ export const FormField = ({
   </div>
 );
 
-export const Input = ({ type = "text", placeholder, className, required }) => (
+export const Input = ({
+  type = "text",
+  placeholder,
+  className,
+  required,
+  value,
+  onChange,
+  ...rest
+}) => (
   <input
     type={type}
     placeholder={placeholder}
     required={required}
+    value={value}
+    onChange={(e) => onChange && onChange(e.target.value)}
     className={`w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3 ${
       className || ""
     }`}
+    {...rest}
   />
 );
 
 export const InputMoney = ({
   type = "text",
   placeholder,
+  value,
+  onChange,
   className,
   required,
 }) => (
@@ -129,6 +142,8 @@ export const InputMoney = ({
     <input
       type={type}
       placeholder={placeholder}
+      value={value}
+      onChange={onChange}
       required={required}
       className={`w-full h-12 bg-surface2 border border-divider rounded-lg px-4 pl-6 focus:outline-none focus:ring-2 focus:ring-brand typo-b3 ${
         className || ""

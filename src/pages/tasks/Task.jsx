@@ -110,31 +110,42 @@ function Tasks() {
 
     const isActiveATask = active.data.current?.type === "task";
     const isOverATask = over.data.current?.type === "task";
+    const isOverAContainer = over.data.current?.type === "container";
+
     if (!isActiveATask) return;
 
-    if (isActiveATask && isOverATask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.taskID === active.id);
+    setTasks((prev) => {
+      const tasks = [...prev]; // copy array
+
+      const activeIndex = tasks.findIndex((t) => t.taskID === active.id);
+
+      if (isOverATask) {
         const overIndex = tasks.findIndex((t) => t.taskID === over.id);
 
-        // console.log(activeIndex, overIndex);
-        tasks[activeIndex].containerID = tasks[overIndex].containerID;
+        // only update if containerID actually changes
+        if (tasks[activeIndex].containerID !== tasks[overIndex].containerID) {
+          tasks[activeIndex] = {
+            ...tasks[activeIndex],
+            containerID: tasks[overIndex].containerID,
+          };
+        }
 
         return arrayMove(tasks, activeIndex, overIndex);
-      });
-    }
+      }
 
-    const isOverAContainer = over.data.current?.type === "container";
-    if (isActiveATask && isOverAContainer) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.taskID === active.id);
+      if (isOverAContainer) {
+        if (tasks[activeIndex].containerID !== over.id) {
+          tasks[activeIndex] = {
+            ...tasks[activeIndex],
+            containerID: over.id,
+          };
+        }
 
-        // console.log(activeIndex, overIndex);
-        tasks[activeIndex].containerID = over.id;
+        return tasks;
+      }
 
-        return arrayMove(tasks, activeIndex, activeIndex);
-      });
-    }
+      return tasks;
+    });
   };
 
   const sensors = useSensors(

@@ -60,7 +60,7 @@ const TaskCard = ({ id, cardTitle = "To Do", color, tasks, onAddTask }) => {
           <div
             {...attributes}
             {...listeners}
-            className="flex-1 cursor-grab active:cursor-grabbing"
+            className="flex-1 cursor-grab active:cursor-grabbing hover:bg-surface2"
           >
             <div
               className={`inline-block w-3 h-3 mr-2 rounded-full`}

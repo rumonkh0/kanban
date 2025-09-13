@@ -29,9 +29,9 @@ export const Home = ({ className }) => {
       <path
         d="M9.15722 20.7714V17.7047C9.1572 16.9246 9.79312 16.2908 10.581 16.2856H13.4671C14.2587 16.2856 14.9005 16.9209 14.9005 17.7047V17.7047V20.7809C14.9003 21.4432 15.4343 21.9845 16.103 22H18.0271C19.9451 22 21.5 20.4607 21.5 18.5618V18.5618V9.83784C21.4898 9.09083 21.1355 8.38935 20.538 7.93303L13.9577 2.6853C12.8049 1.77157 11.1662 1.77157 10.0134 2.6853L3.46203 7.94256C2.86226 8.39702 2.50739 9.09967 2.5 9.84736V18.5618C2.5 20.4607 4.05488 22 5.97291 22H7.89696C8.58235 22 9.13797 21.4499 9.13797 20.7714V20.7714"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -47,21 +47,21 @@ export const Users = ({ className }) => {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      <circle cx="6" cy="4" r="2" stroke="currentColor" stroke-width="1.5" />
+      <circle cx="6" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
       <ellipse
         cx="6"
         cy="8"
         rx="3"
         ry="2"
         stroke="currentColor"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
-      <circle cx="18" cy="16" r="2" stroke="currentColor" stroke-width="1.5" />
+      <circle cx="18" cy="16" r="2" stroke="currentColor" strokeWidth="1.5" />
       <path
         d="M22 12C22 6.47715 17.5228 2 12 2M12 22C6.47715 22 2 17.5228 2 12"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <ellipse
         cx="18"
@@ -69,7 +69,7 @@ export const Users = ({ className }) => {
         rx="3"
         ry="2"
         stroke="currentColor"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
     </svg>
   );
@@ -88,8 +88,8 @@ export const Briefcase = ({ className }) => {
       <path
         d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M6 10H18M6 14H18M6 18H18M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -107,8 +107,8 @@ export const Task = ({ className }) => {
       <path
         d="M17 13H11M17 9H11M17 17H11M16 2V5M8 2V5M7 22H17C19.2091 22 21 20.2091 21 18V7.5C21 5.29086 19.2091 3.5 17 3.5H7C4.79086 3.5 3 5.29086 3 7.5V18C3 20.2091 4.79086 22 7 22Z"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M8.5 9C8.5 9.55228 8.05228 10 7.5 10C6.94772 10 6.5 9.55228 6.5 9C6.5 8.44772 6.94772 8 7.5 8C8.05228 8 8.5 8.44772 8.5 9Z"
@@ -141,16 +141,16 @@ export const People = ({ className }) => {
         rx="6"
         ry="2.5"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
       />
       <circle
         cx="12"
         cy="8"
         r="3"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
       />
       <path
         d="M6.44824 13.2617C5.53677 13.7561 4.83404 14.3707 4.41992 15.0605C4.17335 15.1264 3.94663 15.2008 3.74316 15.2822C3.34315 15.4422 3.06939 15.6142 2.9082 15.7666C2.75146 15.9149 2.75 15.9941 2.75 16C2.75 16.0035 2.74886 16.0826 2.9082 16.2334C3.06936 16.3858 3.34309 16.5577 3.74316 16.7178C3.83148 16.7531 3.9247 16.7858 4.02148 16.8184C4.09993 17.4497 4.40927 18.0443 4.90332 18.5771C4.26774 18.468 3.6857 18.3104 3.18555 18.1104C2.68108 17.9085 2.22267 17.6492 1.87793 17.3232C1.53154 16.9956 1.25 16.5488 1.25 16C1.25008 15.4513 1.53154 15.0043 1.87793 14.6768C2.22267 14.3508 2.68111 14.0915 3.18555 13.8896C4.06941 13.5361 5.20855 13.3131 6.44824 13.2617Z"
@@ -189,33 +189,33 @@ export const Finance = ({ className }) => {
         height="20"
         rx="4"
         stroke="currentColor"
-        stroke-width="1.5"
+        strokeWidth="1.5"
       />
       <path
         d="M14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M12 12C13.1046 12 14 12.8954 14 14C14 15.1046 13.1046 16 12 16C10.8954 16 10 15.1046 10 14"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M12 6.5V8"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M12 16V17.5"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -234,20 +234,20 @@ export const Service = ({ className }) => {
       <path
         d="M12 11V17"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M15 14H9"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
       <path
         d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -266,9 +266,9 @@ export const Stat = ({ className }) => {
       <path
         d="M19 2H21C21.5523 2 22 2.44772 22 3V5M21 3C13.0585 9.39136 8.94212 11.1129 2 12M18 10V20C18 21.1046 18.8954 22 20 22C21.1046 22 22 21.1046 22 20V10C22 8.89543 21.1046 8 20 8C18.8954 8 18 8.89543 18 10ZM2 18L2 20C2 21.1046 2.89543 22 4 22C5.10457 22 6 21.1046 6 20L6 18C6 16.8954 5.10457 16 4 16C2.89543 16 2 16.8954 2 18ZM10 14V20C10 21.1046 10.8954 22 12 22C13.1046 22 14 21.1046 14 20V14C14 12.8954 13.1046 12 12 12C10.8954 12 10 12.8954 10 14Z"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -284,22 +284,22 @@ export const Settings = ({ className }) => {
       className={className}
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M20.8067 7.62386L20.1842 6.54377C19.6577 5.62985 18.4907 5.31456 17.5755 5.83896V5.83896C17.1399 6.09559 16.6201 6.1684 16.1307 6.04133C15.6413 5.91427 15.2226 5.59776 14.9668 5.16162C14.8023 4.88439 14.7139 4.56864 14.7105 4.24628V4.24628C14.7254 3.72947 14.5304 3.22865 14.17 2.85791C13.8096 2.48718 13.3145 2.27811 12.7975 2.27832H11.5435C11.037 2.27831 10.5513 2.48016 10.194 2.83919C9.83669 3.19822 9.63717 3.68484 9.63961 4.19136V4.19136C9.6246 5.23717 8.77248 6.07706 7.72657 6.07695C7.40421 6.0736 7.08846 5.98519 6.81123 5.82065V5.82065C5.89606 5.29626 4.72911 5.61154 4.20254 6.52546L3.53435 7.62386C3.00841 8.53664 3.3194 9.70285 4.23 10.2326V10.2326C4.8219 10.5743 5.18653 11.2058 5.18653 11.8893C5.18653 12.5728 4.8219 13.2043 4.23 13.5461V13.5461C3.32056 14.0722 3.00923 15.2356 3.53435 16.1456V16.1456L4.16593 17.2348C4.41265 17.68 4.8266 18.0085 5.31619 18.1477C5.80578 18.2868 6.33064 18.2251 6.77462 17.9763V17.9763C7.21108 17.7216 7.73119 17.6518 8.21934 17.7824C8.70749 17.9131 9.12324 18.2333 9.37416 18.6719C9.5387 18.9491 9.62711 19.2649 9.63046 19.5872V19.5872C9.63046 20.6438 10.487 21.5003 11.5435 21.5003H12.7975C13.8505 21.5003 14.7055 20.6494 14.7105 19.5964V19.5964C14.7081 19.0883 14.9089 18.6003 15.2682 18.241C15.6275 17.8817 16.1155 17.6809 16.6236 17.6834C16.9452 17.692 17.2596 17.78 17.5389 17.9396V17.9396C18.4517 18.4656 19.6179 18.1546 20.1476 17.244V17.244L20.8067 16.1456C21.0618 15.7077 21.1318 15.1863 21.0012 14.6966C20.8706 14.207 20.5502 13.7896 20.111 13.5369V13.5369C19.6718 13.2842 19.3514 12.8668 19.2208 12.3772C19.0902 11.8875 19.1603 11.3661 19.4154 10.9282C19.5812 10.6386 19.8214 10.3984 20.111 10.2326V10.2326C21.0161 9.70314 21.3264 8.54374 20.8067 7.63301V7.63301V7.62386Z"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <circle
         cx="12.175"
         cy="11.8891"
         r="2.63616"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -371,8 +371,8 @@ export const Pin = ({ className }) => {
       className={className}
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M14.6523 3.57693C13.4199 2.34449 11.3126 3.21735 11.3126 4.96028C11.3126 5.47914 11.1065 5.97674 10.7396 6.34363L9.11887 7.96433C8.75198 8.33122 8.25438 8.53733 7.73552 8.53733C5.99259 8.53733 5.11972 10.6446 6.35216 11.877L8.72844 14.2533L3.21088 19.7709C2.92971 20.0521 2.92971 20.5079 3.21088 20.7891C3.49206 21.0703 3.94794 21.0703 4.22912 20.7891L9.74668 15.2716L12.1229 17.6478C13.3554 18.8802 15.4626 18.0074 15.4626 16.2645C15.4626 15.7456 15.6688 15.248 16.0357 14.8811L17.6564 13.2604C18.0232 12.8935 18.5209 12.6874 19.0397 12.6874C20.7826 12.6874 21.6555 10.5801 20.4231 9.34768L14.6523 3.57693Z"
         fill="currentColor"
         stroke="currentColor"
