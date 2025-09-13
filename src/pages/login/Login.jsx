@@ -9,7 +9,9 @@ function Login() {
     <>
       <div className="flex justify-between items-center">
         <h4 className="typo-h4">Log In</h4>
-        <Link to="/forgot-password" className="typo-cta">Forgot Password</Link>
+        <Link to="/forgot-password" className="typo-cta">
+          Forgot Password
+        </Link>
       </div>
       <div className="flex flex-col gap-2">
         <FormField label="Email" required>
@@ -18,9 +20,7 @@ function Login() {
         <div className="flex flex-col gap-2 mt-2">
           <label className="flex justify-between items-center w-full typo-b2 text-text2">
             <span>Password</span>
-            <span className="text-[10px] text-text2">
-              Must have at least 8 characters
-            </span>
+            
           </label>
 
           <div className="relative w-full">
@@ -49,7 +49,10 @@ function Login() {
           </label>
         </div>
       </div>
-      <RedButton className="typo-cta py-3">Log In</RedButton>
+<Link to="/dashboard/private">
+      <RedButton className="typo-cta py-3 w-full">
+        Log In
+      </RedButton></Link>
     </>
   );
 }

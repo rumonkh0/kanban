@@ -65,6 +65,7 @@ import Login from "./pages/login/Login";
 import ForgotPassword from "./pages/login/ForgotPassword";
 import ResetPassword from "./pages/login/ResetPassword";
 import Otp from "./pages/login/Otp";
+import Reports from "./pages/reports/Reports";
 
 function App() {
   return (
@@ -185,7 +186,7 @@ function App() {
           <Route path="add-service" element={<AddService />} />
         </Route>
 
-        <Route path="reports" element={<div>Reports</div>} />
+        <Route path="reports" element={<Reports />} />
 
         <Route path="settings" element={<SettingLayout />}>
           <Route index element={<Navigate to="/settings/company" replace />} />
