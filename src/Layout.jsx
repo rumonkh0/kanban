@@ -23,9 +23,9 @@ export default function RootLayout() {
     <>
       <PageTitleProvider>
       <Sidebar />
-      <div className="fixed left-57 top-0 bottom-0 right-0 p-2 pr-0 flex flex-col flex-1 gap-4">
+      <div className="fixed left-57 top-0 bottom-0 right-0 py-2  flex flex-col flex-1 gap-4">
         <Header />
-        <main className="relative flex-1 pr-2 overflow-y-auto">
+        <main className="relative flex-1 px-2 overflow-y-auto">
           <Outlet />
         </main>
       </div>

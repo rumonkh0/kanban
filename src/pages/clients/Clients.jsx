@@ -1,9 +1,9 @@
-import ClientTable from "./ClientTable"
-import Icon from "@/components/Icon"
+import ClientTable from "./ClientTable";
+import Icon from "@/components/Icon";
 import { Link } from "react-router";
+import { FilterDropdown } from "@/components/Component";
 
 function page() {
-
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -17,14 +17,16 @@ function page() {
           Add New Client
         </Link>
         <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
+          <FilterDropdown
+            label="Status"
+            options={["Match 1", "Match 2", "Match 3"]}
+            onSelect={(value) => console.log("Selected:", value)}
+          />
+          <FilterDropdown
+            label="Select match"
+            options={["Match 1", "Match 2", "Match 3"]}
+            onSelect={(value) => console.log("Selected:", value)}
+          />
         </div>
       </div>
       <ClientTable />

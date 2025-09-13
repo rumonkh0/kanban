@@ -69,7 +69,11 @@ export const Thead = ({ children }) => (
 );
 
 export const Td = ({ data, className, children }) => (
-  <td className={`min-w-30 typo-b2 py-2 px-4 bg-divider ${className || ""}`}>
+  <td
+    className={`min-w-30 typo-b2 text-text py-2 px-4 bg-divider ${
+      className || ""
+    }`}
+  >
     {data} {children}
   </td>
 );
@@ -252,6 +256,57 @@ export const Dropdown = ({
             </div>
           ))}
         </div>
+      )}
+    </div>
+  );
+};
+
+export const FilterDropdown = ({ label, options = [], onSelect }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(label);
+  const ref = useRef(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (option) => {
+    setSelected(option);
+    setIsOpen(false);
+    if (onSelect) onSelect(option);
+  };
+
+  return (
+    <div
+      className="relative h-full min-w-36 px-2 py-1 border border-divider flex justify-between items-center rounded-sm cursor-pointer bg-surface"
+      onClick={() => setIsOpen(!isOpen)}
+      ref={ref}
+    >
+      <div className="flex-1 text-center">{selected}</div>
+      <Icon
+        name="arrow"
+        className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+      />
+
+      {isOpen && (
+        <ul className="absolute top-full left-0 w-full mt-1 bg-surface2 border border-divider rounded-sm shadow-md z-50 overflow-hidden">
+          {options.map((option, idx) => (
+            <li
+              key={idx}
+              className="px-2 py-1 hover:bg-brand text-center"
+              onClick={() => handleSelect(option)}
+            >
+              {option}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
