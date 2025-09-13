@@ -2,6 +2,7 @@ import Icon from "@/components/Icon";
 import DropdownMenu from "@/components/DropdownMenu";
 import { Link } from "react-router";
 import { useState } from "react";
+import { Bin, Pin } from "../../components/Icon";
 
 function Projects() {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -137,10 +138,10 @@ function Projects() {
             Add New Project
           </Link>
           <div className="w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60">
-            <Icon name="delete" size={20} />
+            <Bin className="text-text2 " />
           </div>
           <div className="w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60">
-            <Icon name="pin" size={20} />
+            <Pin className="text-text2 " />
           </div>
         </div>
         <div className="flex py-1 gap-4">

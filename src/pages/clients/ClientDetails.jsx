@@ -1,15 +1,10 @@
 import { RedBorderButton, RedButton, Icon } from "@/components/Component";
 import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
-import {
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-} from "recharts";
+import { Cell, Tooltip, ResponsiveContainer, PieChart, Pie } from "recharts";
 import { ChartHeader } from "@/components/Component";
 import { Link } from "react-router";
+import { Edit } from "../../components/Icon";
 
 function ClientDetails() {
   const client = {
@@ -56,8 +51,8 @@ function ClientDetails() {
           active={true}
           className="relative"
         >
-          <Link to="/clients/id/edit">
-            <Icon name="edit" className="absolute right-4 top-4" />
+          <Link to="/clients/id/edit" className="absolute right-4 top-4 ">
+            <Edit/>
           </Link>
         </PersonCard>
         <MetricCard title="Total Projects:" growth={12} value={5} />

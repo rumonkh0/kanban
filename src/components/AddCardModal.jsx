@@ -1,32 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { RedButton } from "./Component";
 
-function AddCardModal() {
+function AddCardModal({ onCreate }) {
+  const [title, setTitle] = useState("");
+  const [color, setColor] = useState("#7B7B7B");
+
+  const colors = ["#7B7B7B", "#FE4E4D", "#8FC951", "#5EB7E0", "#A88AED"];
+
+  const handleCreate = () => {
+    if (!title) return;
+    onCreate({ title, color });
+    setTitle("");
+  };
+
   return (
     <div className="w-200 p-2 bg-surface2 border-2 border-divider rounded-lg flex flex-col gap-2 typo-b3 text-text2">
       <div>Add Another Card</div>
       <input
         type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         className="h-10 border-2 border-divider rounded-sm flex items-center px-4 typo-b2 text-text"
-        placeholder="Not Started"
+        placeholder="Card Title"
       />
       <div>Add card identity color</div>
       <div className="flex gap-2">
-        <ColorBox color="bg-red-400" />
-        <ColorBox color="bg-blue-400" />
-        <ColorBox color="bg-green-400" />
-        <ColorBox color="bg-yellow-400" />
-        <ColorBox color="bg-purple-400" />
-        <ColorBox color="bg-pink-400" />
-        <ColorBox color="bg-indigo-400" />
+        {colors.map((c) => (
+          <ColorBox key={c} color={c} selected={color === c} onClick={() => setColor(c)} />
+        ))}
       </div>
-      <RedButton className="w-fit mt-2">Create</RedButton>
+      <RedButton className="w-fit mt-2" onClick={handleCreate}>
+        Create
+      </RedButton>
     </div>
   );
 }
-const ColorBox = ({ color }) => (
+
+const ColorBox = ({ color, selected, onClick }) => (
   <div
-    className={`w-10 h-10 ${color} hover:border-2 hover:border-white rounded-sm cursor-pointer`}
+    onClick={onClick}
+    className={`w-10 h-10 rounded-sm cursor-pointer border-2 ${
+      selected ? "border-white" : "border-transparent"
+    }`}
+    style={{ backgroundColor: color }}
   ></div>
 );
 

@@ -1,11 +1,22 @@
 import { useState } from "react";
-import Icon from "./Icon";
+import Icon, {
+  Briefcase,
+  Finance,
+  Home,
+  People,
+  Service,
+  Settings,
+  Stat,
+  Task,
+  Users,
+} from "./Icon";
 import { Link, useLocation } from "react-router";
 
 const menuItems = [
   {
     label: "Dashboard",
-    icon: "home",
+    icon: Home,
+    to: "/dashboard",
     children: [
       { label: "Private", to: "/dashboard/private" },
       { label: "Advanced", to: "/dashboard/advanced" },
@@ -14,21 +25,22 @@ const menuItems = [
   {
     label: "Clients",
     to: "/clients",
-    icon: "users",
+    icon: Users,
   },
   {
     label: "Projects",
     to: "/projects",
-    icon: "briefcase",
+    icon: Briefcase,
   },
   {
     label: "tasks",
     to: "/tasks",
-    icon: "notes",
+    icon: Task,
   },
   {
     label: "HR",
-    icon: "notes",
+    icon: People,
+    to: "/hr",
     children: [
       { label: "Team Members", to: "/hr/team-members" },
       { label: "Department", to: "/hr/department" },
@@ -38,7 +50,8 @@ const menuItems = [
   },
   {
     label: "Finance",
-    icon: "notes",
+    icon: Finance,
+    to: "/finance",
     children: [
       { label: "Paid By", to: "/finance/payment" },
       { label: "Paid To", to: "/finance/team-payment" },
@@ -47,17 +60,17 @@ const menuItems = [
   {
     label: "Services",
     to: "/services",
-    icon: "notes",
+    icon: Service,
   },
   {
     label: "Reports",
     to: "/reports",
-    icon: "notes",
+    icon: Stat,
   },
   {
     label: "Settings",
     to: "/settings",
-    icon: "notes",
+    icon: Settings,
   },
 ];
 
@@ -72,7 +85,7 @@ export default function Sidebar() {
     );
   };
 
-  const isActive = (to) => pathname === to;
+  const isActive = (to) => pathname.startsWith(to);
 
   return (
     <aside className="fixed left-2 top-2 bottom-2 p-4 rounded-lg w-55 bg-surface2 border-2 border-divider typo-cta text-text2 shadow-lg flex flex-col">
@@ -92,7 +105,13 @@ export default function Sidebar() {
                   className="flex items-center w-full px-2 py-2 mb-1 rounded-lg hover:bg-divider transition cursor-pointer"
                 >
                   {/* {item.icon && <span className="mr-1">{item.icon}</span>} */}
-                  {item.icon && <Icon name={item.icon} className="mr-1" />}
+                  {item.icon && (
+                    <item.icon
+                      className={`mr-1 ${
+                        isActive(item.to) ? " text-brand" : "text-text2"
+                      }`}
+                    />
+                  )}
                   <span className="flex-1 text-left">{item.label}</span>
                   {openMenus.includes(item.label) ? (
                     <Icon name="arrow" />
@@ -127,7 +146,13 @@ export default function Sidebar() {
                     : "hover:bg-divider hover:text-text"
                 }`}
               >
-                {item.icon && <Icon name={item.icon} className="mr-1" />}
+                {item.icon && (
+                  <item.icon
+                    className={`mr-1 h-6 w-6 ${
+                      isActive(item.to) ? " text-brand" : "text-text2"
+                    }`}
+                  />
+                )}
                 {item.label}
               </Link>
             )}

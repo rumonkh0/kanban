@@ -25,7 +25,7 @@ import ProjectManage from "./pages/projects/ProjectManage";
 import ProjectOverview from "./pages/projects/manage/Overview";
 import ProjectMembers from "./pages/projects/manage/Members";
 import ProjectFiles from "./pages/projects/manage/Files";
-import ProjectTask from "./pages/projects/manage/Tasks";
+import ProjectTask from "./pages/tasks/Task";
 import TeamPayment from "./pages/finance/TeamPayment";
 import Payment from "./pages/finance/Payment";
 import ProjectNotes from "./pages/projects/manage/Notes";
@@ -60,9 +60,23 @@ import ProfileSetting from "./pages/settings/ProfileSetting";
 import SecuritySetting from "./pages/settings/SecuritySetting";
 import ThemeSetting from "./pages/settings/ThemeSetting";
 
+import LoginLayout from "./pages/login";
+import Login from "./pages/login/Login";
+import ForgotPassword from "./pages/login/ForgotPassword";
+import ResetPassword from "./pages/login/ResetPassword";
+import Otp from "./pages/login/Otp";
+
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<LoginLayout />}>
+        <Route index element={<Navigate to="/login" replace />} />
+        <Route path="login" element={<Login />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="otp" element={<Otp />} />
+      </Route>
+
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Navigate to="/dashboard/private" replace />} />
 
