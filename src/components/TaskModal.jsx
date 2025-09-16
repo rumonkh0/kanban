@@ -52,52 +52,46 @@ function TaskModal({ role = "member", task = {} }) {
           <div className="inline-block w-3 h-3 mr-2 rounded-full bg-red-400"></div>
           Task 1
         </div>
-        <div className="flex gap-4 p-4">
-          {/* Image Icon Dropdown */}
-          <div className="relative" ref={imageRef}>
-            <div onClick={() => setOpenImage(!openImage)}>
-              <Icon name="image" className="cursor-pointer" />
-            </div>
-            {/* Dropdown */}
-            {openImage && (
-              <div className="absolute top-full right-0 mt-1 w-auto min-w-max p-2 bg-divider rounded shadow cursor-default z-50">
-                <h2 className="typo-b2 mb-2">Add Cover Image</h2>
-                <div className="flex gap-2 flex-wrap">
-                  <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                  <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                  <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                  <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                  <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                  <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                  <div className="h-12 w-12 rounded-sm bg-text2 flex justify-center items-center">
-                    <Icon name="plus" />
+        {role !== "client" && (
+          <div className="flex gap-4 p-4">
+            {/* Image Icon Dropdown */}
+            <div className="relative" ref={imageRef}>
+              <div onClick={() => setOpenImage(!openImage)}>
+                <Icon name="image" className="cursor-pointer" />
+              </div>
+              {/* Dropdown */}
+              {openImage && (
+                <div className="absolute top-full right-0 mt-1 w-auto min-w-max p-2 bg-divider rounded shadow cursor-default z-50">
+                  <h2 className="typo-b2 mb-2">Add Cover Image</h2>
+                  <div className="flex gap-2 flex-wrap">
+                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
+                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
+                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
+                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
+                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
+                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
+                    <div className="h-12 w-12 rounded-sm bg-text2 flex justify-center items-center">
+                      <Icon name="plus" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Menu Icon Dropdown */}
-          <div className="relative">
-            <div onClick={() => setOpenMenu(!openMenu)}>
-              <Icon name="menu-black" className="cursor-pointer" />
+              )}
             </div>
-            <DropdownMenu
-              isOpen={openMenu}
-              onClose={() => setOpenMenu(false)}
-              menuItems={menuItems}
-              className="top-full right-0 mt-1"
-            />
-            {/* {openMenu && (
-              <div className="absolute right-0 mt-2 w-40 bg-surface rounded-sm border-2 border-divider z-50">
-                <MenuButton label="Copy Task" />
-                <MenuButton label="Edit" />
-                <MenuButton label="Share" />
-                <MenuButton label="Delete" />
+
+            {/* Menu Icon Dropdown */}
+            <div className="relative">
+              <div onClick={() => setOpenMenu(!openMenu)}>
+                <Icon name="menu-black" className="cursor-pointer" />
               </div>
-            )} */}
+              <DropdownMenu
+                isOpen={openMenu}
+                onClose={() => setOpenMenu(false)}
+                menuItems={menuItems}
+                className="top-full right-0 mt-1"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Body */}
@@ -203,12 +197,14 @@ function TaskModal({ role = "member", task = {} }) {
           ) : (
             <div className="flex-1 flex flex-col gap-4 pr-2 pt-2 border-r-2 border-divider">
               <InfoItem label="Project" value="Sample project one" />
-              <InfoItem label="Assigned Member">
-                <ImageName
-                  image="/images/profile.png"
-                  username="Safin Hossen"
-                />
-              </InfoItem>
+              {role === "member" && (
+                <InfoItem label="Assigned Member">
+                  <ImageName
+                    image="/images/profile.png"
+                    username="Safin Hossen"
+                  />
+                </InfoItem>
+              )}
               <InfoItem label="Create Date" value="Aug 20, 2025" />
               <InfoItem label="Due Date" value="Aug 20, 2025" />
               <InfoItem label="Priority">
@@ -222,19 +218,46 @@ function TaskModal({ role = "member", task = {} }) {
                         : "bg-[#A88AED]"
                     }`}
                   ></div>{" "}
-                  high
+                  High
                 </>
               </InfoItem>
-              <InfoItem label="Related File">
-                <div className="h-10 flex justify-between items-center gap-1 rounded-sm">
-                  <Icon name="file" size={40} />
-                  <div className="typo-b3 text-text flex flex-col">
-                    <h2 className="text-success underline typo-b2 pb-2 cursor-pointer">Download</h2>
-                    <p className="cursor-pointer">view</p>
+              {role === "member" && (
+                <InfoItem label="Related File">
+                  <div className="h-10 flex justify-between items-center gap-1 rounded-sm">
+                    <Icon name="file" size={40} />
+                    <div className="typo-b3 text-text flex flex-col">
+                      <h2 className="text-success underline typo-b2 pb-2 cursor-pointer">
+                        Download
+                      </h2>
+                      <p className="cursor-pointer">view</p>
+                    </div>
                   </div>
-                </div>
-              </InfoItem>
-              <p className="text-brand underline typo-b2 cursor-pointer">Leave Task</p>
+                </InfoItem>
+              )}
+              {role === "client" && (
+                <>
+                  <InfoItem label="Last Update" value="Aug 20, 2025" />
+                  <InfoItem label="Current Stage">
+                    <>
+                      <div
+                        className={`w-2 h-2 mr-2 rounded-full ${
+                          task.priority === "High"
+                            ? "bg-success"
+                            : task.priority === "Low"
+                            ? "bg-brand"
+                            : "bg-[#A88AED]"
+                        }`}
+                      ></div>
+                      High
+                    </>
+                  </InfoItem>
+                </>
+              )}
+              {role === "member" && (
+                <p className="text-brand underline typo-b2 cursor-pointer">
+                  Leave Task
+                </p>
+              )}
             </div>
           )}
 
@@ -277,7 +300,10 @@ function TaskModal({ role = "member", task = {} }) {
 
             {/* Bottom Input Bar */}
             <div className="mt-auto h-10 flex">
-              <input placeholder="Write a comment" className="flex-1 typo-b3 flex items-center pl-4 bg-divider rounded-l-sm"></input>
+              <input
+                placeholder="Write a comment"
+                className="flex-1 typo-b3 flex items-center pl-4 bg-divider rounded-l-sm"
+              ></input>
               <RedButton className="px-2 rounded-l-none">
                 <Icon name="send" />
               </RedButton>

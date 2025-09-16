@@ -4,7 +4,7 @@ import { useState } from "react";
 import Modal from "@/components/Modal";
 import TaskModal from "@/components/TaskModal";
 import Icon from "@/components/Icon";
-const SingleCard = ({ task }) => {
+const SingleCard = ({ task, role }) => {
   const {
     taskID,
     taskTitle = "Task",
@@ -77,7 +77,7 @@ const SingleCard = ({ task }) => {
         </div>
       </div>
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
-        <TaskModal />
+        <TaskModal role={role} />
       </Modal>
     </>
   );

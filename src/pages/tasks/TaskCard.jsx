@@ -89,12 +89,14 @@ const TaskCard = ({
             />
           </div>
         </div>
-        {role === "admin" && <div
-          onClick={() => setAddTask(!addTask)}
-          className="h-12 shrink-0 bg-divider rounded-sm flex justify-center items-center gap-2 cursor-pointer"
-        >
-          <Icon name="plus" size={16} /> Add Task
-        </div>}
+        {role === "admin" && (
+          <div
+            onClick={() => setAddTask(!addTask)}
+            className="h-12 shrink-0 bg-divider rounded-sm flex justify-center items-center gap-2 cursor-pointer"
+          >
+            <Icon name="plus" size={16} /> Add Task
+          </div>
+        )}
         {addTask && (
           <div className="p-2 bg-divider rounded-sm flex flex-col justify-center items-center gap-2 cursor-pointer">
             <input
@@ -123,7 +125,7 @@ const TaskCard = ({
         <div className="flex-1 overflow-y-auto flex flex-col gap-2">
           <SortableContext items={tasks.map((task) => task.taskID)}>
             {tasks.map((task) => (
-              <SingleTask key={task.taskID} task={task} />
+              <SingleTask key={task.taskID} task={task} role={role} />
             ))}
           </SortableContext>
         </div>

@@ -207,7 +207,7 @@ function Projects() {
         </table>
       </div>{" "}
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
-        <TaskModal />
+        <TaskModal role="client" />
       </Modal>
     </>
   );
