@@ -4,7 +4,7 @@ import { usePageTitle } from "../context/PageTitleContext";
 function Header() {
   const { title } = usePageTitle();
   return (
-    <div className="flex justify-between items-center h-16 py-2 mr-2 rounded-lg bg-surface2 border-2 border-divider">
+    <div className="flex justify-between items-center h-16 py-2 mx-2 rounded-lg bg-surface2 border-2 border-divider">
       <div className="ml-4 typo-h4 text-text">{title}</div>
       <div className="flex items-center space-x-4 mr-4">
         <div className="w-100 h-12 border-1 border-divider rounded-lg flex items-center px-3 gap-2">

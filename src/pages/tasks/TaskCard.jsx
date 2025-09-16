@@ -6,7 +6,14 @@ import { RedButton } from "@/components/Component";
 import Icon from "@/components/Icon";
 import SingleTask from "./SingleTask";
 
-const TaskCard = ({ id, cardTitle = "To Do", color, tasks, onAddTask }) => {
+const TaskCard = ({
+  id,
+  cardTitle = "To Do",
+  color,
+  tasks,
+  onAddTask,
+  role = "member",
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [addTask, setAddTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -82,12 +89,12 @@ const TaskCard = ({ id, cardTitle = "To Do", color, tasks, onAddTask }) => {
             />
           </div>
         </div>
-        <div
+        {role === "admin" && <div
           onClick={() => setAddTask(!addTask)}
           className="h-12 shrink-0 bg-divider rounded-sm flex justify-center items-center gap-2 cursor-pointer"
         >
           <Icon name="plus" size={16} /> Add Task
-        </div>
+        </div>}
         {addTask && (
           <div className="p-2 bg-divider rounded-sm flex flex-col justify-center items-center gap-2 cursor-pointer">
             <input

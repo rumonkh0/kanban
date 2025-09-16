@@ -21,11 +21,13 @@ function page() {
             label="Status"
             options={["Match 1", "Match 2", "Match 3"]}
             onSelect={(value) => console.log("Selected:", value)}
+            className="h-8"
           />
           <FilterDropdown
             label="Select match"
             options={["Match 1", "Match 2", "Match 3"]}
             onSelect={(value) => console.log("Selected:", value)}
+            className="h-8"
           />
         </div>
       </div>

@@ -7,7 +7,7 @@ import {
   RedButton,
 } from "../../components/Component";
 
-function ProfileSetting({ role }) {
+function Setting() {
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
   const [formData, setFormData] = useState({
@@ -29,35 +29,33 @@ function ProfileSetting({ role }) {
             className="w-40 h-43 rounded-sm"
           />
         </div>
-        {role == "admin" && (
-          <div className="flex-1 flex flex-wrap border border-divider rounded-lg bg-surface2 p-4">
-            <div className="flex-[4] border-r-2 border-divider flex flex-col gap-2 pr-8">
-              <div className="typo-b2">Emergency Contact</div>
-              <Input placeholder="Enter Emain" />
-              <Input placeholder="Enter Phone" />
+        <div className="flex-1 flex flex-wrap border border-divider rounded-lg bg-surface2 p-4">
+          <div className="flex-[4] border-r-2 border-divider flex flex-col gap-2 pr-8">
+            <div className="typo-b2">Emergency Contact</div>
+            <Input placeholder="Enter Email" />
+            <Input placeholder="Enter Phone" />
+          </div>
+          <div className="flex-[6] flex flex-col gap-2 pl-4">
+            <div className="typo-b2">Documents</div>
+            <div className="flex items-center justify-center h-12 bg-surface2 border-2 border-divider rounded-lg">
+              <button
+                type="button"
+                className="flex items-center gap-2 text-text2"
+              >
+                <Icon name="upload" size={24} />
+                <span className="typo-b3">Upload File Here</span>
+              </button>
             </div>
-            <div className="flex-[6] flex flex-col gap-2 pl-4">
-              <div className="typo-b2">Documents</div>
-              <div className="flex items-center justify-center h-12 bg-surface2 border-2 border-divider rounded-lg">
-                <button
-                  type="button"
-                  className="flex items-center gap-2 text-text2"
-                >
-                  <Icon name="upload" size={24} />
-                  <span className="typo-b3">Upload File Here</span>
-                </button>
+            <div className="w-[184px] h-12 bg-divider flex justify-between items-center gap-1 p-1.5 rounded-sm">
+              <Icon name="file" size={35} />
+              <div className="typo-b3 text-text flex flex-col">
+                <h2>Project</h2>
+                <p>Requirements.pdf</p>
               </div>
-              <div className="w-[184px] h-12 bg-divider flex justify-between items-center gap-1 p-1.5 rounded-sm">
-                <Icon name="file" size={35} />
-                <div className="typo-b3 text-text flex flex-col">
-                  <h2>Project</h2>
-                  <p>Requirements.pdf</p>
-                </div>
-                <Icon name="cross-red" size={16} />
-              </div>
+              <Icon name="cross-red" size={16} />
             </div>
           </div>
-        )}
+        </div>
       </div>
       <form className="grid grid-cols-3 gap-4">
         <FormField label="Your Name">
@@ -215,4 +213,4 @@ function ProfileSetting({ role }) {
   );
 }
 
-export default ProfileSetting;
+export default Setting;

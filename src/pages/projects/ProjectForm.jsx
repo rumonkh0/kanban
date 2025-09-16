@@ -1,7 +1,7 @@
 import Icon from "@/components/Icon";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+// import { useMutation } from "@tanstack/react-query";
+// import axios from "axios";
 import ClientSelect from "@/components/ClientSelect";
 import {
   Dropdown,
@@ -10,21 +10,21 @@ import {
   MultiSelect,
 } from "@/components/Component";
 import { Back, RedBorderButton, RedButton } from "../../components/Component";
-const saveProject = async (data) => {
-  const formData = new FormData();
-  Object.entries(data).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((v) => formData.append(`${key}[]`, v));
-    } else if (value !== null && value !== undefined) {
-      formData.append(key, value);
-    }
-  });
+// const saveProject = async (data) => {
+//   const formData = new FormData();
+//   Object.entries(data).forEach(([key, value]) => {
+//     if (Array.isArray(value)) {
+//       value.forEach((v) => formData.append(`${key}[]`, v));
+//     } else if (value !== null && value !== undefined) {
+//       formData.append(key, value);
+//     }
+//   });
 
-  const res = await axios.post("/api/projects", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return res.data;
-};
+//   const res = await axios.post("/api/projects", formData, {
+//     headers: { "Content-Type": "multipart/form-data" },
+//   });
+//   return res.data;
+// };
 function ProjectForm({ edit, client = {} }) {
   const [formData, setFormData] = useState({
     shortCode: client.shortCode || "",

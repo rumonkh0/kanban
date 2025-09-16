@@ -13,8 +13,8 @@ export const RedButton = ({ children, onClick, className }) => {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${
-        className || ""
+      className={` py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${
+        className || "px-4"
       }`}
     >
       {children}
@@ -261,7 +261,12 @@ export const Dropdown = ({
   );
 };
 
-export const FilterDropdown = ({ label, options = [], onSelect }) => {
+export const FilterDropdown = ({
+  label,
+  options = [],
+  onSelect,
+  className,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(label);
   const ref = useRef(null);
@@ -285,11 +290,13 @@ export const FilterDropdown = ({ label, options = [], onSelect }) => {
 
   return (
     <div
-      className="relative h-full min-w-36 px-2 py-1 border border-divider flex justify-between items-center rounded-sm cursor-pointer bg-surface"
+      className={`relative min-w-36 px-2 py-1 border border-divider flex justify-between items-center rounded-sm cursor-pointer bg-surface ${
+        className || ""
+      }`}
       onClick={() => setIsOpen(!isOpen)}
       ref={ref}
     >
-      <div className="flex-1 text-center">{selected}</div>
+      <div className="flex-1 typo-b3 text-center">{selected}</div>
       <Icon
         name="arrow"
         className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
@@ -300,7 +307,7 @@ export const FilterDropdown = ({ label, options = [], onSelect }) => {
           {options.map((option, idx) => (
             <li
               key={idx}
-              className="px-2 py-1 hover:bg-brand text-center"
+              className="px-2 py-1 hover:bg-brand typo-b3 text-center"
               onClick={() => handleSelect(option)}
             >
               {option}
@@ -308,6 +315,38 @@ export const FilterDropdown = ({ label, options = [], onSelect }) => {
           ))}
         </ul>
       )}
+    </div>
+  );
+};
+
+export const ToggleTabs = ({
+  options = ["Week", "Month", "Year"],
+  defaultValue = "Week",
+  onChange,
+  className = "",
+}) => {
+  const [selected, setSelected] = useState(defaultValue);
+
+  const handleSelect = (val) => {
+    setSelected(val);
+    if (onChange) onChange(val);
+  };
+
+  return (
+    <div
+      className={`bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2 ${className}`}
+    >
+      {options.map((val) => (
+        <div
+          key={val}
+          onClick={() => handleSelect(val)}
+          className={`px-2 py-1.5 rounded-sm transition-colors ${
+            selected === val ? "bg-brand text-white" : "text-text2"
+          }`}
+        >
+          {val}
+        </div>
+      ))}
     </div>
   );
 };

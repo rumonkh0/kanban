@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
-import { RedButton, Dropdown } from "./Component";
+import { RedButton, Dropdown, ImageName } from "./Component";
 import DropdownMenu from "@/components/DropdownMenu";
 import ClientSelect from "./ClientSelect";
 
-function TaskModal() {
+function TaskModal({ role = "member", task = {} }) {
   const [openImage, setOpenImage] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [formData, setFormData] = useState({
@@ -109,106 +109,139 @@ function TaskModal() {
 
         {/* Main Content Row */}
         <div className="mt-2 flex items-stretch h-[288px]">
-          {/* 👆 Instead of h-screen, give a fixed/modal height */}
-
           {/* Left Column */}
-          <div className="flex-1 pr-2 border-r-2 border-divider flex flex-col gap-2">
-            <div className="flex gap-2">
-              <Dropdown
-                options={[
-                  "Sample projec 1",
-                  "Sample projec 2",
-                  "Sample projec 3",
-                  "Sample projec 4",
-                ]}
-                value={formData.project}
-                onChange={(val) => handleChange("project", val)}
-                className="flex-1"
-              />
-              {/* <div className="flex-1 relative">
-                <select className="w-full h-12 bg-surface2 border border-divider rounded-sm px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-brand typo-b3">
-                  <option>Mr.</option>
-                  <option>Mrs.</option>
-                  <option>Ms.</option>
-                  <option>Dr.</option>
-                </select>
-                <Icon
-                  name="arrow"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
-                />
-              </div> */}
-              <ClientSelect
-                onSelect={(member) => console.log("Member selected:", member)}
-                className="flex-1 typo-b3"
-              />
-            </div>
-            <div className="flex gap-2">
-              <div className="flex-1 relative">
-                <input
-                  type="date"
-                  placeholder="Select Date"
-                  className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
-                />
-                <Icon
-                  name="calendar"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
-                />
-              </div>
-              <div className="flex-1 relative">
-                <input
-                  type="date"
-                  placeholder="Select Date"
-                  className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
-                />
-                <Icon
-                  name="calendar"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <div
-                  className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
-                    formData.impact === "High"
-                      ? "bg-success"
-                      : formData.impact === "Low"
-                      ? "bg-brand"
-                      : formData.impact === "Medium"
-                      ? "bg-[#A88AED]"
-                      : ""
-                  }`}
-                ></div>
+          {role === "admin" ? (
+            <div className="flex-1 pr-2 border-r-2 border-divider flex flex-col gap-2">
+              <div className="flex gap-2">
                 <Dropdown
-                  options={["High", "Low", "Medium"]}
-                  value={formData.impact}
-                  onChange={(val) => handleChange("impact", val)}
-                  className="pl-8"
+                  options={[
+                    "Sample projec 1",
+                    "Sample projec 2",
+                    "Sample projec 3",
+                    "Sample projec 4",
+                  ]}
+                  value={formData.project}
+                  onChange={(val) => handleChange("project", val)}
+                  className="flex-1"
+                />
+                {/* <div className="flex-1 relative">
+                  <select className="w-full h-12 bg-surface2 border border-divider rounded-sm px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-brand typo-b3">
+                    <option>Mr.</option>
+                    <option>Mrs.</option>
+                    <option>Ms.</option>
+                    <option>Dr.</option>
+                  </select>
+                  <Icon
+                    name="arrow"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
+                  />
+                </div> */}
+                <ClientSelect
+                  onSelect={(member) => console.log("Member selected:", member)}
+                  className="flex-1 typo-b3"
                 />
               </div>
-              <div className="flex-1 flex items-center justify-center h-12 bg-surface2 border border-divider rounded-lg">
-                <button
-                  type="button"
-                  className="flex items-center gap-2 text-text2"
-                >
-                  <Icon name="upload" size={16} />
-                  <span className="typo-b3">Upload File Here</span>
-                </button>
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <input
+                    type="date"
+                    placeholder="Select Date"
+                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
+                  />
+                  <Icon
+                    name="calendar"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
+                  />
+                </div>
+                <div className="flex-1 relative">
+                  <input
+                    type="date"
+                    placeholder="Select Date"
+                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
+                  />
+                  <Icon
+                    name="calendar"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
+                  />
+                </div>
               </div>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <div
+                    className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
+                      formData.impact === "High"
+                        ? "bg-success"
+                        : formData.impact === "Low"
+                        ? "bg-brand"
+                        : formData.impact === "Medium"
+                        ? "bg-[#A88AED]"
+                        : ""
+                    }`}
+                  ></div>
+                  <Dropdown
+                    options={["High", "Low", "Medium"]}
+                    value={formData.impact}
+                    onChange={(val) => handleChange("impact", val)}
+                    className="pl-8"
+                  />
+                </div>
+                <div className="flex-1 flex items-center justify-center h-12 bg-surface2 border border-divider rounded-lg">
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 text-text2"
+                  >
+                    <Icon name="upload" size={16} />
+                    <span className="typo-b3">Upload File Here</span>
+                  </button>
+                </div>
+              </div>
+              <textarea
+                placeholder="Type desc here"
+                className="h-30 p-4 typo-b3 bg-surface2 border-2 border-divider rounded-sm"
+              ></textarea>
             </div>
-            <textarea
-              placeholder="Type desc here"
-              className="h-30 p-4 typo-b3 bg-surface2 border-2 border-divider rounded-sm"
-            ></textarea>
-          </div>
+          ) : (
+            <div className="flex-1 flex flex-col gap-4 pr-2 pt-2 border-r-2 border-divider">
+              <InfoItem label="Project" value="Sample project one" />
+              <InfoItem label="Assigned Member">
+                <ImageName
+                  image="/images/profile.png"
+                  username="Safin Hossen"
+                />
+              </InfoItem>
+              <InfoItem label="Create Date" value="Aug 20, 2025" />
+              <InfoItem label="Due Date" value="Aug 20, 2025" />
+              <InfoItem label="Priority">
+                <>
+                  <div
+                    className={`w-2 h-2 mr-2 rounded-full ${
+                      task.priority === "High"
+                        ? "bg-success"
+                        : task.priority === "Low"
+                        ? "bg-brand"
+                        : "bg-[#A88AED]"
+                    }`}
+                  ></div>{" "}
+                  high
+                </>
+              </InfoItem>
+              <InfoItem label="Related File">
+                <div className="h-10 flex justify-between items-center gap-1 rounded-sm">
+                  <Icon name="file" size={40} />
+                  <div className="typo-b3 text-text flex flex-col">
+                    <h2 className="text-success underline typo-b2 pb-2 cursor-pointer">Download</h2>
+                    <p>view</p>
+                  </div>
+                </div>
+              </InfoItem>
+              <p className="text-brand underline typo-b2 cursor-pointer">Leave Task</p>
+            </div>
+          )}
 
           {/* Right Column */}
           <div className="flex-1 pl-2 flex flex-col min-h-0">
-            {/* 👆 min-h-0 lets flexbox distribute height correctly */}
-
             {/* Top: Comments */}
             <div className="flex-1 overflow-y-auto">
-              {/* 👆 makes comments scrollable if overflow */}
               <div className="flex items-center gap-2 mb-4">
                 <Icon name="chat" />
                 Comments and activity
@@ -243,9 +276,9 @@ function TaskModal() {
             </div>
 
             {/* Bottom Input Bar */}
-            <div className="mt-auto flex">
-              <div className="flex-1 bg-text2 rounded-l-sm"></div>
-              <RedButton className="px-0 rounded-l-none">
+            <div className="mt-auto h-10 flex">
+              <input placeholder="Write a comment" className="flex-1 typo-b3 flex items-center pl-4 bg-divider rounded-l-sm"></input>
+              <RedButton className="px-2 rounded-l-none">
                 <Icon name="send" />
               </RedButton>
             </div>
@@ -255,7 +288,14 @@ function TaskModal() {
     </div>
   );
 }
-
+const InfoItem = ({ label, value, children }) => (
+  <div className="flex items-start  gap-2">
+    <span className="typo-b2 text-text2 w-40">{label}</span>
+    <span className={`flex-1 flex items-center typo-b2`}>
+      : &nbsp; {value ?? children}
+    </span>
+  </div>
+);
 const MenuButton = ({ label }) => (
   <button className="w-full text-center h-8.5 text-text2 rounded-sm hover:bg-brand hover:text-text cursor-pointer">
     {label}

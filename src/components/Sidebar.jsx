@@ -12,7 +12,7 @@ import Icon, {
 } from "./Icon";
 import { Link, useLocation } from "react-router";
 
-const menuItems = [
+const admin = [
   {
     label: "Dashboard",
     icon: Home,
@@ -74,7 +74,48 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar() {
+const member = [
+  {
+    label: "Dashboard",
+    icon: Home,
+    to: "/members/dashboard",
+  },
+  {
+    label: "Tasks",
+    icon: Task,
+    to: "/members/tasks",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    to: "/members/settings",
+  },
+];
+const client = [
+  {
+    label: "Dashboard",
+    icon: Home,
+    to: "/clients/dashboard",
+  },
+  {
+    label: "Projects",
+    icon: Briefcase,
+    to: "/clients/projects",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    to: "/clients/settings",
+  },
+];
+
+export default function Sidebar({ sidebar }) {
+  let menuItems = admin;
+  if (sidebar === "member") {
+    menuItems = member;
+  } else if (sidebar === "client") {
+    menuItems = client;
+  }
   const [openMenus, setOpenMenus] = useState([]);
   const location = useLocation();
   const pathname = location.pathname;
