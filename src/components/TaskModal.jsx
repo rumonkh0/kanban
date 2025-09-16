@@ -230,7 +230,7 @@ function TaskModal({ role = "member", task = {} }) {
                   <Icon name="file" size={40} />
                   <div className="typo-b3 text-text flex flex-col">
                     <h2 className="text-success underline typo-b2 pb-2 cursor-pointer">Download</h2>
-                    <p>view</p>
+                    <p className="cursor-pointer">view</p>
                   </div>
                 </div>
               </InfoItem>

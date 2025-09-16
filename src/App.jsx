@@ -70,6 +70,7 @@ import MembersDashboard from "./pages/member/Dashboard";
 import MemberTask from "./pages/member/Task";
 
 import ClientDashboard from "./pages/client/Dashboard";
+import ClientProjects from "./pages/client/Projects";
 
 function App() {
   return (
@@ -208,14 +209,14 @@ function App() {
         <Route index element={<Navigate to="/member/dashboard" replace />} />
         <Route path="dashboard" element={<MembersDashboard />} />
         <Route path="tasks" element={<MemberTask />} />
-        <Route path="settings" element={<ProfileSetting />} />
+        <Route path="settings" element={<ProfileSetting role="member"/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/client" element={<RootLayout sidebar="client" />}>
         <Route index element={<Navigate to="/client/dashboard" replace />} />
         <Route path="dashboard" element={<ClientDashboard />} />
-        <Route path="projects" element={<ProjectTask />} />
-        <Route path="settings" element={<Projects />} />
+        <Route path="projects" element={<ClientProjects />} />
+        <Route path="settings" element={<ProfileSetting role="client"/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
