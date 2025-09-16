@@ -66,8 +66,10 @@ import ForgotPassword from "./pages/login/ForgotPassword";
 import ResetPassword from "./pages/login/ResetPassword";
 import Otp from "./pages/login/Otp";
 import Reports from "./pages/reports/Reports";
-import MembersDashboard from "./pages/members/Dashboard";
-import MemberTask from "./pages/members/Task";
+import MembersDashboard from "./pages/member/Dashboard";
+import MemberTask from "./pages/member/Task";
+
+import ClientDashboard from "./pages/client/Dashboard";
 
 function App() {
   return (
@@ -194,7 +196,7 @@ function App() {
           <Route index element={<Navigate to="/settings/company" replace />} />
           <Route path="company" element={<CompanySetting />} />
           <Route path="business" element={<BusinessAdress />} />
-          <Route path="profile" element={<ProfileSetting role="admin"/>} />
+          <Route path="profile" element={<ProfileSetting role="admin" />} />
           <Route path="security" element={<SecuritySetting />} />
           <Route path="theme" element={<ThemeSetting />} />
         </Route>
@@ -202,16 +204,16 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Route>
 
-      <Route path="/members" element={<RootLayout sidebar="member" />}>
-        <Route index element={<Navigate to="/members/dashboard" replace />} />
+      <Route path="/member" element={<RootLayout sidebar="member" />}>
+        <Route index element={<Navigate to="/member/dashboard" replace />} />
         <Route path="dashboard" element={<MembersDashboard />} />
         <Route path="tasks" element={<MemberTask />} />
         <Route path="settings" element={<ProfileSetting />} />
         <Route path="*" element={<NotFound />} />
       </Route>
-      <Route path="/clients" element={<RootLayout sidebar="client" />}>
-        <Route index element={<Navigate to="/members/dashboard" replace />} />
-        <Route path="dashboard" element={<MembersDashboard />} />
+      <Route path="/client" element={<RootLayout sidebar="client" />}>
+        <Route index element={<Navigate to="/client/dashboard" replace />} />
+        <Route path="dashboard" element={<ClientDashboard />} />
         <Route path="projects" element={<ProjectTask />} />
         <Route path="settings" element={<Projects />} />
         <Route path="*" element={<NotFound />} />

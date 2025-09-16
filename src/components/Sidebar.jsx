@@ -95,17 +95,17 @@ const client = [
   {
     label: "Dashboard",
     icon: Home,
-    to: "/clients/dashboard",
+    to: "/client/dashboard",
   },
   {
     label: "Projects",
     icon: Briefcase,
-    to: "/clients/projects",
+    to: "/client/projects",
   },
   {
     label: "Settings",
     icon: Settings,
-    to: "/clients/settings",
+    to: "/client/settings",
   },
 ];
 
