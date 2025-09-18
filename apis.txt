@@ -1,0 +1,43 @@
+
+
+
+@@ hr form
+GET /api/team-members → list all members
+GET /api/team-members/:id → get single member
+POST /api/team-members → create member (multipart form)
+PUT /api/team-members/:id → update member (multipart form)
+DELETE /api/team-members/:id → delete member
+GET /api/departments → list of departments
+GET /api/roles → list of role
+
+@@ Client form
+GET /api/clients → Get all clients
+GET /api/clients/:id → Get single client by ID
+POST /api/clients → Create new client (multipart/form-data)
+PUT /api/clients/:id → Update client (multipart/form-data)
+DELETE /api/clients/:id → Delete client
+GET /api/client-categories → (Optional) List of client categories for dropdown
+
+@@ Project Form
+GET /api/projects → Get all projects
+GET /api/projects/:id → Get single project by ID
+POST /api/projects → Create new project (multipart/form-data)
+PUT /api/projects/:id → Update project (multipart/form-data)
+DELETE /api/projects/:id → Delete project
+GET /api/services → List of services for dropdown
+GET /api/departments → List of departments for dropdown
+
+@@ paid from api
+GET /api/paidby → Get all PaidBy records
+GET /api/paidby/:id → Get single PaidBy record by ID
+POST /api/paidby → Create PaidBy record (FormData)
+PUT /api/paidby/:id → Update PaidBy record (FormData)
+GET /api/projects → Fetch projects for dropdown
+GET /api/paymentMethods → Fetch payment methods for dropdown
+
+@@Paid to api
+GET /api/paidto → Get all PaidTo records
+GET /api/paidto/:id → Get single PaidTo record by ID
+POST /api/paidto → Create PaidTo record (FormData)
+PUT /api/paidto/:id → Update PaidTo record (FormData)
+GET /api/projects → Fetch projects for dropdown

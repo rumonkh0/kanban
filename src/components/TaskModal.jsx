@@ -8,6 +8,8 @@ import ClientSelect from "./ClientSelect";
 function TaskModal({ role = "member", task = {} }) {
   const [openImage, setOpenImage] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const [images, setImages] = useState([]); // uploaded images
+
   const [formData, setFormData] = useState({
     project: "",
     impact: "",
@@ -18,21 +20,27 @@ function TaskModal({ role = "member", task = {} }) {
   };
 
   const imageRef = useRef(null);
+  const fileInputRef = useRef(null);
+
   const menuItems = [
     { label: "Copy", onClick: () => console.log("Copy clicked") },
-    {
-      label: "Edit",
-      onClick: () => console.log("Edit clicked"),
-    },
-    {
-      label: "Share",
-      onClick: () => console.log("Share clicked"),
-    },
-    {
-      label: "Delete",
-      onClick: () => console.log("Delete clicked"),
-    },
+    { label: "Edit", onClick: () => console.log("Edit clicked") },
+    { label: "Share", onClick: () => console.log("Share clicked") },
+    { label: "Delete", onClick: () => console.log("Delete clicked") },
   ];
+
+  // File upload handler
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImages((prev) => [...prev, reader.result]); // store base64
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Close on outside click for image dropdown
   useEffect(() => {
     function handleClickOutside(e) {
@@ -47,11 +55,23 @@ function TaskModal({ role = "member", task = {} }) {
   return (
     <div className="w-200 bg-surface border-2 border-divider rounded-lg">
       {/* Header */}
-      <div className="h-25 bg-gray-400 rounded-t-lg flex justify-between items-start">
+      <div
+        className="h-25 rounded-t-lg flex justify-between items-start bg-gray-400"
+        style={
+          images[0]
+            ? {
+                backgroundImage: `url(${images[0]})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : {}
+        }
+      >
         <div className="flex justify-between items-center typo-b2 text-black p-2">
           <div className="inline-block w-3 h-3 mr-2 rounded-full bg-red-400"></div>
           Task 1
         </div>
+
         {role !== "client" && (
           <div className="flex gap-4 p-4">
             {/* Image Icon Dropdown */}
@@ -59,20 +79,34 @@ function TaskModal({ role = "member", task = {} }) {
               <div onClick={() => setOpenImage(!openImage)}>
                 <Icon name="image" className="cursor-pointer" />
               </div>
-              {/* Dropdown */}
               {openImage && (
                 <div className="absolute top-full right-0 mt-1 w-auto min-w-max p-2 bg-divider rounded shadow cursor-default z-50">
                   <h2 className="typo-b2 mb-2">Add Cover Image</h2>
                   <div className="flex gap-2 flex-wrap">
-                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                    <div className="h-12 w-12 rounded-sm bg-text2"></div>
-                    <div className="h-12 w-12 rounded-sm bg-text2 flex justify-center items-center">
+                    {images.map((img, idx) => (
+                      <div key={idx} className="h-12 w-12 rounded-sm overflow-hidden">
+                        <img
+                          src={img}
+                          alt={`cover-${idx}`}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ))}
+
+                    {/* Upload Button */}
+                    <div
+                      className="h-12 w-12 rounded-sm bg-text2 flex justify-center items-center cursor-pointer"
+                      onClick={() => fileInputRef.current.click()}
+                    >
                       <Icon name="plus" />
                     </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
                   </div>
                 </div>
               )}
@@ -118,18 +152,6 @@ function TaskModal({ role = "member", task = {} }) {
                   onChange={(val) => handleChange("project", val)}
                   className="flex-1"
                 />
-                {/* <div className="flex-1 relative">
-                  <select className="w-full h-12 bg-surface2 border border-divider rounded-sm px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-brand typo-b3">
-                    <option>Mr.</option>
-                    <option>Mrs.</option>
-                    <option>Ms.</option>
-                    <option>Dr.</option>
-                  </select>
-                  <Icon
-                    name="arrow"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
-                  />
-                </div> */}
                 <ClientSelect
                   onSelect={(member) => console.log("Member selected:", member)}
                   className="flex-1 typo-b3"
@@ -314,18 +336,14 @@ function TaskModal({ role = "member", task = {} }) {
     </div>
   );
 }
+
 const InfoItem = ({ label, value, children }) => (
-  <div className="flex items-start  gap-2">
+  <div className="flex items-start gap-2">
     <span className="typo-b2 text-text2 w-40">{label}</span>
     <span className={`flex-1 flex items-center typo-b2`}>
       : &nbsp; {value ?? children}
     </span>
   </div>
-);
-const MenuButton = ({ label }) => (
-  <button className="w-full text-center h-8.5 text-text2 rounded-sm hover:bg-brand hover:text-text cursor-pointer">
-    {label}
-  </button>
 );
 
 export default TaskModal;

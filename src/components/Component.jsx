@@ -147,7 +147,7 @@ export const InputMoney = ({
       type={type}
       placeholder={placeholder}
       value={value}
-      onChange={onChange}
+      onChange={(e) => onChange && onChange(e.target.value)}
       required={required}
       className={`w-full h-12 bg-surface2 border border-divider rounded-lg px-4 pl-6 focus:outline-none focus:ring-2 focus:ring-brand typo-b3 ${
         className || ""
@@ -205,7 +205,7 @@ export const Dropdown = ({
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-
+  // console.log("options", options);
   // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (e) => {
