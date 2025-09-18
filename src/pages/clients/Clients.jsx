@@ -2,8 +2,17 @@ import ClientTable from "./ClientTable";
 import Icon from "@/components/Icon";
 import { Link } from "react-router";
 import { FilterDropdown } from "@/components/Component";
+import { useState } from "react";
 
-function page() {
+function Clients() {
+  const [filters, setFilters] = useState({
+    status: "",
+    match: "",
+  });
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -19,21 +28,24 @@ function page() {
         <div className="flex py-1 gap-4">
           <FilterDropdown
             label="Status"
-            options={["Match 1", "Match 2", "Match 3"]}
-            onSelect={(value) => console.log("Selected:", value)}
+            options={["Active", "Inactive", "Pending"]}
+            value={filters.status}
+            onSelect={(value) => handleFilterChange("status", value)}
             className="h-8"
           />
+
           <FilterDropdown
-            label="Select match"
+            label="Select Match"
             options={["Match 1", "Match 2", "Match 3"]}
-            onSelect={(value) => console.log("Selected:", value)}
+            value={filters.match}
+            onSelect={(value) => handleFilterChange("match", value)}
             className="h-8"
           />
         </div>
       </div>
-      <ClientTable />
+      <ClientTable filters={filters} />
     </>
   );
 }
 
-export default page;
+export default Clients;

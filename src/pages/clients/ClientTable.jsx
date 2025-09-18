@@ -1,8 +1,16 @@
 import { Link } from "react-router";
 import Icon from "@/components/Icon";
+import DropdownMenu from "@/components/DropdownMenu";
 import { ImageName, Table, Td, Th, Thead } from "../../components/Component";
+import { useState } from "react";
 
-function ClientTable() {
+// eslint-disable-next-line no-unused-vars
+function ClientTable({ filters }) {
+  const [activeMenu, setActiveMenu] = useState(null);
+  const handleMenuClick = (index, e) => {
+    e.preventDefault();
+    setActiveMenu(activeMenu === index ? null : index);
+  };
   const clients = [
     {
       clientName: "Gustave Koeipin",
@@ -85,6 +93,7 @@ function ClientTable() {
       lastUpdate: "Aug 6, 2025",
     },
   ];
+
   return (
     <Table>
       <Thead>
@@ -99,7 +108,7 @@ function ClientTable() {
         </tr>
       </Thead>
       <tbody>
-        {clients.map((project, index) => (
+        {clients.map((client, index) => (
           <tr
             key={index}
             className="h-16 hover:[&_td]:bg-divider/80 transition-colors"
@@ -109,36 +118,46 @@ function ClientTable() {
               <Link to="/clients/3">
                 <ImageName
                   image="/images/profile.png"
-                  username={project.clientName}
+                  username={client.clientName}
                 />
               </Link>
             </Td>
 
-            <Td data={project.email} />
-            <Td data={project.project} />
+            <Td data={client.email} />
+            <Td data={client.project} />
             <Td>
               <div className={`text-xs typo-b3 flex items-center gap-2`}>
                 <p
                   className={`w-2 h-2 rounded-full ${
-                    project.status === "Active" ? "bg-success" : "bg-brand"
+                    client.status === "Active" ? "bg-success" : "bg-brand"
                   }`}
                 ></p>
-                {project.status}
+                {client.status}
               </div>
             </Td>
             <Td>
               <ImageName
                 image="/images/profile.png"
-                username={project.assignedTo}
+                username={client.assignedTo}
               />
             </Td>
-            <Td data={project.lastUpdate} />
+            <Td data={client.lastUpdate} />
             <Td className="text-left last:rounded-r-[4px]">
-              <Link to="/clients/3">
-                <button className="p-2 rounded-full cursor-pointer hover:bg-surface2/60">
-                  <Icon name="menu" size={20} />
-                </button>
-              </Link>
+              <button
+                onClick={(e) => handleMenuClick(index, e)}
+                className="p-2 rounded-full cursor-pointer hover:bg-surface2/60 relative"
+              >
+                <Icon name="menu" size={20} />
+                <DropdownMenu
+                  isOpen={activeMenu === index}
+                  onClose={() => setActiveMenu(null)}
+                  menuItems={[
+                    { label: "View", href: `/clients/${client.id}` },
+                    { label: "Edit", href: `/clients/${client.id}/edit` },
+                    { label: "Delete" },
+                  ]}
+                />
+              </button>
             </Td>
           </tr>
         ))}
