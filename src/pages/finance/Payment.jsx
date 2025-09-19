@@ -10,11 +10,16 @@ import {
   FilterDropdown,
   ImageName,
 } from "../../components/Component";
-import { usePaidFrom, useUpdatePaidFrom } from "../../hooks/useFinance";
+import {
+  useDeletePaidFrom,
+  usePaidFroms,
+  useUpdatePaidFrom,
+} from "../../hooks/useFinance";
 
 function Payment({ from }) {
   const [PaymentsModal, setPaymentModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
     status: "",
     match: "",
@@ -45,8 +50,19 @@ function Payment({ from }) {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
+  const deletePaidFrom = useDeletePaidFrom();
+  const handleDelete = (id) => {
+    deletePaidFrom.mutate(id, {
+      onSuccess: () => {
+        console.log(`Deleted payment with id: ${id}`);
+      },
+      onError: (error) => {
+        console.error("Failed to delete:", error);
+      },
+    });
+  };
 
-  const { data: financeData, isLoading, isError } = usePaidFrom(filters);
+  const { data: financeData, isLoading, isError } = usePaidFroms(filters);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -203,14 +219,20 @@ function Payment({ from }) {
                     isOpen={activeMenu === index}
                     onClose={() => setActiveMenu(null)}
                     menuItems={[
-                      { label: "View", onClick: () => setPaymentModal(true) },
+                      {
+                        label: "View",
+                        onClick: () => {
+                          setCurrentId(payment.id);
+                          setPaymentModal(true);
+                        },
+                      },
                       {
                         label: "Edit",
                         href: `/${from}/paid-by/${payment.id}/edit`,
                       },
                       {
                         label: "Delete",
-                        onClick: () => console.log("Delete clicked"),
+                        onClick: () => handleDelete(payment.id),
                       },
                     ]}
                   />
@@ -221,7 +243,10 @@ function Payment({ from }) {
         </table>
       </div>
       <Modal isOpen={PaymentsModal} onClose={() => setPaymentModal(false)}>
-        <PaymentDetailsModal onClose={() => setPaymentModal(false)} />
+        <PaymentDetailsModal
+          onClose={() => setPaymentModal(false)}
+          id={currentId}
+        />
       </Modal>
     </>
   );
@@ -235,7 +260,7 @@ const StatusCell = ({ payment }) => {
       <div className="relative">
         {/* Colored dot */}
         <div
-          className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
+          className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-10 ${
             payment.status === "Paid"
               ? "bg-success"
               : payment.status === "Unpaid"

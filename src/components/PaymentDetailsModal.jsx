@@ -1,9 +1,14 @@
 "use client";
 import React from "react";
 import Icon from "./Icon";
+import { usePaidFrom } from "../hooks/useFinance";
 
-function PaymentDetailsModal({ onClose }) {
-  const paymentDetails = {
+function PaymentDetailsModal({ onClose, id }) {
+  const { data: paidFromData, isLoading, isError } = usePaidFrom(id);
+  if (!id) return null;
+  if (isLoading) return <div>Loading details...</div>;
+  if (isError) return <div>Failed to load details</div>;
+  const paymentDetails = Array.isArray(paidFromData) || {
     project: "Social Media Page Setup Basic Package",
     paidTo: {
       name: "Akash",
