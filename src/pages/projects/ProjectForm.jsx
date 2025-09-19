@@ -527,7 +527,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                         options={["Done", "Cancelled", "In Progress"]}
                         value={formData.status}
                         onChange={(val) => handleChange("status", val)}
-                        className="pl-8"
+                        className="pl-8 w-full h-12 bg-surface2 rounded-lg border-divider"
                       />
                     </div>
                   </FormField>

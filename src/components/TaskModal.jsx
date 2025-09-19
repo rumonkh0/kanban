@@ -150,7 +150,6 @@ function TaskModal({ role = "member", task = {} }) {
                   ]}
                   value={formData.project}
                   onChange={(val) => handleChange("project", val)}
-                  className="flex-1"
                 />
                 <ClientSelect
                   onSelect={(member) => console.log("Member selected:", member)}
@@ -198,7 +197,7 @@ function TaskModal({ role = "member", task = {} }) {
                     options={["High", "Low", "Medium"]}
                     value={formData.impact}
                     onChange={(val) => handleChange("impact", val)}
-                    className="pl-8"
+                    className="pl-8 w-full h-12 bg-surface2 rounded-lg border-divider"
                   />
                 </div>
                 <div className="flex-1 flex items-center justify-center h-12 bg-surface2 border border-divider rounded-lg">

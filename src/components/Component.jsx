@@ -233,8 +233,8 @@ export const Dropdown = ({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className={`w-full h-12 px-4 bg-surface2 border border-divider rounded-lg flex justify-between items-center typo-b3 focus:outline-none focus:ring-2 focus:ring-brand ${
-          className || ""
+        className={`flex-1 px-4 border flex justify-between items-center typo-b3 focus:outline-none focus:ring-2 focus:ring-brand ${
+          className || "w-full h-12 bg-surface2 rounded-lg border-divider"
         }`}
       >
         {selected ? selected.label : placeholder || "Select..."}
@@ -242,7 +242,7 @@ export const Dropdown = ({
       </button>
 
       {open && (
-        <div className="absolute mt-1 w-full bg-surface2 border border-divider rounded-lg shadow-lg z-10 max-h-60 overflow-auto">
+        <div className="absolute mt-1 w-full bg-surface2 border border-divider rounded-lg shadow-lg z-60 max-h-60 overflow-auto">
           {normalized.map((opt, i) => (
             <div
               key={i}

@@ -251,7 +251,7 @@ const StatusCell = ({ payment }) => {
           options={["Owed", "Paid", "Unpaid"]}
           value={payment.status}
           onChange={(val) => updateStatusMutation.mutate({ status: val })}
-          className="pl-8 h-10 bg-divider"
+          className="pl-8 h-10 bg-divider w-30 rounded-sm border-text2"
         />
       </div>
     </Td>

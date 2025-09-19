@@ -394,7 +394,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
                     options={["Owed", "Paid", "Unpaid"]}
                     value={formData.paymentStatus}
                     onChange={(val) => handleChange("paymentStatus", val)}
-                    className="pl-8"
+                    className="pl-8 w-full h-12 bg-surface2 rounded-lg border-divider"
                   />
                 </div>
               </FormField>
