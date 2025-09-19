@@ -12,10 +12,10 @@ import PageTitle from "@/components/PageTitle";
 function AppreciationForm({ title, edit }) {
   return (
     <>
-      <PageTitle title={title || "Add Department"} />
+      <PageTitle title={title || "Add Appreciation"} />
       <div className="flex flex-col gap-8">
         <div className="mb-4 flex justify-between items-center">
-          <div className="typo-b1">Add Department</div>
+          <div className="typo-b1">Add Appreciation</div>
           <Back>
             <Icon name="close" />
           </Back>

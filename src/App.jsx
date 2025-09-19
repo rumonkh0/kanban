@@ -130,6 +130,14 @@ function App() {
           <Route path="add-note" element={<AddNote />} />
           <Route path="paid-by" element={<PaidByForm from="projects" />} />
           <Route path="paid-to" element={<PaidToForm from="projects" />} />
+          <Route
+            path="paid-by/:id/edit"
+            element={<PaidByForm from="projects" edit />}
+          />
+          <Route
+            path="paid-to/:id/edit"
+            element={<PaidToForm from="projects" edit />}
+          />
         </Route>
 
         <Route path="tasks" element={<ProjectTask />} />
