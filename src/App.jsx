@@ -110,27 +110,26 @@ function App() {
         <Route path="projects" element={<ProjectsLayout />}>
           <Route index element={<Projects />} />
           <Route path="add-project" element={<ProjectForm />} />
-          <Route path="manage" element={<ProjectManage />}>
-            <Route
-              index
-              element={<Navigate to="/projects/manage/overview" replace />}
-            />
+          <Route path=":id/manage" element={<ProjectManage />}>
+            <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<ProjectOverview />} />
             <Route path="members" element={<ProjectMembers />} />
             <Route path="files" element={<ProjectFiles />} />
             <Route path="tasks" element={<ProjectTask />} />
-            <Route path="payment" element={<Payment />} />
+            <Route path="payment" element={<Payment from="projects" />} />
             <Route
               path="team-payment"
-              element={<TeamPayment toHref="/projects/paid-to" />}
+              element={
+                <TeamPayment toHref="/projects/paid-to" from="projects" />
+              }
             />
             <Route path="notes" element={<ProjectNotes />} />
             <Route path="activity" element={<ProjectActivity />} />
           </Route>
           <Route path=":id/edit" element={<ProjectForm edit />} />
           <Route path="add-note" element={<AddNote />} />
-          <Route path="paid-by" element={<PaidByForm />} />
-          <Route path="paid-to" element={<PaidToForm />} />
+          <Route path="paid-by" element={<PaidByForm from="projects" />} />
+          <Route path="paid-to" element={<PaidToForm from="projects" />} />
         </Route>
 
         <Route path="tasks" element={<ProjectTask />} />
@@ -168,14 +167,22 @@ function App() {
         </Route>
 
         <Route path="finance" element={<FinanceLayout />}>
-          <Route index element={<Navigate to="/finance/payment" replace />} />
-          <Route path="payment" element={<Payment />} />
+          <Route index element={<Navigate to="payment" replace />} />
+          <Route path="payment" element={<Payment from="finance" />} />
           <Route
             path="team-payment"
-            element={<TeamPayment toHref="/finance/paid-to" />}
+            element={<TeamPayment toHref="/finance/paid-to" from="finance" />}
           />
-          <Route path="paid-by" element={<PaidByForm />} />
-          <Route path="paid-to" element={<PaidToForm />} />
+          <Route path="paid-by" element={<PaidByForm from="finance" />} />
+          <Route path="paid-to" element={<PaidToForm from="finance" />} />
+          <Route
+            path="paid-by/:id/edit"
+            element={<PaidByForm from="finance" edit />}
+          />
+          <Route
+            path="paid-to/:id/edit"
+            element={<PaidToForm from="finance" edit />}
+          />
         </Route>
 
         <Route path="services" element={<ServiceLayout />}>
@@ -209,14 +216,14 @@ function App() {
         <Route index element={<Navigate to="/member/dashboard" replace />} />
         <Route path="dashboard" element={<MembersDashboard />} />
         <Route path="tasks" element={<MemberTask />} />
-        <Route path="settings" element={<ProfileSetting role="member"/>} />
+        <Route path="settings" element={<ProfileSetting role="member" />} />
         <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/client" element={<RootLayout sidebar="client" />}>
         <Route index element={<Navigate to="/client/dashboard" replace />} />
         <Route path="dashboard" element={<ClientDashboard />} />
         <Route path="projects" element={<ClientProjects />} />
-        <Route path="settings" element={<ProfileSetting role="client"/>} />
+        <Route path="settings" element={<ProfileSetting role="client" />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

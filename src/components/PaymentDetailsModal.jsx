@@ -79,10 +79,10 @@ const InfoItem = ({ label, value, text, children }) => (
     <span className="typo-b2 text-text2 w-[200px]">{label}</span>
     <span className={`flex items-center typo-b2`}>
       : &nbsp;{" "}
-      <p className={text}>
+      <div className={text}>
         {value}
         {children}
-      </p>
+      </div>
     </span>
   </div>
 );

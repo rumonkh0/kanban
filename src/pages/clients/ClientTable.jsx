@@ -3,20 +3,32 @@ import Icon from "@/components/Icon";
 import DropdownMenu from "@/components/DropdownMenu";
 import { ImageName, Table, Td, Th, Thead } from "../../components/Component";
 import { useState } from "react";
+import { useClients } from "@/hooks/useClients";
 
-// eslint-disable-next-line no-unused-vars
 function ClientTable({ filters }) {
   const [activeMenu, setActiveMenu] = useState(null);
+  const { data: clientsData, isLoading, isError } = useClients(filters);
+
   const handleMenuClick = (index, e) => {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
-  const clients = [
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading clients</div>;
+  }
+
+  const clients = Array.isArray(clientsData) || [
     {
       clientName: "Gustave Koeipin",
       email: "caitlyn66@example.net7",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Prof. Toni Swift",
       lastUpdate: "Aug 6, 2025",
     },
@@ -25,6 +37,7 @@ function ClientTable({ filters }) {
       email: "raul.dicki@example.com7",
       project: "Corporate Website Revamp",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Pasquale O'Connell",
       lastUpdate: "Aug 3, 2025",
     },
@@ -33,6 +46,7 @@ function ClientTable({ filters }) {
       email: "eklocko@example.com2",
       project: "E-Commerce Platform",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Mrs. Angela Bechtelar Jr.",
       lastUpdate: "Jul 30, 2025",
     },
@@ -41,6 +55,7 @@ function ClientTable({ filters }) {
       email: "rickey87@example.com8",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Celia Jast",
       lastUpdate: "Aug 6, 2025",
     },
@@ -49,6 +64,7 @@ function ClientTable({ filters }) {
       email: "abshire.keenan@example.net7",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Mrs. Yesenia Shields",
       lastUpdate: "Aug 6, 2025",
     },
@@ -57,6 +73,7 @@ function ClientTable({ filters }) {
       email: "gkautzer@example.net8",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Quinton Kemmer",
       lastUpdate: "Aug 6, 2025",
     },
@@ -65,6 +82,7 @@ function ClientTable({ filters }) {
       email: "hortense.bode@example.org6",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Fabian Breitenberg DDS",
       lastUpdate: "Aug 6, 2025",
     },
@@ -73,6 +91,7 @@ function ClientTable({ filters }) {
       email: "douglas.beau@example.com3",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Mr. Wilton Nader",
       lastUpdate: "Aug 6, 2025",
     },
@@ -81,6 +100,7 @@ function ClientTable({ filters }) {
       email: "creinger@example.net9",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "Cecil Franecki",
       lastUpdate: "Aug 6, 2025",
     },
@@ -89,6 +109,7 @@ function ClientTable({ filters }) {
       email: "client@example.com",
       project: "Wellness App Redesign",
       status: "Active",
+      image: "/images/profile.png",
       assignedTo: "EMP-3 Dr. Alfred Stark",
       lastUpdate: "Aug 6, 2025",
     },
@@ -115,11 +136,8 @@ function ClientTable({ filters }) {
           >
             {/* Client Name with Avatar */}
             <Td className="first:rounded-l-[4px]">
-              <Link to="/clients/3">
-                <ImageName
-                  image="/images/profile.png"
-                  username={client.clientName}
-                />
+              <Link to={`/clients/${client.id}`}>
+                <ImageName image={client.image} username={client.clientName} />
               </Link>
             </Td>
 
@@ -136,10 +154,7 @@ function ClientTable({ filters }) {
               </div>
             </Td>
             <Td>
-              <ImageName
-                image="/images/profile.png"
-                username={client.assignedTo}
-              />
+              <ImageName image={client.image} username={client.assignedTo} />
             </Td>
             <Td data={client.lastUpdate} />
             <Td className="text-left last:rounded-r-[4px]">

@@ -1,17 +1,19 @@
-import { Link, Outlet, useLocation } from "react-router";
+import { Link, Outlet, useLocation, useParams } from "react-router";
 
 function ProjectManage() {
   const location = useLocation();
   const pathname = location.pathname;
+  const { id } = useParams();
+
   const menuItems = [
-    { label: "Overview", href: "/projects/manage/overview" },
-    { label: "Members", href: "/projects/manage/members" },
-    { label: "Files", href: "/projects/manage/files" },
-    { label: "Tasks", href: "/projects/manage/tasks" },
-    { label: "Payment", href: "/projects/manage/payment" },
-    { label: "Team Payment", href: "/projects/manage/team-payment" },
-    { label: "Notes", href: "/projects/manage/notes" },
-    { label: "Activity", href: "/projects/manage/activity" },
+    { label: "Overview", href: `/projects/${id}/manage/overview` },
+    { label: "Members", href: `/projects/${id}/manage/members` },
+    { label: "Files", href: `/projects/${id}/manage/files` },
+    { label: "Tasks", href: `/projects/${id}/manage/tasks` },
+    { label: "Payment", href: `/projects/${id}/manage/payment` },
+    { label: "Team Payment", href: `/projects/${id}/manage/team-payment` },
+    { label: "Notes", href: `/projects/${id}/manage/notes` },
+    { label: "Activity", href: `/projects/${id}/manage/activity` },
   ];
 
   return (

@@ -3,16 +3,58 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { Link } from "react-router";
 import { useState } from "react";
 import { Bin, Pin } from "../../components/Icon";
+import { FilterDropdown, Th } from "../../components/Component";
+import { useProjects } from "../../hooks/useProjects";
 
 function Projects() {
   const [activeMenu, setActiveMenu] = useState(null);
+  const [filters, setFilters] = useState({
+    status: "",
+    match: "",
+    client: "",
+    pinned: false,
+  });
+
+  const filterConfigs = [
+    {
+      key: "status",
+      label: "Status",
+      options: ["Active", "Inactive", "Pending"],
+    },
+    {
+      key: "match",
+      label: "Select Match",
+      options: ["Match 1", "Match 2", "Match 3"],
+    },
+    {
+      key: "client",
+      label: "Select Client",
+      options: ["Client 1", "Client 2", "Client 3"],
+    },
+  ];
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   const handleMenuClick = (index, e) => {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
 
-  const projects = [
+  const menuItems = (id) => [
+    { label: "View", href: `/projects/${id}/manage` },
+    { label: "Edit", href: `/projects/${id}/edit` },
+    { label: "Duplicate", href: `/projects/${id}/duplicate` },
+    { label: "Public Task Board" },
+    { label: "Pin Project", href: `/projects/${id}/pin` },
+    { label: "Archive", href: `/projects/${id}/archive` },
+    { label: "Delete", href: `/projects/${id}/delete` },
+  ];
+
+  const { data: projectsData, isLoading, isError } = useProjects(filters);
+  const projects = Array.isArray(projectsData) || [
     {
+      id: 1,
       projectId: "#21E7DR",
       client: "Gustave Koelpin",
       projectName: "Corporate Website Revamp",
@@ -23,6 +65,7 @@ function Projects() {
       progress: "60%",
     },
     {
+      id: 2,
       projectId: "#21E7DR",
       client: "Gustave Koelpin",
       projectName: "Corporate Website Revamp",
@@ -33,6 +76,7 @@ function Projects() {
       progress: "100%",
     },
     {
+      id: 3,
       projectId: "#21E7DR",
       client: "Gustave Koelpin",
       projectName: "Corporate Website Revamp",
@@ -43,6 +87,7 @@ function Projects() {
       progress: "80%",
     },
     {
+      id: 4,
       projectId: "#21E7DR",
       client: "Gustave Koelpin",
       projectName: "Corporate Website Revamp",
@@ -53,6 +98,7 @@ function Projects() {
       progress: "80%",
     },
     {
+      id: 5,
       projectId: "#21E7DR",
       client: "Gustave Koelpin",
       projectName: "Corporate Website Revamp",
@@ -63,6 +109,7 @@ function Projects() {
       progress: "80%",
     },
     {
+      id: 6,
       projectId: "#21E7DR",
       client: "Gustave Koelpin",
       projectName: "Corporate Website Revamp",
@@ -73,6 +120,7 @@ function Projects() {
       progress: "0%",
     },
     {
+      id: 7,
       projectId: "#9F3KDL",
       client: "Lydia Marks",
       projectName: "Mobile Banking App",
@@ -83,6 +131,7 @@ function Projects() {
       progress: "45%",
     },
     {
+      id: 8,
       projectId: "#4X9TQP",
       client: "Orlando Bailey",
       projectName: "E-commerce Platform",
@@ -93,6 +142,7 @@ function Projects() {
       progress: "30%",
     },
     {
+      id: 9,
       projectId: "#7M2PLD",
       client: "Clara Fischer",
       projectName: "Marketing Analytics Dashboard",
@@ -103,6 +153,7 @@ function Projects() {
       progress: "90%",
     },
     {
+      id: 10,
       projectId: "#6A1KDE",
       client: "Samuel Harris",
       projectName: "Internal HR Portal",
@@ -114,16 +165,13 @@ function Projects() {
     },
   ];
 
-  const menuItems = [
-    { label: "View", href: "/projects/manage" },
-    { label: "Edit", href: "/projects/1/edit" },
-    { label: "Duplicate" },
-    { label: "Public Task Board" },
-    { label: "Pin Project" },
-    { label: "Archive" },
-    { label: "Delete" },
-  ];
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
+  if (isError) {
+    return <div>Error loading projects</div>;
+  }
   return (
     <>
       <div className=" h-10 flex justify-between mb-4">
@@ -140,37 +188,39 @@ function Projects() {
           <div className="w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60">
             <Bin className="text-text2 " />
           </div>
-          <div className="w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60">
-            <Pin className="text-text2 " />
+          <div
+            onClick={() => handleFilterChange("pinned", !filters.pinned)}
+            className={`w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer 
+    ${filters.pinned ? "border-brand" : ""}`}
+          >
+            <Pin className={filters.pinned ? "text-brand" : "text-text2"} />
           </div>
         </div>
         <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select Client</div>
-            <Icon name="arrow" />
-          </div>
+          {filterConfigs.map(({ key, label, options }) => (
+            <FilterDropdown
+              key={key}
+              label={label}
+              options={options}
+              value={filters[key]}
+              onSelect={(value) => handleFilterChange(key, value)}
+              className="h-8"
+            />
+          ))}
         </div>
       </div>
       <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
         <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
           <thead className="table-header-group after:content-[''] after:block after:h-1">
             <tr className="text-left">
-              <th className="typo-b3 text-text2 py-3 px-4">Project ID</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Client</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Project Name</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Members</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Start Date</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Deadline</th>
-              <th className="typo-b3 text-text2 py-3 px-4">status</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Action</th>
+              <Th title="Project ID" />
+              <Th title="Client" />
+              <Th title="Project Name" />
+              <Th title="Members" />
+              <Th title="Start Date" />
+              <Th title="Deadline" />
+              <Th title="status" />
+              <Th title="Action" />
             </tr>
           </thead>
           <tbody>
@@ -183,7 +233,7 @@ function Projects() {
                   {project.projectId}
                 </td>
                 <td className=" bg-divider">
-                  <Link to="/projects/manage">
+                  <Link to={`/projects/${project.id}/manage`}>
                     <div className="flex items-center gap-2">
                       <img
                         src="/images/profile.png"
@@ -235,7 +285,7 @@ function Projects() {
                     <DropdownMenu
                       isOpen={activeMenu === index}
                       onClose={() => setActiveMenu(null)}
-                      menuItems={menuItems}
+                      menuItems={menuItems(project.id)}
                     />
                   </button>
                 </td>

@@ -5,122 +5,120 @@ import PaymentDetailsModal from "@/components/PaymentDetailsModal";
 import { Td, Th } from "@/components/Component";
 import DropdownMenu from "@/components/DropdownMenu";
 import { Link } from "react-router";
+import {
+  Dropdown,
+  FilterDropdown,
+  ImageName,
+} from "../../components/Component";
+import { usePaidFrom, useUpdatePaidFrom } from "../../hooks/useFinance";
 
-function Payment() {
+function Payment({ from }) {
   const [PaymentsModal, setPaymentModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [filters, setFilters] = useState({
+    status: "",
+    match: "",
+    client: "",
+  });
+
+  const filterConfigs = [
+    {
+      key: "status",
+      label: "Status",
+      options: ["Active", "Inactive", "Pending"],
+    },
+    {
+      key: "match",
+      label: "Select Match",
+      options: ["Match 1", "Match 2", "Match 3"],
+    },
+    {
+      key: "client",
+      label: "Select Client",
+      options: ["Client 1", "Client 2", "Client 3"],
+    },
+  ];
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   const handleMenuClick = (index, e) => {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
-  const projects = [
+
+  const { data: financeData, isLoading, isError } = usePaidFrom(filters);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading clients</div>;
+  }
+  const payments = Array.isArray(financeData) || [
     {
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 13, 2025",
-      deadline: null,
-      status: "On Hold",
-      progress: "60%",
+      id: 1,
+      project: "Wellness App Redesign",
+      paidFrom: "Client A",
+      haveToPay: 1000,
+      paymentDate: "2025-09-01",
+      amountPaid: 600,
+      amountOwed: 400,
+      paymentMethod: "Bank Transfer",
+      status: "Owed",
     },
     {
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "Review",
-      progress: "100%",
+      id: 2,
+      project: "E-commerce Platform",
+      paidFrom: "Client B",
+      haveToPay: 2000,
+      paymentDate: "2025-09-05",
+      amountPaid: 2000,
+      amountOwed: 0,
+      paymentMethod: "Credit Card",
+      status: "Paid",
     },
     {
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: null,
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "In Progress",
-      progress: "80%",
+      id: 3,
+      project: "Mobile Game Launch",
+      paidFrom: "Client C",
+      haveToPay: 1500,
+      paymentDate: "2025-09-07",
+      amountPaid: 1000,
+      amountOwed: 500,
+      paymentMethod: "PayPal",
+      status: "Owed",
     },
     {
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "In Progress",
-      progress: "80%",
+      id: 4,
+      project: "Marketing Website",
+      paidFrom: "Client D",
+      haveToPay: 800,
+      paymentDate: "2025-09-10",
+      amountPaid: 800,
+      amountOwed: 0,
+      paymentMethod: "Bank Transfer",
+      status: "Paid",
     },
     {
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "In Progress",
-      progress: "80%",
-    },
-    {
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: null,
-      startDate: "Aug 13, 2025",
-      deadline: "Aug 23, 2025",
-      status: "Not Started",
-      progress: "0%",
-    },
-    {
-      projectId: "#9F3KDL",
-      client: "Lydia Marks",
-      projectName: "Mobile Banking App",
-      members: "Darius Green",
-      startDate: "Jul 20, 2025",
-      deadline: "Sep 15, 2025",
-      status: "In Progress",
-      progress: "45%",
-    },
-    {
-      projectId: "#4X9TQP",
-      client: "Orlando Bailey",
-      projectName: "E-commerce Platform",
-      members: "Sophia Patel",
-      startDate: "Jun 1, 2025",
-      deadline: "Oct 10, 2025",
-      status: "Delayed",
-      progress: "30%",
-    },
-    {
-      projectId: "#7M2PLD",
-      client: "Clara Fischer",
-      projectName: "Marketing Analytics Dashboard",
-      members: "Michael Johnson",
-      startDate: "Aug 5, 2025",
-      deadline: "Sep 30, 2025",
-      status: "Review",
-      progress: "90%",
-    },
-    {
-      projectId: "#6A1KDE",
-      client: "Samuel Harris",
-      projectName: "Internal HR Portal",
-      members: "Alice Wong",
-      startDate: "Jul 10, 2025",
-      deadline: "Aug 25, 2025",
-      status: "Completed",
-      progress: "100%",
+      id: 5,
+      project: "Internal Dashboard",
+      paidFrom: "Client E",
+      haveToPay: 1200,
+      paymentDate: "2025-09-12",
+      amountPaid: 600,
+      amountOwed: 600,
+      paymentMethod: "Credit Card",
+      status: "Owed",
     },
   ];
+
   return (
     <>
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4">
           <Link
-            to="/projects/paid-by"
+            to={`/${from}/paid-by`}
             className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
           >
             <div className="w-6 h-6 flex justify-center items-center">
@@ -130,18 +128,16 @@ function Payment() {
           </Link>
         </div>
         <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select Client</div>
-            <Icon name="arrow" />
-          </div>
+          {filterConfigs.map(({ key, label, options }) => (
+            <FilterDropdown
+              key={key}
+              label={label}
+              options={options}
+              value={filters[key]}
+              onSelect={(value) => handleFilterChange(key, value)}
+              className="h-8"
+            />
+          ))}
         </div>
       </div>
       <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
@@ -160,49 +156,42 @@ function Payment() {
             </tr>
           </thead>
           <tbody>
-            {projects.map((project, index) => (
+            {payments.map((payment, index) => (
               <tr
-                key={index}
+                key={payment.id}
                 className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
               >
-                <Td className="first:rounded-l-[4px]">
-                  Social Media Page Setup Basic Package
-                </Td>
+                {/* Project Name */}
+                <Td className="first:rounded-l-[4px]">{payment.project}</Td>
 
+                {/* Paid From (Client) */}
                 <Td>
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/images/profile.png"
-                      alt="client"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <div>
-                      <h2 className="typo-b2">{project.client}</h2>
-                      <p className="typo-b3 text-text2">{project.client}</p>
-                    </div>
-                  </div>
+                  <ImageName
+                    username={payment.paidFrom}
+                    designation={payment.paidFrom}
+                    image="/images/profile.png"
+                  />
                 </Td>
 
-                <Td>$50</Td>
+                {/* Have To Pay */}
+                <Td>${payment.haveToPay}</Td>
 
-                <Td>{project.startDate}</Td>
+                {/* Payment Date */}
+                <Td>{payment.paymentDate}</Td>
 
-                <Td className=" text-success ">$40</Td>
+                {/* Amount Paid */}
+                <Td className="text-success">${payment.amountPaid}</Td>
 
-                <Td className=" text-brand r">$40</Td>
+                {/* Amount Owed */}
+                <Td className="text-brand">${payment.amountOwed}</Td>
 
-                <Td>Stripe</Td>
+                {/* Payment Method */}
+                <Td>{payment.paymentMethod}</Td>
 
-                <Td>
-                  <div className="w-31 h-10 flex items-center justify-center gap-2 border border-text2 rounded-sm">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <div className="typo-b3">owed</div>
-                    <div>
-                      <Icon name="arrow" />
-                    </div>
-                  </div>
-                </Td>
+                {/* Status */}
+                <StatusCell payment={payment} />
 
+                {/* Action Menu */}
                 <Td className="last:rounded-r-[4px] relative">
                   <button
                     onClick={(e) => handleMenuClick(index, e)}
@@ -217,7 +206,7 @@ function Payment() {
                       { label: "View", onClick: () => setPaymentModal(true) },
                       {
                         label: "Edit",
-                        onClick: () => console.log("Edit clicked"),
+                        href: `/${from}/paid-by/${payment.id}/edit`,
                       },
                       {
                         label: "Delete",
@@ -237,5 +226,36 @@ function Payment() {
     </>
   );
 }
+
+const StatusCell = ({ payment }) => {
+  const updateStatusMutation = useUpdatePaidFrom(payment.id);
+
+  return (
+    <Td>
+      <div className="relative">
+        {/* Colored dot */}
+        <div
+          className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
+            payment.status === "Paid"
+              ? "bg-success"
+              : payment.status === "Unpaid"
+              ? "bg-brand"
+              : payment.status === "Owed"
+              ? "bg-[#A88AED]"
+              : ""
+          }`}
+        ></div>
+
+        {/* Dropdown */}
+        <Dropdown
+          options={["Owed", "Paid", "Unpaid"]}
+          value={payment.status}
+          onChange={(val) => updateStatusMutation.mutate({ status: val })}
+          className="pl-8 h-10 bg-divider"
+        />
+      </div>
+    </Td>
+  );
+};
 
 export default Payment;
