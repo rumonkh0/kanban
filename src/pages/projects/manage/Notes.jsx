@@ -4,9 +4,16 @@ import Modal from "@/components/Modal";
 import VerifyPassword from "@/components/VerifyPassword";
 import NoteDetails from "@/components/NoteDetails";
 import { Link } from "react-router";
+import { FilterDropdown } from "../../../components/Component";
 
 function Notes() {
   const [PaymentsModal, setPaymentModal] = useState(false);
+  const [filters, setFilters] = useState({
+    status: "",
+  });
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   const projects = [
     {
       projectId: "#21E7DR",
@@ -123,12 +130,13 @@ function Notes() {
             Add Note
           </Link>
         </div>
-        <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-        </div>
+        <FilterDropdown
+          label="Status"
+          options={["complete", "incomplete"]}
+          value={filters.status}
+          onSelect={(value) => handleFilterChange("status", value)}
+          className="h-8"
+        />
       </div>
       <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
         <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">

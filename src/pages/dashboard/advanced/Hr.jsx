@@ -14,6 +14,7 @@ import {
 import { ChartHeader } from "@/components/Component";
 import HrTable from "@/components/HrTable";
 import Icon from "@/components/Icon";
+import { FilterDropdown, ToggleTabs } from "../../../components/Component";
 function Hr() {
   const data = [
     { name: "Expenses", sales: 4000, color: "#FE4E4D" },
@@ -64,10 +65,12 @@ function Hr() {
               keyValue="$5,400"
               secondaryLabel="+12% vs last month"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer">
-              <div className="px-2 py-1.5 bg-brand rounded-sm">Month</div>
-              <div className="px-2">Project based</div>
-            </div>
+
+            <ToggleTabs
+              options={["Month", "Project Based"]}
+              defaultValue="Month"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}
@@ -135,12 +138,11 @@ function Hr() {
               keyValue="32"
               secondaryLabel="This month"
             />
-            <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-              <div className="typo-b3 flex-1 text-center">Acme Corp</div>
-              <div>
-                <Icon name="arrow" />
-              </div>
-            </div>
+            <FilterDropdown
+              label="Select group"
+              options={["project one", "project two", "project three"]}
+              className="h-7.5 border border-text2 "
+            />
           </div>
 
           {/* Chart */}

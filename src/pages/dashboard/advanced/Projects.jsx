@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { ChartHeader } from "@/components/Component";
 import Icon from "@/components/Icon";
+import { FilterDropdown, ToggleTabs } from "../../../components/Component";
 
 function Projects() {
   const data = [
@@ -78,13 +79,11 @@ function Projects() {
               keyValue="72"
               secondaryLabel="Projects of This month"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2">
-              <div className="px-2 py-1.5 bg-brand rounded-sm text-white">
-                Week
-              </div>
-              <div className="px-2">Month</div>
-              <div className="px-2">Year</div>
-            </div>
+            <ToggleTabs
+              options={["Week", "Month", "Year"]}
+              defaultValue="Week"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}
@@ -148,12 +147,11 @@ function Projects() {
           {/* Header */}
           <div className="flex justify-between">
             <ChartHeader primaryLabel="Average Progress:" keyValue="72%" />
-            <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-              <div className="typo-b3 flex-1 text-center">Projects</div>
-              <div>
-                <Icon name="arrow" />
-              </div>
-            </div>
+            <FilterDropdown
+              label="Select Project"
+              options={["project one", "project two", "project three"]}
+              className="h-7.5 border border-text2 "
+            />
           </div>
 
           {/* Chart */}
@@ -214,13 +212,11 @@ function Projects() {
               keyValue="4"
               secondaryLabel="Project Deadlines Today"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2">
-              <div className="px-2 py-1.5 bg-brand rounded-sm text-white">
-                Week
-              </div>
-              <div className="px-2">Month</div>
-              <div className="px-2">Year</div>
-            </div>
+            <ToggleTabs
+              options={["Week", "Month", "Year"]}
+              defaultValue="Week"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}

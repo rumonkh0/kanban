@@ -12,6 +12,7 @@ import {
   Pie,
 } from "recharts";
 import { ChartHeader } from "@/components/Component";
+import { FilterDropdown, ToggleTabs } from "../../../components/Component";
 
 function Overview() {
   const projects = [
@@ -196,10 +197,11 @@ function Overview() {
               keyValue="$5,400"
               secondaryLabel="+12% vs last month"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer">
-              <div className="px-2 py-1.5 bg-brand rounded-sm">Month</div>
-              <div className="px-2">Project based</div>
-            </div>
+            <ToggleTabs
+              options={["Month", "Project based"]}
+              defaultValue="Month"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}
@@ -268,19 +270,16 @@ function Overview() {
               secondaryLabel="To team"
             />
             <div className="flex gap-4">
-              <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-                <div className="typo-b3 flex-1 text-center">Team Members</div>
-                <div>
-                  <Icon name="arrow" />
-                </div>
-              </div>
-              <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2">
-                <div className="px-2 py-1.5 bg-brand rounded-sm text-white">
-                  Week
-                </div>
-                <div className="px-2">Month</div>
-                <div className="px-2">Year</div>
-              </div>
+              <FilterDropdown
+                label="Select Project"
+                options={["project one", "project two", "project three"]}
+                className="h-7.5"
+              />
+              <ToggleTabs
+                options={["Week", "Month", "Year"]}
+                defaultValue="Week"
+                onChange={(val) => console.log("Selected:", val)}
+              />
             </div>
           </div>
 
@@ -342,13 +341,11 @@ function Overview() {
               keyValue="7"
               secondaryLabel="Today"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2">
-              <div className="px-2 py-1.5 bg-brand rounded-sm text-white">
-                Week
-              </div>
-              <div className="px-2">Month</div>
-              <div className="px-2">Year</div>
-            </div>
+            <ToggleTabs
+              options={["Week", "Month", "Year"]}
+              defaultValue="Week"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}
@@ -416,13 +413,11 @@ function Overview() {
               keyValue="4"
               secondaryLabel="Project Deadlines Today"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2">
-              <div className="px-2 py-1.5 bg-brand rounded-sm text-white">
-                Week
-              </div>
-              <div className="px-2">Month</div>
-              <div className="px-2">Year</div>
-            </div>
+            <ToggleTabs
+              options={["Week", "Month", "Year"]}
+              defaultValue="Week"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}

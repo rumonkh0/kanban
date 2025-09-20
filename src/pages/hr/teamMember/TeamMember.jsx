@@ -1,8 +1,37 @@
 import { Icon } from "@/components/Component";
 import HrTable from "@/components/HrTable";
+import { useState } from "react";
 import { Link } from "react-router";
+import { FilterDropdown } from "../../../components/Component";
 
 function TeamMember() {
+  const [filters, setFilters] = useState({
+    status: "",
+    match: "",
+    client: "",
+  });
+
+  const filterConfigs = [
+    {
+      key: "status",
+      label: "Status",
+      options: ["Active", "Inactive", "Pending"],
+    },
+    {
+      key: "match",
+      label: "Select Match",
+      options: ["Match 1", "Match 2", "Match 3"],
+    },
+    {
+      key: "client",
+      label: "Select Client",
+      options: ["Client 1", "Client 2", "Client 3"],
+    },
+  ];
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   return (
     <>
       <div className=" h-10 flex justify-between mb-4">
@@ -18,18 +47,16 @@ function TeamMember() {
           </Link>
         </div>
         <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select Client</div>
-            <Icon name="arrow" />
-          </div>
+          {filterConfigs.map(({ key, label, options }) => (
+            <FilterDropdown
+              key={key}
+              label={label}
+              options={options}
+              value={filters[key]}
+              onSelect={(value) => handleFilterChange(key, value)}
+              className="h-8"
+            />
+          ))}
         </div>
       </div>
       <HrTable />

@@ -10,6 +10,7 @@ import {
   PieChart,
   Pie,
 } from "recharts";
+import { FilterDropdown } from "../../../components/Component";
 
 function Overview() {
   const chartData = [
@@ -118,7 +119,7 @@ function Overview() {
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
         {/* Header */}
         <div className="flex justify-between">
-          <ChartHeader primaryLabel="Project Task:" keyValue="4" />
+          <ChartHeader primaryLabel="Project Task" keyValue="4" />
         </div>
 
         {/* Chart */}
@@ -169,7 +170,7 @@ function Overview() {
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
         {/* Header */}
         <div className="flex justify-between">
-          <ChartHeader primaryLabel="Project Budget:" keyValue="$5,400" />
+          <ChartHeader primaryLabel="Project Budget" keyValue="$5,400" />
         </div>
 
         {/* Chart */}
@@ -226,7 +227,7 @@ function Overview() {
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
         {/* Header */}
         <div className="flex justify-between">
-          <ChartHeader primaryLabel="Revenue:" keyValue="$5,400" />
+          <ChartHeader primaryLabel="Revenue" keyValue="$5,400" />
         </div>
 
         {/* Chart */}
@@ -289,16 +290,15 @@ function Overview() {
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader
-            primaryLabel="Project Track:"
+            primaryLabel="Project Track"
             keyValue="$5,400"
             secondaryLabel="Project Budget"
           />
-          <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-            <div className="typo-b3 flex-1 text-center">Team Members</div>
-            <div>
-              <Icon name="arrow" />
-            </div>
-          </div>
+          <FilterDropdown
+            label="Select Client"
+            options={["project one", "project two", "project three"]}
+            className="h-7.5 border border-text2 "
+          />
         </div>
 
         {/* Chart */}

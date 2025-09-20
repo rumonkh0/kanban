@@ -13,6 +13,7 @@ import {
   Pie,
 } from "recharts";
 import { ChartHeader, RedButton } from "@/components/Component";
+import { FilterDropdown, ToggleTabs } from "../../../components/Component";
 
 function Finance() {
   const data = [
@@ -88,13 +89,11 @@ function Finance() {
               keyValue="$9,000"
               secondaryLabel="+12% vs last month"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2">
-              <div className="px-2 py-1.5 bg-brand rounded-sm text-white">
-                Week
-              </div>
-              <div className="px-2">Month</div>
-              <div className="px-2">Year</div>
-            </div>
+            <ToggleTabs
+              options={["Week", "Month", "Year"]}
+              defaultValue="Week"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}
@@ -144,18 +143,16 @@ function Finance() {
               secondaryLabel="To team"
             />
             <div className="flex gap-4">
-              <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-                <div className="typo-b3 flex-1 text-center">Team Members</div>
-                <div>
-                  <Icon name="arrow" />
-                </div>
-              </div>
-              <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-                <div className="typo-b3 flex-1 text-center">Select Project</div>
-                <div>
-                  <Icon name="arrow" />
-                </div>
-              </div>
+              <FilterDropdown
+                label="Team Member"
+                options={["project one", "project two", "project three"]}
+                className="h-7.5 border border-text2 "
+              />
+              <FilterDropdown
+                label="Select Project"
+                options={["project one", "project two", "project three"]}
+                className="h-7.5 border border-text2 "
+              />
             </div>
           </div>
 
@@ -217,12 +214,11 @@ function Finance() {
               keyValue="$5,400"
               secondaryLabel="From project "
             />
-            <div className="w-33 h-[30px] flex items-center px-2 gap-1 border border-text2 rounded-sm">
-              <div className="typo-b3 flex-1 text-center">Payment</div>
-              <div>
-                <Icon name="arrow" />
-              </div>
-            </div>
+            <FilterDropdown
+              label="Payment"
+              options={["project one", "project two", "project three"]}
+              className="h-7.5 border border-text2 "
+            />
           </div>
 
           {/* Chart */}
@@ -283,10 +279,11 @@ function Finance() {
               keyValue="$5,400"
               secondaryLabel="+12% vs last month"
             />
-            <div className="bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer">
-              <div className="px-2 py-1.5 bg-brand rounded-sm">Month</div>
-              <div className="px-2">Project based</div>
-            </div>
+            <ToggleTabs
+              options={[ "Month", "Project Based"]}
+              defaultValue="Month"
+              onChange={(val) => console.log("Selected:", val)}
+            />
           </div>
 
           {/* Chart */}
@@ -360,7 +357,7 @@ function Finance() {
           </div>
         </div>
 
-        <div className="w-[368px] border-2 border-divider bg-surface2 rounded-lg p-4">
+        {/* <div className="w-[368px] border-2 border-divider bg-surface2 rounded-lg p-4">
           <div>
             <div className="flex justify-between mb-4">
               <div>Amount Received:</div>
@@ -374,7 +371,7 @@ function Finance() {
           <div className="flex justify-center mt-8">
             <RedButton>Add Payment</RedButton>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
