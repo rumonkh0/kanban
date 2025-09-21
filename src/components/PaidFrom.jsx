@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import Icon from "@/components/Icon";
 import { Link } from "react-router";
@@ -7,7 +6,7 @@ import PaymentDetailsModal from "@/components/PaymentDetailsModal";
 import { Td, Th } from "@/components/Component";
 import DropdownMenu from "@/components/DropdownMenu";
 
-function page({ toHref }) {
+function PaidFrom({ toHref }) {
   const [PaymentsModal, setPaymentModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const handleMenuClick = (index, e) => {
@@ -244,4 +243,4 @@ function page({ toHref }) {
   );
 }
 
-export default page;
+export default PaidFrom;

@@ -1,4 +1,3 @@
-"use client";
 import ClientSelect from "@/components/ClientSelect";
 import {
   FormField,

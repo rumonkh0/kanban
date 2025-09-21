@@ -1,4 +1,3 @@
-"use client";
 import { Link } from "react-router";
 import MetricCard from "@/components/MetricCard";
 import {

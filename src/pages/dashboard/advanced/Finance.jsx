@@ -1,4 +1,3 @@
-"use client";
 import Icon from "@/components/Icon";
 import MetricCard from "@/components/MetricCard";
 import {

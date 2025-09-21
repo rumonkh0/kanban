@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
 import { RedButton, Dropdown, ImageName } from "./Component";

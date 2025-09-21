@@ -1,4 +1,3 @@
-"use client";
 import { Icon, ImageName, Td, Th } from "@/components/Component";
 import DropdownMenu from "@/components/DropdownMenu";
 import PageTitle from "@/components/PageTitle";

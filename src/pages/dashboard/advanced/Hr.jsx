@@ -1,4 +1,3 @@
-"use client";
 import MetricCard from "@/components/MetricCard";
 import {
   BarChart,
