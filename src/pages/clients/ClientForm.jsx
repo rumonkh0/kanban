@@ -7,60 +7,20 @@ import {
   MultiSelect,
 } from "@/components/Component";
 import Icon from "@/components/Icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Back } from "../../components/Component";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useNavigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import PageTitle from "@/components/PageTitle";
-
-// API Functions
-const clientAPI = {
-  // Get all clients
-  getAll: async () => {
-    const response = await axios.get("/api/clients");
-    return response.data;
-  },
-
-  // Get single client
-  getById: async (id) => {
-    const response = await axios.get(`/api/clients/${id}`);
-    return response.data;
-  },
-
-  // Create new client
-  create: async (data) => {
-    const response = await axios.post("/api/clients", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Update client
-  update: async ({ id, data }) => {
-    const response = await axios.put(`/api/clients/${id}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Delete client
-  delete: async (id) => {
-    const response = await axios.delete(`/api/clients/${id}`);
-    return response.data;
-  },
-};
-
-// Get client categories for dropdown
-const getClientCategories = async () => {
-  const response = await axios.get("/api/client-categories");
-  return response.data;
-};
+import {
+  useClient,
+  useCreateClient,
+  useDeleteClient,
+  useUpdateClient,
+} from "../../hooks/useClients";
 
 function ClientForm({ edit, title = "Add Client" }) {
   const navigate = useNavigate();
   const { id } = useParams();
-  const queryClient = useQueryClient();
 
   const [showPassword, setShowPassword] = useState(false);
   const [methods, setMethods] = useState([]);
@@ -69,6 +29,9 @@ function ClientForm({ edit, title = "Add Client" }) {
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [companyLogoFile, setCompanyLogoFile] = useState(null);
   const [language, setLanguage] = useState("English");
+  const [more, setMore] = useState(false);
+
+  const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
   const togglePassword = () => setShowPassword(!showPassword);
 
@@ -83,8 +46,8 @@ function ClientForm({ edit, title = "Add Client" }) {
     dob: "",
     password: "",
     status: "Active",
-    loginAllowed: "Yes",
-    notifications: "Yes",
+    loginAllowed: true,
+    notifications: true,
     companyName: "",
     website: "",
     taxName: "",
@@ -98,94 +61,12 @@ function ClientForm({ edit, title = "Add Client" }) {
     note: "",
   });
 
-  // Fetch client data for editing
-  // eslint-disable-next-line no-unused-vars
-  const { data: clientData, isLoading: isLoadingClient } = useQuery({
-    queryKey: ["client", id],
-    queryFn: () => clientAPI.getById(id),
+  const createClientMutation = useCreateClient();
+  const { data: clientData, isLoading: isLoadingClient } = useClient(id, {
     enabled: edit && !!id,
-    onSuccess: (data) => {
-      setFormData({
-        salutation: data.salutation || "",
-        category: data.category || "",
-        gender: data.gender || "",
-        name: data.name || "",
-        email: data.email || "",
-        country: data.country || "",
-        mobile: data.mobile || "",
-        dob: data.dob || "",
-        password: "", // Don't populate password for security
-        status: data.status || "Active",
-        loginAllowed: data.loginAllowed || "Yes",
-        notifications: data.notifications || "Yes",
-        companyName: data.companyName || "",
-        website: data.website || "",
-        taxName: data.taxName || "",
-        gstNumber: data.gstNumber || "",
-        officePhone: data.officePhone || "",
-        city: data.city || "",
-        state: data.state || "",
-        postalCode: data.postalCode || "",
-        address: data.address || "",
-        shippingAddress: data.shippingAddress || "",
-        note: data.note || "",
-      });
-      setMethods(data.methods || []);
-      setLanguage(data.language || "English");
-      if (data.profilePicture) {
-        setProfilePicture(data.profilePicture);
-      }
-      if (data.companyLogo) {
-        setCompanyLogo(data.companyLogo);
-      }
-    },
   });
-
-  // Fetch client categories
-  const { data: categories = [] } = useQuery({
-    queryKey: ["clientCategories"],
-    queryFn: getClientCategories,
-  });
-
-  // Create client mutation
-  const createMutation = useMutation({
-    mutationFn: clientAPI.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
-      navigate("/clients");
-    },
-    onError: (error) => {
-      console.error("Error creating client:", error);
-      alert("Failed to create client. Please try again.");
-    },
-  });
-
-  // Update client mutation
-  const updateMutation = useMutation({
-    mutationFn: clientAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
-      queryClient.invalidateQueries({ queryKey: ["client", id] });
-      navigate("/clients");
-    },
-    onError: (error) => {
-      console.error("Error updating client:", error);
-      alert("Failed to update client. Please try again.");
-    },
-  });
-
-  // Delete client mutation
-  const deleteMutation = useMutation({
-    mutationFn: clientAPI.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clients"] });
-      navigate("/clients");
-    },
-    onError: (error) => {
-      console.error("Error deleting client:", error);
-      alert("Failed to delete client. Please try again.");
-    },
-  });
+  const updateClientMutation = useUpdateClient(id);
+  const deleteClientMutation = useDeleteClient();
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -207,11 +88,11 @@ function ClientForm({ edit, title = "Add Client" }) {
       if (type === "logo") setCompanyLogo(reader.result);
     };
     reader.readAsDataURL(file);
+
+    console.log("hleo", profilePicture);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     // Basic validation
     if (!formData.name || !formData.email) {
       alert("Please fill in all required fields.");
@@ -229,7 +110,7 @@ function ClientForm({ edit, title = "Add Client" }) {
     });
 
     // Append additional data
-    submitData.append("methods", JSON.stringify(methods));
+    methods.forEach((method) => submitData.append("paymentMethods[]", method));
     submitData.append("language", language);
 
     // Append files if selected
@@ -241,85 +122,114 @@ function ClientForm({ edit, title = "Add Client" }) {
     }
 
     if (edit) {
-      updateMutation.mutate({ id, data: submitData });
+      updateClientMutation.mutate(submitData);
     } else {
-      createMutation.mutate(submitData);
+      createClientMutation.mutate(submitData);
     }
-  };
-
-  const handleSaveAndAddMore = (e) => {
-    e.preventDefault();
-
-    if (!formData.name || !formData.email) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    const submitData = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        submitData.append(key, formData[key]);
-      }
-    });
-
-    submitData.append("methods", JSON.stringify(methods));
-    submitData.append("language", language);
-
-    if (profilePictureFile) {
-      submitData.append("profilePicture", profilePictureFile);
-    }
-    if (companyLogoFile) {
-      submitData.append("companyLogo", companyLogoFile);
-    }
-
-    createMutation.mutate(submitData, {
-      onSuccess: () => {
-        // Reset form for adding more
-        setFormData({
-          salutation: "",
-          category: "",
-          gender: "",
-          name: "",
-          email: "",
-          country: "",
-          mobile: "",
-          dob: "",
-          password: "",
-          status: "Active",
-          loginAllowed: "Yes",
-          notifications: "Yes",
-          companyName: "",
-          website: "",
-          taxName: "",
-          gstNumber: "",
-          officePhone: "",
-          city: "",
-          state: "",
-          postalCode: "",
-          address: "",
-          shippingAddress: "",
-          note: "",
-        });
-        setMethods([]);
-        setLanguage("English");
-        setProfilePicture(null);
-        setCompanyLogo(null);
-        setProfilePictureFile(null);
-        setCompanyLogoFile(null);
-      },
-    });
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this client?")) {
-      deleteMutation.mutate(id);
+      deleteClientMutation.mutate(id, {
+        onSuccess: () => {
+          navigate("/clients");
+        },
+        onError: (err) => {
+          alert(err.message || "Failed to delete client");
+        },
+      });
     }
   };
 
+  useEffect(() => {
+    const iscreated = createClientMutation.isSuccess;
+    if (iscreated && more) {
+      setFormData({
+        salutation: "",
+        category: "",
+        gender: "",
+        name: "",
+        email: "",
+        country: "",
+        mobile: "",
+        dob: "",
+        password: "",
+        status: "Active",
+        loginAllowed: true,
+        notifications: true,
+        companyName: "",
+        website: "",
+        taxName: "",
+        gstNumber: "",
+        officePhone: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        address: "",
+        shippingAddress: "",
+        note: "",
+      });
+      setMethods([]);
+      setLanguage("English");
+      setProfilePicture(null);
+      setCompanyLogo(null);
+      setProfilePictureFile(null);
+      setCompanyLogoFile(null);
+      setMore(false);
+    } else {
+      if (iscreated) navigate("/clients");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createClientMutation.isSuccess]);
+
+  useEffect(() => {
+    if (clientData) {
+      setFormData({
+        salutation: clientData.salutation || "",
+        category: clientData.category || "",
+        gender: clientData.gender || "",
+        name: clientData.name || "",
+        email: clientData.email || "",
+        country: clientData.country || "",
+        mobile: clientData.mobile || "",
+        dob: clientData.dob || "",
+        password: "", // never populate password
+        status: clientData.status || "Active",
+        loginAllowed: !!clientData.loginAllowed,
+        notifications: !!clientData.notifications,
+        companyName: clientData.companyName || "",
+        website: clientData.website || "",
+        taxName: clientData.taxName || "",
+        gstNumber: clientData.gstNumber || "",
+        officePhone: clientData.officePhone || "",
+        city: clientData.city || "",
+        state: clientData.state || "",
+        postalCode: clientData.postalCode || "",
+        address: clientData.address || "",
+        shippingAddress: clientData.shippingAddress || "",
+        note: clientData.note || "",
+      });
+
+      setMethods(clientData.methods || []);
+      setLanguage(clientData.language || "English");
+      setProfilePicture(
+        (clientData.profilePicture?.filePath &&
+          `${baseURL}/${clientData.profilePicture.filePath}`) ||
+          null
+      );
+      setCompanyLogo(
+        (clientData.companyLogo?.filePath &&
+          `${baseURL}/${clientData.companyLogo.filePath}`) ||
+          null
+      );
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientData]);
+
   const isLoading =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending;
+    createClientMutation.isLoading ||
+    updateClientMutation.isLoading ||
+    createClientMutation.isLoading;
 
   if (edit && isLoadingClient) {
     return <div>Loading client data...</div>;
@@ -456,7 +366,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 </div>
               </FormField>
 
-              <FormField label="Client Category">
+              {/* <FormField label="Client Category">
                 <Dropdown
                   options={
                     Array.isArray(categories) && categories.length > 0
@@ -466,7 +376,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                   value={formData.category}
                   onChange={(val) => handleChange("category", val)}
                 />
-              </FormField>
+              </FormField> */}
 
               <FormField label="Date of Birth">
                 <div className="relative">
@@ -516,7 +426,11 @@ function ClientForm({ edit, title = "Add Client" }) {
 
               <FormField label="Account Status">
                 <div className="relative">
-                  <div className="w-2 h-2 rounded-full bg-success absolute left-4 top-1/2 -translate-y-1/2"></div>
+                  <div
+                    className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 ${
+                      formData.status === "Active" ? "bg-success" : "bg-brand"
+                    }`}
+                  ></div>
                   <select
                     value={formData.status}
                     onChange={(e) => handleChange("status", e.target.value)}
@@ -536,9 +450,9 @@ function ClientForm({ edit, title = "Add Client" }) {
 
               <FormField label="Login Allowed?">
                 <div className="flex typo-cta">
-                  {["Yes", "No"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.loginAllowed === val
                           ? "bg-brand text-text"
@@ -553,7 +467,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                         onChange={() => handleChange("loginAllowed", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Yes" : "No"}</span>
                     </label>
                   ))}
                 </div>
@@ -561,9 +475,9 @@ function ClientForm({ edit, title = "Add Client" }) {
 
               <FormField label="Receive email notifications?">
                 <div className="flex typo-cta">
-                  {["Yes", "No"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.notifications === val
                           ? "bg-brand text-white"
@@ -578,7 +492,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                         onChange={() => handleChange("notifications", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Yes" : "No"}</span>
                     </label>
                   ))}
                 </div>
@@ -735,7 +649,7 @@ function ClientForm({ edit, title = "Add Client" }) {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? "Saving..." : "Save"}
+              {isLoading ? "Saving..." : edit ? "Update" : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -744,7 +658,10 @@ function ClientForm({ edit, title = "Add Client" }) {
             ) : (
               <RedBorderButton
                 type="button"
-                onClick={handleSaveAndAddMore}
+                onClick={() => {
+                  handleSubmit(true);
+                  setMore(true);
+                }}
                 disabled={isLoading}
               >
                 {isLoading ? "Saving..." : "Save & Add More"}

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { clientsApi } from "../services/clients";
+import { useNavigate } from "react-router";
 
 export const useClients = (params) => {
   return useQuery({
@@ -29,12 +30,29 @@ export const useCreateClient = () => {
 
 export const useUpdateClient = (id) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data) => clientsApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients", id] });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
+      navigate("/clients");
+    },
+  });
+};
+
+export const useDeleteClient = () => {
+  const queryClient = useQueryClient();
+  // const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: (id) => clientsApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
+    onError: (error) => {
+      console.error("Error deleting client:", error);
     },
   });
 };
