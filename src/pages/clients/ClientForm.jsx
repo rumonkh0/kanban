@@ -42,7 +42,7 @@ function ClientForm({ edit, title = "Add Client" }) {
     name: "",
     email: "",
     country: "",
-    mobile: "",
+    mobile: { countryCode: "", number: "" },
     dob: "",
     password: "",
     status: "Active",
@@ -88,8 +88,6 @@ function ClientForm({ edit, title = "Add Client" }) {
       if (type === "logo") setCompanyLogo(reader.result);
     };
     reader.readAsDataURL(file);
-
-    console.log("hleo", profilePicture);
   };
 
   const handleSubmit = () => {
@@ -104,14 +102,17 @@ function ClientForm({ edit, title = "Add Client" }) {
 
     // Append all form fields
     Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        submitData.append(key, formData[key]);
+      const value = formData[key];
+      if (value !== undefined && value !== null) {
+        submitData.append(key, value);
       }
     });
 
     // Append additional data
     methods.forEach((method) => submitData.append("paymentMethods[]", method));
     submitData.append("language", language);
+    submitData.append("mobile[number]", formData.mobile.number);
+    submitData.append("mobile[countryCode]", formData.mobile.countryCode);
 
     // Append files if selected
     if (profilePictureFile) {
@@ -120,7 +121,8 @@ function ClientForm({ edit, title = "Add Client" }) {
     if (companyLogoFile) {
       submitData.append("companyLogo", companyLogoFile);
     }
-
+    console.log(formData);
+    console.log(submitData);
     if (edit) {
       updateClientMutation.mutate(submitData);
     } else {
@@ -193,10 +195,9 @@ function ClientForm({ edit, title = "Add Client" }) {
         country: clientData.country || "",
         mobile: clientData.mobile || "",
         dob: clientData.dob?.split("T")[0] || "",
-        password: "", // never populate password
         status: clientData.status || "Active",
-        loginAllowed: !!clientData.loginAllowed,
-        notifications: !!clientData.notifications,
+        loginAllowed: clientData.loginAllowed,
+        notifications: clientData.notifications,
         companyName: clientData.companyName || "",
         website: clientData.website || "",
         taxName: clientData.taxName || "",
@@ -210,7 +211,7 @@ function ClientForm({ edit, title = "Add Client" }) {
         note: clientData.note || "",
       });
 
-      setMethods(clientData.methods || []);
+      setMethods(clientData.paymentMethods || []);
       setLanguage(clientData.language || "English");
       setProfilePicture(
         (clientData.profilePicture?.filePath &&
@@ -223,13 +224,13 @@ function ClientForm({ edit, title = "Add Client" }) {
           null
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientData]);
 
   const isLoading =
-    createClientMutation.isLoading ||
-    updateClientMutation.isLoading ||
-    createClientMutation.isLoading;
+    createClientMutation?.isPending ||
+    updateClientMutation?.isPending ||
+    deleteClientMutation?.isPending;
 
   if (edit && isLoadingClient) {
     return <div>Loading client data...</div>;
@@ -327,8 +328,16 @@ function ClientForm({ edit, title = "Add Client" }) {
                     <Icon name="arrow" size={24} className="mr-1" />
                   </div>
                   <Input
-                    value={formData.mobile}
-                    onChange={(val) => handleChange("mobile", val)}
+                    value={formData.mobile.number}
+                    onChange={(val) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        mobile: {
+                          ...prev.mobile,
+                          number: val,
+                        },
+                      }))
+                    }
                     type="tel"
                     placeholder="Enter Mobile Number"
                     className="pl-23"
@@ -649,7 +658,13 @@ function ClientForm({ edit, title = "Add Client" }) {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? "Saving..." : edit ? "Update" : "Save"}
+              {(createClientMutation.isPending ||
+                updateClientMutation.isPending) &&
+              !more
+                ? "Saving..."
+                : edit
+                ? "Update"
+                : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -664,7 +679,9 @@ function ClientForm({ edit, title = "Add Client" }) {
                 }}
                 disabled={isLoading}
               >
-                {isLoading ? "Saving..." : "Save & Add More"}
+                {createClientMutation.isPending && more
+                  ? "Saving..."
+                  : "Save & Add More"}
               </RedBorderButton>
             )}
           </div>
@@ -675,7 +692,7 @@ function ClientForm({ edit, title = "Add Client" }) {
               onClick={handleDelete}
               disabled={isLoading}
             >
-              {isLoading ? "Deleting..." : "Delete Client"}
+              {deleteClientMutation.isPending ? "Deleting..." : "Delete Client"}
             </RedButton>
           ) : (
             <Back>

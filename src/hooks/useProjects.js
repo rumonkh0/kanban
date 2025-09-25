@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectsApi } from "../services/projects";
+import { useNavigate } from "react-router";
 
 export const useProjects = (params) => {
   return useQuery({
@@ -29,12 +30,14 @@ export const useCreateProject = () => {
 
 export const useUpdateProject = (id) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data) => projectsApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects", id] });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      navigate("/projects");
     },
   });
 };
@@ -54,6 +57,16 @@ export const useUpdateProjectMember = (id) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projectMembers", id] });
       queryClient.invalidateQueries({ queryKey: ["projectMembers"] });
+    },
+  });
+};
+
+export const useDeleteProject = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (projectId) => projectsApi.delete(projectId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 };

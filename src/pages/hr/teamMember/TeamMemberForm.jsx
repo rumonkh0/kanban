@@ -38,12 +38,12 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     email: "",
     password: "",
     designation: "",
-    department: "",
+    department: null,
     country: "USA",
-    mobile: "",
+    mobile: { countryCode: "", number: "" },
     gender: "",
     joiningDate: "",
-    dateOfBirth: "",
+    dob: "",
     language: "English",
     role: "",
     address: "",
@@ -57,7 +57,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     noticePeriodStartDate: "",
     noticePeriodEndDate: "",
     employmentType: "",
-    addedBy: "",
+    addedBy: null,
     maritalStatus: "",
     businessAddress: "",
     accountStatus: "Active",
@@ -102,8 +102,9 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
 
     // Append all form fields
     Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        submitData.append(key, formData[key]);
+      const value = formData[key];
+      if (value !== undefined && value !== null) {
+        submitData.append(key, value);
       }
     });
 
@@ -112,7 +113,8 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
       submitData.append("profilePicture", profilePicture);
     }
 
-    console.log(submitData);
+    submitData.append("mobile[number]", formData.mobile.number);
+    submitData.append("mobile[countryCode]", formData.mobile.countryCode);
 
     if (edit) {
       updateMember.mutate(submitData);
@@ -137,12 +139,12 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
         email: "",
         password: "",
         designation: "",
-        department: "",
+        department: null,
         country: "USA",
-        mobile: "",
+        mobile: { countryCode: "", number: "" },
         gender: "",
         joiningDate: "",
-        dateOfBirth: "",
+        dob: "",
         language: "English",
         role: "",
         address: "",
@@ -156,7 +158,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
         noticePeriodStartDate: "",
         noticePeriodEndDate: "",
         employmentType: "",
-        addedBy: "",
+        addedBy: null,
         maritalStatus: "",
         businessAddress: "",
         accountStatus: "Active",
@@ -172,37 +174,37 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
   useEffect(() => {
     if (teamMember) {
       setFormData({
-        memberId: teamMember.memberId || "",
-        salutation: teamMember.salutation || "",
-        name: teamMember.name || "",
-        email: teamMember.user.email || "",
-        password: "", // Don't populate password for security
-        designation: teamMember.designation || "",
-        department: teamMember.department._id || "",
-        country: teamMember.country || "USA",
-        mobile: teamMember.mobile || "",
-        gender: teamMember.gender || "",
-        joiningDate: teamMember.joiningDate?.split("T")[0] || "",
-        dateOfBirth: teamMember.dateOfBirth?.split("T")[0] || "",
-        language: teamMember.language || "English",
-        role: teamMember.role || "",
-        address: teamMember.address || "",
-        about: teamMember.about || "",
-        loginAllowed: teamMember.loginAllowed || true,
-        emailNotifications: teamMember.emailNotifications || true,
-        averageRate: teamMember.averageRate || "",
-        slackId: teamMember.slackId || "",
-        skills: teamMember.skills || "",
-        probationEndDate: teamMember.probationEndDate?.split("T")[0] || "",
+        memberId: teamMember.memberId ?? "",
+        salutation: teamMember.salutation ?? "",
+        name: teamMember.name ?? "",
+        email: teamMember.user?.email ?? "",
+        password: "",
+        designation: teamMember.designation ?? "",
+        department: teamMember.department?._id ?? null,
+        country: teamMember.country ?? "USA",
+        mobile: teamMember.mobile ?? "",
+        gender: teamMember.gender ?? "",
+        joiningDate: teamMember.joiningDate?.split("T")[0] ?? "",
+        dob: teamMember.dob?.split("T")[0] ?? "",
+        language: teamMember.language ?? "English",
+        role: teamMember.role ?? "",
+        address: teamMember.address ?? "",
+        about: teamMember.about ?? "",
+        loginAllowed: teamMember.loginAllowed ?? true,
+        emailNotifications: teamMember.emailNotifications ?? true,
+        averageRate: teamMember.averageRate ?? "",
+        slackId: teamMember.slackId ?? "",
+        skills: teamMember.skills ?? "",
+        probationEndDate: teamMember.probationEndDate?.split("T")[0] ?? "",
         noticePeriodStartDate:
-          teamMember.noticePeriodStartDate?.split("T")[0] || "",
+          teamMember.noticePeriodStartDate?.split("T")[0] ?? "",
         noticePeriodEndDate:
-          teamMember.noticePeriodEndDate?.split("T")[0] || "",
-        employmentType: teamMember.employmentType || "",
-        addedBy: teamMember.addedBy || "",
-        maritalStatus: teamMember.maritalStatus || "",
-        businessAddress: teamMember.businessAddress || "",
-        accountStatus: teamMember.accountStatus || "Active",
+          teamMember.noticePeriodEndDate?.split("T")[0] ?? "",
+        employmentType: teamMember.employmentType ?? "",
+        addedBy: teamMember.addedBy ?? null,
+        maritalStatus: teamMember.maritalStatus ?? "",
+        businessAddress: teamMember.businessAddress ?? "",
+        accountStatus: teamMember.accountStatus ?? "Active",
       });
       if (teamMember.profilePicture) {
         setProfilePreview(teamMember.profilePicture);
@@ -388,8 +390,16 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                     <Icon name="arrow" size={24} className="mr-1" />
                   </div>
                   <Input
-                    value={formData.mobile}
-                    onChange={(val) => handleChange("mobile", val)}
+                    value={formData.mobile.number}
+                    onChange={(val) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        mobile: {
+                          ...prev.mobile,
+                          number: val,
+                        },
+                      }))
+                    }
                     type="tel"
                     placeholder="Enter Mobile Number"
                     className="pl-23"
@@ -420,8 +430,8 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
               <FormField label="Date of Birth">
                 <div className="relative">
                   <Input
-                    value={formData.dateOfBirth}
-                    onChange={(val) => handleChange("dateOfBirth", val)}
+                    value={formData.dob}
+                    onChange={(val) => handleChange("dob", val)}
                     type="date"
                     placeholder="Select Date"
                   />
@@ -602,7 +612,13 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
               </FormField>
               <FormField label="Employment Type">
                 <Dropdown
-                  options={["Part Time", "Full Time", "Contractual"]}
+                  options={[
+                    "Full-Time",
+                    "Part-Time",
+                    "Contract",
+                    "Intern",
+                    "Other",
+                  ]}
                   value={formData.employmentType}
                   onChange={(val) => handleChange("employmentType", val)}
                 />

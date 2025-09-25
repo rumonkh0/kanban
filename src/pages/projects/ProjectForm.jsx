@@ -12,60 +12,17 @@ import {
 } from "@/components/Component";
 import { Back, RedBorderButton, RedButton } from "../../components/Component";
 import PageTitle from "@/components/PageTitle";
-
-// API Functions
-const projectAPI = {
-  // Get all projects
-  getAll: async () => {
-    const response = await axios.get("/api/projects");
-    return response.data;
-  },
-
-  // Get single project
-  getById: async (id) => {
-    const response = await axios.get(`/api/projects/${id}`);
-    return response.data;
-  },
-
-  // Create new project
-  create: async (data) => {
-    const response = await axios.post("/api/projects", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Update project
-  update: async ({ id, data }) => {
-    const response = await axios.put(`/api/projects/${id}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Delete project
-  delete: async (id) => {
-    const response = await axios.delete(`/api/projects/${id}`);
-    return response.data;
-  },
-};
-
-// Get services for dropdown
-const getServices = async () => {
-  const response = await axios.get("/api/services");
-  return response.data;
-};
-
-// Get departments for dropdown
-const getDepartments = async () => {
-  const response = await axios.get("/api/departments");
-  return response.data;
-};
+import { useDepartments } from "../../hooks/hr/useDepartments";
+import { useServices } from "../../hooks/useService";
+import {
+  useCreateProject,
+  useDeleteProject,
+  useUpdateProject,
+} from "../../hooks/useProjects";
 
 function ProjectForm({ edit, title = "Add Project" }) {
   const navigate = useNavigate();
   const { id } = useParams();
-  const queryClient = useQueryClient();
 
   const [relatedFile, setRelatedFile] = useState(null);
 
@@ -136,56 +93,19 @@ function ProjectForm({ edit, title = "Add Project" }) {
   });
 
   // Fetch services
-  const { data: services = [] } = useQuery({
-    queryKey: ["services"],
-    queryFn: getServices,
-  });
+  const { data: services = [] } = useServices();
 
   // Fetch departments
-  const { data: departments = [] } = useQuery({
-    queryKey: ["departments"],
-    queryFn: getDepartments,
-  });
+  const { data: departments = [] } = useDepartments();
 
   // Create project mutation
-  const createMutation = useMutation({
-    mutationFn: projectAPI.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      navigate("/projects");
-    },
-    onError: (error) => {
-      console.error("Error creating project:", error);
-      alert("Failed to create project. Please try again.");
-    },
-  });
+  const createMutation = useCreateProject();
 
   // Update project mutation
-  const updateMutation = useMutation({
-    mutationFn: projectAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      queryClient.invalidateQueries({ queryKey: ["project", id] });
-      navigate("/projects");
-    },
-    onError: (error) => {
-      console.error("Error updating project:", error);
-      alert("Failed to update project. Please try again.");
-    },
-  });
+  const updateMutation = useUpdateProject();
 
   // Delete project mutation
-  const deleteMutation = useMutation({
-    mutationFn: projectAPI.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      navigate("/projects");
-    },
-    onError: (error) => {
-      console.error("Error deleting project:", error);
-      alert("Failed to delete project. Please try again.");
-    },
-  });
+  const deleteMutation = useDeleteProject();
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -383,8 +303,11 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 <Dropdown
                   options={
                     Array.isArray(services) && services.length > 0
-                      ? services.map((service) => service.name)
-                      : ["Service 2", "Service 3"] // default fallback
+                      ? services.map((service) => ({
+                          value: service._id,
+                          label: service.serviceName,
+                        }))
+                      : ["Service 2", "Service 3"]
                   }
                   value={formData.service}
                   onChange={(val) => handleChange("service", val)}
@@ -395,7 +318,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 label="Department"
                 options={
                   Array.isArray(departments) && departments.length > 0
-                    ? departments.map((dept) => dept.name)
+                    ? departments.map((dept) => dept.title)
                     : ["Design", "Development", "Marketing", "UI/UX"]
                 }
                 value={formData.department}

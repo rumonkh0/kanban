@@ -9,14 +9,13 @@ import { useDeleteClient } from "../../hooks/useClients";
 function ClientTable({ filters }) {
   const [activeMenu, setActiveMenu] = useState(null);
   const { data: clientsData, isLoading, isError } = useClients(filters);
+  const deleteClientMutation = useDeleteClient();
   const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
   const handleMenuClick = (index, e) => {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
-
-  const deleteClientMutation = useDeleteClient();
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this client?")) {
@@ -132,7 +131,6 @@ function ClientTable({ filters }) {
     return <div className="text-center">No entries</div>;
   return (
     <Table>
-      {console.log(clientsData)}
       <Thead>
         <tr className="text-left">
           <Th title="Client Name" />

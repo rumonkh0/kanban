@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { useState } from "react";
 import { Bin, Pin } from "../../components/Icon";
 import { FilterDropdown, Th } from "../../components/Component";
-import { useProjects } from "../../hooks/useProjects";
+import { useDeleteProject, useProjects } from "../../hooks/useProjects";
 
 function Projects() {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -32,6 +32,10 @@ function Projects() {
       options: ["Client 1", "Client 2", "Client 3"],
     },
   ];
+  const { data: projectsData, isLoading, isError } = useProjects(filters);
+  const deleteClientMutation = useDeleteProject();
+
+  // const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -40,129 +44,24 @@ function Projects() {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this client?")) {
+      deleteClientMutation.mutate(id, {
+        onError: (err) => {
+          alert(err.message || "Failed to delete client");
+        },
+      });
+    }
+  };
 
   const menuItems = (id) => [
     { label: "View", href: `/projects/${id}/manage` },
     { label: "Edit", href: `/projects/${id}/edit` },
-    { label: "Duplicate", href: `/projects/${id}/duplicate` },
-    { label: "Public Task Board" },
-    { label: "Pin Project", href: `/projects/${id}/pin` },
-    { label: "Archive", href: `/projects/${id}/archive` },
-    { label: "Delete", href: `/projects/${id}/delete` },
-  ];
-
-  const { data: projectsData, isLoading, isError } = useProjects(filters);
-  const projects = Array.isArray(projectsData) || [
-    {
-      id: 1,
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 13, 2025",
-      deadline: null,
-      status: "On Hold",
-      progress: "60%",
-    },
-    {
-      id: 2,
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "Review",
-      progress: "100%",
-    },
-    {
-      id: 3,
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: null,
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "In Progress",
-      progress: "80%",
-    },
-    {
-      id: 4,
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "In Progress",
-      progress: "80%",
-    },
-    {
-      id: 5,
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: "Celia Jast",
-      startDate: "Aug 3, 2025",
-      deadline: "Aug 23, 2025",
-      status: "In Progress",
-      progress: "80%",
-    },
-    {
-      id: 6,
-      projectId: "#21E7DR",
-      client: "Gustave Koelpin",
-      projectName: "Corporate Website Revamp",
-      members: null,
-      startDate: "Aug 13, 2025",
-      deadline: "Aug 23, 2025",
-      status: "Not Started",
-      progress: "0%",
-    },
-    {
-      id: 7,
-      projectId: "#9F3KDL",
-      client: "Lydia Marks",
-      projectName: "Mobile Banking App",
-      members: "Darius Green",
-      startDate: "Jul 20, 2025",
-      deadline: "Sep 15, 2025",
-      status: "In Progress",
-      progress: "45%",
-    },
-    {
-      id: 8,
-      projectId: "#4X9TQP",
-      client: "Orlando Bailey",
-      projectName: "E-commerce Platform",
-      members: "Sophia Patel",
-      startDate: "Jun 1, 2025",
-      deadline: "Oct 10, 2025",
-      status: "Delayed",
-      progress: "30%",
-    },
-    {
-      id: 9,
-      projectId: "#7M2PLD",
-      client: "Clara Fischer",
-      projectName: "Marketing Analytics Dashboard",
-      members: "Michael Johnson",
-      startDate: "Aug 5, 2025",
-      deadline: "Sep 30, 2025",
-      status: "Review",
-      progress: "90%",
-    },
-    {
-      id: 10,
-      projectId: "#6A1KDE",
-      client: "Samuel Harris",
-      projectName: "Internal HR Portal",
-      members: "Alice Wong",
-      startDate: "Jul 10, 2025",
-      deadline: "Aug 25, 2025",
-      status: "Completed",
-      progress: "100%",
-    },
+    { label: "Duplicate" },
+    { label: "Public Task Board", href: `/projects/${id}/manage/tasks` },
+    { label: "Pin Project", onClick: () => handleDelete(id) },
+    { label: "Archive", onClick: () => handleDelete(id) },
+    { label: "Delete", onClick: () => handleDelete(id) },
   ];
 
   if (isLoading) {
@@ -224,13 +123,13 @@ function Projects() {
             </tr>
           </thead>
           <tbody>
-            {projects.map((project, index) => (
+            {projectsData.map((project, index) => (
               <tr
                 key={index}
                 className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
               >
                 <td className="typo-b2 pl-4 text-text  first:rounded-l-[4px] bg-divider">
-                  {project.projectId}
+                  {project.shortCode}
                 </td>
                 <td className=" bg-divider">
                   <Link to={`/projects/${project.id}/manage`}>
