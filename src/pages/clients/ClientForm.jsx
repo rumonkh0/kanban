@@ -192,7 +192,7 @@ function ClientForm({ edit, title = "Add Client" }) {
         email: clientData.email || "",
         country: clientData.country || "",
         mobile: clientData.mobile || "",
-        dob: clientData.dob || "",
+        dob: clientData.dob?.split("T")[0] || "",
         password: "", // never populate password
         status: clientData.status || "Active",
         loginAllowed: !!clientData.loginAllowed,

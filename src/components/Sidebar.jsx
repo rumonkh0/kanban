@@ -43,9 +43,9 @@ const admin = [
     to: "/hr",
     children: [
       { label: "Team Members", to: "/hr/team-members" },
-      { label: "Department", to: "/hr/department" },
-      { label: "Role", to: "/hr/role" },
-      { label: "Appreciation", to: "/hr/appreciation" },
+      { label: "Department", to: "/hr/departments" },
+      { label: "Role", to: "/hr/roles" },
+      { label: "Appreciation", to: "/hr/appreciations" },
     ],
   },
   {
@@ -53,8 +53,8 @@ const admin = [
     icon: Finance,
     to: "/finance",
     children: [
-      { label: "Paid By", to: "/finance/payment" },
-      { label: "Paid To", to: "/finance/team-payment" },
+      { label: "Paid By", to: "/finance/payments" },
+      { label: "Paid To", to: "/finance/team-payments" },
     ],
   },
   {

@@ -10,69 +10,24 @@ import {
 } from "@/components/Component";
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-
-// API Functions
-const teamMemberAPI = {
-  // Get all team members
-  getAll: async () => {
-    const response = await axios.get("/api/team-members");
-    return response.data;
-  },
-
-  // Get single team member
-  getById: async (id) => {
-    const response = await axios.get(`/api/team-members/${id}`);
-    return response.data;
-  },
-
-  // Create new team member
-  create: async (data) => {
-    const response = await axios.post("/api/team-members", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Update team member
-  update: async ({ id, data }) => {
-    const response = await axios.put(`/api/team-members/${id}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Delete team member
-  delete: async (id) => {
-    const response = await axios.delete(`/api/team-members/${id}`);
-    return response.data;
-  },
-};
-
-// Get departments for dropdown
-const getDepartments = async () => {
-  const response = await axios.get("/api/departments");
-  return response.data;
-};
-
-// Get roles for dropdown
-const getRoles = async () => {
-
-  // const response = await axios.get("/api/roles");
-  // return response.data;
-};
+import {
+  useCreateTeamMember,
+  useDeleteTeamMember,
+  useTeamMember,
+  useUpdateTeamMember,
+} from "../../../hooks/useTeam";
+import { useDepartments } from "../../../hooks/hr/useDepartments";
 
 function TeamMemberForm({ edit, title = "Add Team Member" }) {
   const navigate = useNavigate();
   const { id } = useParams();
-  const queryClient = useQueryClient();
 
   const [showPassword, setShowPassword] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
+  const [more, setMore] = useState(false);
 
   const togglePassword = () => setShowPassword(!showPassword);
 
@@ -93,8 +48,8 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     role: "",
     address: "",
     about: "",
-    loginAllowed: "Yes",
-    emailNotifications: "Yes",
+    loginAllowed: true,
+    emailNotifications: true,
     averageRate: "",
     slackId: "",
     skills: "",
@@ -108,101 +63,15 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     accountStatus: "Active",
   });
 
-  // Fetch team member data for editing
-  // eslint-disable-next-line no-unused-vars
-  const { data: teamMember, isLoading: isLoadingTeamMember } = useQuery({
-    queryKey: ["teamMember", id],
-    queryFn: () => teamMemberAPI.getById(id),
-    enabled: edit && !!id,
-    onSuccess: (data) => {
-      setFormData({
-        memberId: data.memberId || "",
-        salutation: data.salutation || "",
-        name: data.name || "",
-        email: data.email || "",
-        password: "", // Don't populate password for security
-        designation: data.designation || "",
-        department: data.department || "",
-        country: data.country || "USA",
-        mobile: data.mobile || "",
-        gender: data.gender || "",
-        joiningDate: data.joiningDate || "",
-        dateOfBirth: data.dateOfBirth || "",
-        language: data.language || "English",
-        role: data.role || "",
-        address: data.address || "",
-        about: data.about || "",
-        loginAllowed: data.loginAllowed || "Yes",
-        emailNotifications: data.emailNotifications || "Yes",
-        averageRate: data.averageRate || "",
-        slackId: data.slackId || "",
-        skills: data.skills || "",
-        probationEndDate: data.probationEndDate || "",
-        noticePeriodStartDate: data.noticePeriodStartDate || "",
-        noticePeriodEndDate: data.noticePeriodEndDate || "",
-        employmentType: data.employmentType || "",
-        addedBy: data.addedBy || "",
-        maritalStatus: data.maritalStatus || "",
-        businessAddress: data.businessAddress || "",
-        accountStatus: data.accountStatus || "Active",
-      });
-      if (data.profilePicture) {
-        setProfilePreview(data.profilePicture);
-      }
-    },
-  });
+  const { data: teamMember, isLoading: isLoadingTeamMember } =
+    useTeamMember(id);
+  const createMember = useCreateTeamMember();
+  const updateMember = useUpdateTeamMember(id);
+  const deleteMember = useDeleteTeamMember();
 
   // Fetch departments
-  const { data: departments = [] } = useQuery({
-    queryKey: ["departments"],
-    queryFn: getDepartments,
-  });
-
-  // Fetch roles
-  const { data: roles = [] } = useQuery({
-    queryKey: ["roles"],
-    queryFn: getRoles,
-  });
-
-  // Create team member mutation
-  const createMutation = useMutation({
-    mutationFn: teamMemberAPI.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teamMembers"] });
-      navigate("/hr/team-members");
-    },
-    onError: (error) => {
-      console.error("Error creating team member:", error);
-      alert("Failed to create team member. Please try again.");
-    },
-  });
-
-  // Update team member mutation
-  const updateMutation = useMutation({
-    mutationFn: teamMemberAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teamMembers"] });
-      queryClient.invalidateQueries({ queryKey: ["teamMember", id] });
-      navigate("/hr/team-members");
-    },
-    onError: (error) => {
-      console.error("Error updating team member:", error);
-      alert("Failed to update team member. Please try again.");
-    },
-  });
-
-  // Delete team member mutation
-  const deleteMutation = useMutation({
-    mutationFn: teamMemberAPI.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teamMembers"] });
-      navigate("/hr/team-members");
-    },
-    onError: (error) => {
-      console.error("Error deleting team member:", error);
-      alert("Failed to delete team member. Please try again.");
-    },
-  });
+  const { data: departments = [], isLoading: departmentsLoading } =
+    useDepartments();
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -221,10 +90,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form Data Submitted:", formData); // For debugging
-
+  const handleSubmit = () => {
     // Basic validation
     if (!formData.name || !formData.email || !formData.joiningDate) {
       alert("Please fill in all required fields.");
@@ -246,86 +112,112 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
       submitData.append("profilePicture", profilePicture);
     }
 
+    console.log(submitData);
+
     if (edit) {
-      updateMutation.mutate({ id, data: submitData });
+      updateMember.mutate(submitData);
     } else {
-      createMutation.mutate(submitData);
+      createMember.mutate(submitData);
     }
-  };
-
-  const handleSaveAndAddMore = (e) => {
-    e.preventDefault();
-
-    if (!formData.name || !formData.email || !formData.joiningDate) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    const submitData = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key]) {
-        submitData.append(key, formData[key]);
-      }
-    });
-
-    if (profilePicture) {
-      submitData.append("profilePicture", profilePicture);
-    }
-
-    createMutation.mutate(submitData, {
-      onSuccess: () => {
-        // Reset form for adding more
-        setFormData({
-          memberId: "",
-          salutation: "",
-          name: "",
-          email: "",
-          password: "",
-          designation: "",
-          department: "",
-          country: "USA",
-          mobile: "",
-          gender: "",
-          joiningDate: "",
-          dateOfBirth: "",
-          language: "English",
-          role: "",
-          address: "",
-          about: "",
-          loginAllowed: "Yes",
-          emailNotifications: "Yes",
-          averageRate: "",
-          slackId: "",
-          skills: "",
-          probationEndDate: "",
-          noticePeriodStartDate: "",
-          noticePeriodEndDate: "",
-          employmentType: "",
-          addedBy: "",
-          maritalStatus: "",
-          businessAddress: "",
-          accountStatus: "Active",
-        });
-        setProfilePicture(null);
-        setProfilePreview(null);
-      },
-    });
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this team member?")) {
-      deleteMutation.mutate(id);
+      deleteMember.mutate(id);
     }
   };
 
+  useEffect(() => {
+    const iscreated = createMember.isSuccess;
+    if (iscreated && more) {
+      setFormData({
+        memberId: "",
+        salutation: "",
+        name: "",
+        email: "",
+        password: "",
+        designation: "",
+        department: "",
+        country: "USA",
+        mobile: "",
+        gender: "",
+        joiningDate: "",
+        dateOfBirth: "",
+        language: "English",
+        role: "",
+        address: "",
+        about: "",
+        loginAllowed: true,
+        emailNotifications: true,
+        averageRate: "",
+        slackId: "",
+        skills: "",
+        probationEndDate: "",
+        noticePeriodStartDate: "",
+        noticePeriodEndDate: "",
+        employmentType: "",
+        addedBy: "",
+        maritalStatus: "",
+        businessAddress: "",
+        accountStatus: "Active",
+      });
+      setProfilePicture(null);
+      setProfilePreview(null);
+    } else {
+      if (iscreated) navigate("/hr/team-members");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createMember.isSuccess]);
+
+  useEffect(() => {
+    if (teamMember) {
+      setFormData({
+        memberId: teamMember.memberId || "",
+        salutation: teamMember.salutation || "",
+        name: teamMember.name || "",
+        email: teamMember.user.email || "",
+        password: "", // Don't populate password for security
+        designation: teamMember.designation || "",
+        department: teamMember.department._id || "",
+        country: teamMember.country || "USA",
+        mobile: teamMember.mobile || "",
+        gender: teamMember.gender || "",
+        joiningDate: teamMember.joiningDate?.split("T")[0] || "",
+        dateOfBirth: teamMember.dateOfBirth?.split("T")[0] || "",
+        language: teamMember.language || "English",
+        role: teamMember.role || "",
+        address: teamMember.address || "",
+        about: teamMember.about || "",
+        loginAllowed: teamMember.loginAllowed || true,
+        emailNotifications: teamMember.emailNotifications || true,
+        averageRate: teamMember.averageRate || "",
+        slackId: teamMember.slackId || "",
+        skills: teamMember.skills || "",
+        probationEndDate: teamMember.probationEndDate?.split("T")[0] || "",
+        noticePeriodStartDate:
+          teamMember.noticePeriodStartDate?.split("T")[0] || "",
+        noticePeriodEndDate:
+          teamMember.noticePeriodEndDate?.split("T")[0] || "",
+        employmentType: teamMember.employmentType || "",
+        addedBy: teamMember.addedBy || "",
+        maritalStatus: teamMember.maritalStatus || "",
+        businessAddress: teamMember.businessAddress || "",
+        accountStatus: teamMember.accountStatus || "Active",
+      });
+      if (teamMember.profilePicture) {
+        setProfilePreview(teamMember.profilePicture);
+      }
+    }
+  }, [teamMember]);
+
   const isLoading =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending;
+    createMember.isLoading || updateMember.isLoading || deleteMember.isLoading;
 
   if (edit && isLoadingTeamMember) {
     return <div>Loading team member data...</div>;
   }
+
+  // if (departmentsLoading) return <div>loading</div>;
   return (
     <>
       <PageTitle title={title} />
@@ -431,24 +323,41 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   )}
                 </div>
               </FormField>
-              <FormField label="Designation" required>
+              {/* <FormField label="Designation" required>
                 <Dropdown
                   options={["Team Member", "Admin", "Client"]}
                   value={formData.designation}
                   onChange={(val) => handleChange("designation", val)}
                 />
-              </FormField>
-              <FormField label="Department" required>
-                <Dropdown
-                  options={
-                    Array.isArray(departments) && departments.length > 0
-                      ? departments.map((department) => department.name)
-                      : ["Design", "Developer", "QA"]
-                  }
-                  value={formData.department}
-                  onChange={(val) => handleChange("department", val)}
+              </FormField> */}
+
+              <FormField label="User Role">
+                <Input
+                  value={formData.designation}
+                  onChange={(val) => handleChange("designation", val)}
+                  type="text"
+                  placeholder="Enter Role"
                 />
               </FormField>
+              <FormField label="Department" required>
+                {departmentsLoading ? (
+                  <div>Loading departments</div>
+                ) : (
+                  <Dropdown
+                    options={
+                      Array.isArray(departments) && departments.length > 0
+                        ? departments.map((department) => ({
+                            value: department._id,
+                            label: department.title,
+                          }))
+                        : ["Design", "Developer", "QA"]
+                    }
+                    value={formData.department}
+                    onChange={(val) => handleChange("department", val)}
+                  />
+                )}
+              </FormField>
+
               <FormField label="Country">
                 <div className="relative">
                   <select
@@ -544,17 +453,14 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   />
                 </div>
               </FormField>
-              <FormField label="User Role">
-                <Dropdown
-                  options={
-                    Array.isArray(roles) && roles.length > 0
-                      ? roles.map((role) => role.name)
-                      : ["Team Member", "Admin", "Client"]
-                  }
-                  value={formData.role}
-                  onChange={(val) => handleChange("role", val)}
+              {/* <FormField label="User Role">
+                <Input
+                  value={formData.designation}
+                  onChange={(val) => handleChange("designation", val)}
+                  type="text"
+                  placeholder="Enter Role"
                 />
-              </FormField>
+              </FormField> */}
               <FormField label="Address" className="col-span-3">
                 <Input
                   value={formData.address}
@@ -581,9 +487,9 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
             <form className="grid grid-cols-3 gap-4">
               <FormField label="Login Allowed?">
                 <div className="flex typo-cta">
-                  {["Yes", "No"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.loginAllowed === val
                           ? "bg-brand text-white"
@@ -598,16 +504,16 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                         onChange={() => handleChange("loginAllowed", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Yes" : "No"}</span>
                     </label>
                   ))}
                 </div>
               </FormField>
               <FormField label="Receive email notifications?">
                 <div className="flex typo-cta">
-                  {["Yes", "No"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.emailNotifications === val
                           ? "bg-brand text-white"
@@ -622,7 +528,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                         onChange={() => handleChange("emailNotifications", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Yes" : "No"}</span>
                     </label>
                   ))}
                 </div>
@@ -752,53 +658,47 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
           </div>
         </div>
 
-        {edit ? (
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <RedButton
-                type="button"
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                {isLoading ? "Saving..." : "Save"}
-              </RedButton>
+        <div className="flex justify-between">
+          <div className="flex gap-4">
+            <RedButton
+              type="button"
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : edit ? "Update" : "Save"}
+            </RedButton>
+            {edit ? (
               <Back>
                 <RedBorderButton disabled={isLoading}>Cancel</RedBorderButton>
               </Back>
-            </div>
+            ) : (
+              <RedBorderButton
+                type="button"
+                onClick={() => {
+                  handleSubmit(true);
+                  setMore(true);
+                }}
+                disabled={isLoading}
+              >
+                {isLoading ? "Saving..." : "Save & Add More"}
+              </RedBorderButton>
+            )}
+          </div>
 
+          {edit ? (
             <RedButton
               type="button"
               onClick={handleDelete}
               disabled={isLoading}
             >
-              {isLoading ? "Deleting..." : "Delete"}
+              {isLoading ? "Deleting..." : "Delete Client"}
             </RedButton>
-          </div>
-        ) : (
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <RedButton
-                type="button"
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                {isLoading ? "Saving..." : "Save"}
-              </RedButton>
-              <RedBorderButton
-                type="button"
-                onClick={handleSaveAndAddMore}
-                disabled={isLoading}
-              >
-                {isLoading ? "Saving..." : "Save & Add More"}
-              </RedBorderButton>
-            </div>
-
+          ) : (
             <Back>
               <RedButton disabled={isLoading}>Cancel</RedButton>
             </Back>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </>
   );

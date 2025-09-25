@@ -152,21 +152,21 @@ function App() {
             element={<TeamMemberForm edit title="Edit Team Member Details" />}
           />
 
-          <Route path="department" element={<DepartmentTable />} />
+          <Route path="departments" element={<DepartmentTable />} />
           <Route path="add-department" element={<DepartmentForm />} />
           <Route
             path="department/:id/edit"
             element={<DepartmentForm edit title="Edit Department" />}
           />
 
-          <Route path="appreciation" element={<AppreciationTable />} />
+          <Route path="appreciations" element={<AppreciationTable />} />
           <Route path="add-appreciation" element={<AppreciationForm />} />
           <Route
             path="appreciation/:id/edit"
             element={<AppreciationForm edit title="Edit Appreciation" />}
           />
 
-          <Route path="role" element={<RoleTable />} />
+          <Route path="roles" element={<RoleTable />} />
           <Route path="add-role" element={<RoleForm />} />
           <Route
             path="role/:id/edit"

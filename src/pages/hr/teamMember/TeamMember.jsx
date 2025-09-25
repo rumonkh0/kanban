@@ -59,7 +59,7 @@ function TeamMember() {
           ))}
         </div>
       </div>
-      <HrTable />
+      <HrTable filters={filters} />
     </>
   );
 }
