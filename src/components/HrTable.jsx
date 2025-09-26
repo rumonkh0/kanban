@@ -5,6 +5,7 @@ import { ImageName, Table, Td, Th, Thead } from "./Component";
 import DropdownMenu from "./DropdownMenu";
 import { useDeleteTeamMember, useTeamMembers } from "../hooks/useTeam";
 
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 // format date helper
 const formatDate = (date) => {
   if (!date) return "";
@@ -92,73 +93,81 @@ function TeamMembersTable({ filters }) {
         </tr>
       </Thead>
       <tbody>
-        {teamMembersData.map((teamMember, index) => (
-          <tr
-            key={index}
-            className="h-16 hover:[&_td]:bg-divider/80 transition-colors"
-          >
-            {/* Client Name with Avatar */}
-            <Td className="first:rounded-l-[4px]" data={teamMember.memberId} />
-            <Td>
-              <Link to="/hr/team-members/member-details">
-                <ImageName
-                  image="/images/profile.png"
-                  username={teamMember.name}
-                />
-              </Link>
-            </Td>
-            <Td data={teamMember.user.email} />
-            <Td>
-              <div className="w-full h-10 flex items-center justify-between px-2 gap-2 border border-text2 rounded-sm">
-                <div className="typo-b3">{teamMember.designation}</div>
-                <div>
-                  <Icon name="arrow" />
+        {teamMembersData.map((teamMember, index) => {
+          const memberImage = teamMember?.profilePicture?.filePath
+            ? `${baseURL}/${teamMember.profilePicture.filePath}`
+            : "/images/profile.png";
+          return (
+            <tr
+              key={index}
+              className="h-16 hover:[&_td]:bg-divider/80 transition-colors"
+            >
+              {/* Client Name with Avatar */}
+              <Td
+                className="first:rounded-l-[4px]"
+                data={teamMember.memberId}
+              />
+              <Td>
+                <Link to="/hr/team-members/member-details">
+                  <ImageName
+                    image={memberImage}
+                    username={teamMember.name}
+                  />
+                </Link>
+              </Td>
+              <Td data={teamMember.user.email} />
+              <Td>
+                <div className="w-full h-10 flex items-center justify-between px-2 gap-2 border border-text2 rounded-sm">
+                  <div className="typo-b3">{teamMember.designation}</div>
+                  <div>
+                    <Icon name="arrow" />
+                  </div>
                 </div>
-              </div>
-            </Td>
+              </Td>
 
-            <Td data={formatDate(teamMember.joiningDate)} />
-            <Td data={teamMember.currentTask || 0} />
-            <Td>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    teamMember.accountStatus === "Active"
-                      ? "bg-success"
-                      : "bg-brand"
-                  }`}
-                ></div>
-                <div className="typo-b3">{teamMember.accountStatus}</div>
-              </div>
-            </Td>
-            <Td className="text-left last:rounded-r-[4px]">
-              <button
-                onClick={(e) => handleMenuClick(index, e)}
-                className="relative p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm"
-              >
-                <Icon name="menu" size={20} />
-                <DropdownMenu
-                  isOpen={activeMenu === index}
-                  onClose={() => setActiveMenu(null)}
-                  menuItems={[
-                    {
-                      label: "View",
-                      href: `/hr/team-member/${teamMember._id}`,
-                    },
-                    {
-                      label: "Edit",
-                      href: `/hr/team-member/${teamMember._id}/edit`,
-                    },
-                    {
-                      label: "Delete",
-                      onClick: () => handleDelete(teamMember._id),
-                    },
-                  ]}
-                />
-              </button>
-            </Td>
-          </tr>
-        ))}
+              <Td data={formatDate(teamMember.joiningDate)} />
+              <Td data={teamMember.currentTask || 0} />
+              <Td>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      teamMember.accountStatus === "Active"
+                        ? "bg-success"
+                        : "bg-brand"
+                    }`}
+                  ></div>
+                  <div className="typo-b3">{teamMember.accountStatus}</div>
+                </div>
+              </Td>
+              <Td className="text-left last:rounded-r-[4px]">
+                <button
+                  onClick={(e) => handleMenuClick(index, e)}
+                  className="relative p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm"
+                >
+                  <Icon name="menu" size={20} />
+                  <DropdownMenu
+                    isOpen={activeMenu === index}
+                    onClose={() => setActiveMenu(null)}
+                    menuItems={[
+                      {
+                        label: "View",
+                        href: `/hr/team-member/${teamMember._id}`,
+                      },
+                      {
+                        label: "Edit",
+                        href: `/hr/team-member/${teamMember._id}/edit`,
+                      },
+                      {
+                        label: "Delete",
+                        onClick: () => handleDelete(teamMember._id),
+                      },
+                    ]}
+                  />
+                </button>
+              </Td>
+            </tr>
+          );
+        })}
       </tbody>
     </Table>
   );

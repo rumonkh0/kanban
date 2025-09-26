@@ -352,8 +352,8 @@ export const ToggleTabs = ({
 
 export const MultiSelect = ({
   label = "Payment Method",
-  options = ["Zelle", "PayPal", "Bank Transfer", "Cash"], // array of strings
-  value = [], // array of selected strings
+  options = [],
+  value = [], // array of selected values
   onChange = () => {},
   placeholder = "Select...",
   className,
@@ -361,7 +361,7 @@ export const MultiSelect = ({
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
 
-  // Close on outside click
+  // Close dropdown on outside click
   useEffect(() => {
     function onDocDown(e) {
       if (rootRef.current && !rootRef.current.contains(e.target)) {
@@ -371,6 +371,15 @@ export const MultiSelect = ({
     document.addEventListener("mousedown", onDocDown);
     return () => document.removeEventListener("mousedown", onDocDown);
   }, []);
+
+  // Normalize options like in Dropdownd
+  const normalizedOptions = options.map((opt, i) => {
+    if (typeof opt === "string") return { value: opt, label: opt };
+    if (opt.value && opt.label !== undefined) return opt;
+    if (opt.value && opt.component)
+      return { value: opt.value, label: opt.component };
+    return { value: i, label: opt }; // fallback
+  });
 
   const toggle = (val) => {
     if (value.includes(val)) {
@@ -383,68 +392,70 @@ export const MultiSelect = ({
   return (
     <div
       ref={rootRef}
-      className="bg-surface1 rounded-xl flex flex-col gap-2 relative"
+      className={`bg-surface1 rounded-xl flex flex-col gap-2 relative ${
+        className || ""
+      }`}
     >
       {/* Label */}
       {label && <label className="typo-b2 text-text2">{label}</label>}
 
-      {/* Display (chips + arrow) */}
+      {/* Display selected chips */}
       <div
-        className={`relative bg-surface2 h-12 border border-divider rounded-lg px-4 flex flex-wrap items-center gap-2 cursor-pointer ${
-          className || ""
-        }`}
+        className="relative bg-surface2 h-12 border border-divider rounded-lg px-4 flex flex-wrap items-center gap-2 cursor-pointer"
         onClick={() => setOpen((o) => !o)}
       >
         {value.length === 0 && (
           <span className="typo-b3 text-text2">{placeholder}</span>
         )}
 
-        {value.map((val) => (
-          <div
-            key={val}
-            className="flex gap-1 rounded-lg border border-divider bg-surface h-auto px-2 py-1 items-center"
-          >
-            <span className="typo-b3">{val}</span>
-            {/* wrap Icon in a button so we don't depend on Icon handling onClick */}
-            <button
-              type="button"
-              className="cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                onChange(value.filter((v) => v !== val));
-              }}
-              aria-label={`Remove ${val}`}
-              title={`Remove ${val}`}
+        {value.map((val) => {
+          const opt = normalizedOptions.find((o) => o.value === val);
+          return (
+            <div
+              key={val}
+              className="flex gap-1 rounded-lg border border-divider bg-surface h-auto px-2 py-1 items-center"
             >
-              <Icon name="close" className="w-4 h-4 text-text2" />
-            </button>
-          </div>
-        ))}
+              <span className="typo-b3">{opt?.label || val}</span>
+              <button
+                type="button"
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(value.filter((v) => v !== val));
+                }}
+                aria-label={`Remove ${opt?.label || val}`}
+                title={`Remove ${opt?.label || val}`}
+              >
+                <Icon name="close" className="w-4 h-4 text-text2" />
+              </button>
+            </div>
+          );
+        })}
 
-        {/* Right chevron, non-interactive so clicks go to container */}
+        {/* Right chevron */}
         <Icon
           name="arrow"
           className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
         />
       </div>
 
-      {/* Dropdown */}
+      {/* Dropdown list */}
       {open && (
         <div className="absolute left-0 right-0 mt-1 bg-surface2 border border-divider rounded-lg shadow-lg z-10 max-h-48 overflow-auto">
-          {options.map((opt) => {
-            const selected = value.includes(opt);
+          {normalizedOptions.map((opt) => {
+            const selected = value.includes(opt.value);
             return (
               <div
-                key={opt}
+                key={opt.value}
                 className={`px-4 py-2 cursor-pointer hover:bg-divider ${
                   selected ? "bg-divider/60" : ""
                 }`}
                 onClick={() => {
-                  toggle(opt);
+                  toggle(opt.value);
                   setOpen(false);
                 }}
               >
-                {opt}
+                {typeof opt.label === "string" ? opt.label : "Custom"}
               </div>
             );
           })}

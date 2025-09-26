@@ -1,43 +1,69 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Icon from "./Icon";
 import { RedButton } from "./Component";
 
-export default function ClientSelect({ onSelect, label, className, required }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
-  // Example clients - you would typically fetch this from your backend
-  const clients = [
-    {
-      id: 1,
-      name: "Gustave Koelpin",
-      email: "@example",
-      avatar: "/images/profile.png",
-    },
-    {
-      id: 1,
-      name: "jhon Koelpin",
-      email: "@example",
-      avatar: "/images/profile.png",
-    },
-  ];
+export default function ClientSelect({
+  clients = [],
+  value, // id or array of ids
+  onChange, // setter
+  label,
+  className,
+  required,
+  mode = "single", // "single" | "multi"
+  addingTitle = "Add new client",
+  placeHolder = "Select Client...",
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSelect = (client) => {
-    setSelectedClient(client);
-    setIsOpen(false);
-    if (onSelect) onSelect(client);
+    if (mode === "single") {
+      onChange?.(client.id);
+      setIsOpen(false);
+    } else {
+      const selectedIds = value || [];
+      if (selectedIds.includes(client.id)) {
+        onChange?.(selectedIds.filter((id) => id !== client.id));
+      } else {
+        onChange?.([...selectedIds, client.id]);
+      }
+    }
   };
 
+  const isSelected = (client) => {
+    if (mode === "single") return value === client.id;
+    return value?.includes(client.id);
+  };
+
+  // Find the selected client objects for display
+  const selectedClients =
+    mode === "single"
+      ? clients.find((c) => c.id === value)
+      : clients.filter((c) => value?.includes(c.id));
+
   return (
-    <div className={`${className} relative`}>
+    <div ref={dropdownRef} className={`${className} relative`}>
       {label && (
         <label className="typo-b2 text-text2 block mb-2">
           {label} {required && <span className="text-brand">*</span>}
         </label>
       )}
 
-      {/* Selected Client Display / Trigger Button */}
+      {/* Trigger Button */}
       <button
         type="button"
         onClick={(e) => {
@@ -46,23 +72,51 @@ export default function ClientSelect({ onSelect, label, className, required }) {
         }}
         className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-brand"
       >
-        {selectedClient ? (
-          <div className="flex items-center gap-2">
-            <img
-              src={selectedClient.avatar}
-              alt={selectedClient.name}
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-            <div className="flex flex-col items-start">
-              <span className="text-text">{selectedClient.name}</span>
-              <span className="typo-b3 text-text2">{selectedClient.email}</span>
+        {mode === "single" ? (
+          selectedClients ? (
+            <div className="flex items-center gap-2">
+              <img
+                src={
+                  selectedClients?.profilePicture
+                    ? `${baseURL}/${selectedClients.profilePicture}`
+                    : "/images/profile.png"
+                }
+                alt={selectedClients.name}
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+              <div className="flex flex-col items-start">
+                <span className="text-text">{selectedClients.name}</span>
+                <span className="typo-b3 text-text2">
+                  {selectedClients.email}
+                </span>
+              </div>
             </div>
+          ) : (
+            <span className="typo-b3 text-text2">{placeHolder}</span>
+          )
+        ) : selectedClients.length > 0 ? (
+          <div className="flex -space-x-3">
+            {selectedClients.map((client, idx) => (
+              <img
+                key={idx}
+                src={
+                  selectedClients?.profilePicture
+                    ? `${baseURL}/${selectedClients.profilePicture}`
+                    : "/images/profile.png"
+                }
+                alt={client.name}
+                width={32}
+                height={32}
+                className="rounded-full border-2 border-white"
+              />
+            ))}
           </div>
         ) : (
-          <span className="typo-b3 text-text2">Select Client</span>
+          <span className="typo-b3 text-text2">{placeHolder}</span>
         )}
+
         <Icon
           name="arrow"
           className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
@@ -95,10 +149,16 @@ export default function ClientSelect({ onSelect, label, className, required }) {
                   e.preventDefault();
                   handleSelect(client);
                 }}
-                className="w-full h-16 p-2 flex items-center gap-2 rounded-lg hover:bg-brand transition-colors group"
+                className={`w-full h-16 p-2 flex items-center gap-2 rounded-lg hover:bg-brand transition-colors group ${
+                  isSelected(client) ? "bg-brand/30" : ""
+                }`}
               >
                 <img
-                  src={client.avatar}
+                  src={
+                    client?.profilePicture
+                      ? `${baseURL}/${client.profilePicture}`
+                      : "/images/profile.png"
+                  }
                   alt={client.name}
                   width={40}
                   height={40}
@@ -116,13 +176,12 @@ export default function ClientSelect({ onSelect, label, className, required }) {
               <RedButton
                 type="button"
                 onClick={(e) => {
-                  e.preventDefault();
-                  /* Handle add new client */
+                  e.preventDefault(); /* Handle add new client */
                 }}
-                className="flex items-center gap-"
+                className="flex items-center px-4"
               >
                 <Icon name="plus" size={16} className="mr-2" />
-                <span className="typo-b2">Add New Client</span>
+                <span className="typo-b2">{addingTitle}</span>
               </RedButton>
             </div>
           </div>
@@ -130,4 +189,20 @@ export default function ClientSelect({ onSelect, label, className, required }) {
       )}
     </div>
   );
+}
+
+{
+  /* <div className="p-2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search client..."
+                className="w-full h-10 bg-surface2 border border-divider rounded-lg pl-10 pr-4 typo-b3 focus:outline-none focus:ring-2 focus:ring-brand"
+              />
+              <Icon
+                name="search"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text2"
+              />
+            </div>
+          </div> */
 }

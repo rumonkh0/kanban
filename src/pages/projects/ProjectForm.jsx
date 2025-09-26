@@ -1,7 +1,5 @@
 import Icon from "@/components/Icon";
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import ClientSelect from "@/components/ClientSelect";
 import {
@@ -17,29 +15,32 @@ import { useServices } from "../../hooks/useService";
 import {
   useCreateProject,
   useDeleteProject,
+  useProject,
   useUpdateProject,
 } from "../../hooks/useProjects";
+import { useTeamMembers } from "../../hooks/useTeam";
+import { useClients } from "../../hooks/useClients";
+
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ProjectForm({ edit, title = "Add Project" }) {
   const navigate = useNavigate();
   const { id } = useParams();
-
-  const [relatedFile, setRelatedFile] = useState(null);
-
+  const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
     shortCode: "",
     projectName: "",
-    startDate: "",
+    startDate: new Date().toISOString().split("T")[0],
     dueDate: "",
-    noDeadline: false,
-    service: "",
-    department: [],
+    noDeadline: true,
+    service: null,
+    departments: [],
     client: null,
     members: [],
     summary: "",
-    ganttChart: "Enable",
-    taskBoard: "Enable",
-    taskApproval: "Disable",
+    ganttChart: true,
+    taskBoard: true,
+    taskApproval: false,
     status: "In Progress",
     progress: 0,
     calculateProgress: false,
@@ -50,62 +51,19 @@ function ProjectForm({ edit, title = "Add Project" }) {
     amountOwedByClient: "",
     amountPaidToTeam: "",
     amountOwedToTeam: "",
-    notifyClients: false,
+    notifyClients: true,
   });
+  const [relatedFile, setRelatedFile] = useState(null);
 
-  // Fetch project data for editing
-  // eslint-disable-next-line no-unused-vars
-  const { data: projectData, isLoading: isLoadingProject } = useQuery({
-    queryKey: ["project", id],
-    queryFn: () => projectAPI.getById(id),
-    enabled: edit && !!id,
-    onSuccess: (data) => {
-      setFormData({
-        shortCode: data.shortCode || "",
-        projectName: data.projectName || "",
-        startDate: data.startDate || "",
-        dueDate: data.dueDate || "",
-        noDeadline: data.noDeadline || false,
-        service: data.service || "",
-        department: data.department || [],
-        client: data.client || null,
-        members: data.members || [],
-        summary: data.summary || "",
-        ganttChart: data.ganttChart || "Enable",
-        taskBoard: data.taskBoard || "Enable",
-        taskApproval: data.taskApproval || "Disable",
-        status: data.status || "In Progress",
-        progress: data.progress || 0,
-        calculateProgress: data.calculateProgress || false,
-        projectPrice: data.projectPrice || "",
-        discount: data.discount || "",
-        teamMembersPay: data.teamMembersPay || "",
-        amountPaidByClient: data.amountPaidByClient || "",
-        amountOwedByClient: data.amountOwedByClient || "",
-        amountPaidToTeam: data.amountPaidToTeam || "",
-        amountOwedToTeam: data.amountOwedToTeam || "",
-        notifyClients: data.notifyClients || false,
-      });
-      if (data.relatedFile) {
-        setRelatedFile(data.relatedFile);
-      }
-    },
-  });
-
-  // Fetch services
+  //fetch projects
+  const { data: projectData, isLoading: isLoadingProject } = useProject(id);
   const { data: services = [] } = useServices();
-
-  // Fetch departments
   const { data: departments = [] } = useDepartments();
-
-  // Create project mutation
   const createMutation = useCreateProject();
-
-  // Update project mutation
   const updateMutation = useUpdateProject();
-
-  // Delete project mutation
   const deleteMutation = useDeleteProject();
+  const { data: freelancers = [] } = useTeamMembers();
+  const { data: clients = [] } = useClients();
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -115,11 +73,14 @@ function ProjectForm({ edit, title = "Add Project" }) {
     setRelatedFile(file);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
+    console.log(formData);
     // Basic validation
-    if (!formData.projectName || !formData.startDate || !formData.dueDate) {
+    if (
+      !formData.projectName ||
+      !formData.startDate ||
+      !(formData.noDeadline && !formData.dueDate)
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -128,87 +89,48 @@ function ProjectForm({ edit, title = "Add Project" }) {
     const submitData = new FormData();
 
     // Append all form fields
+    // Object.keys(formData).forEach((key) => {
+    //   if (formData[key] !== null && formData[key] !== undefined) {
+    //     if (Array.isArray(formData[key])) {
+    //       submitData.append(key, JSON.stringify(formData[key]));
+    //     } else if (typeof formData[key] === "object") {
+    //       submitData.append(key, JSON.stringify(formData[key]));
+    //     } else {
+    //       submitData.append(key, formData[key]);
+    //     }
+    //   }
+    // });
+
+    // Append all form fields
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && formData[key] !== undefined) {
-        if (Array.isArray(formData[key])) {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else if (typeof formData[key] === "object") {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else {
-          submitData.append(key, formData[key]);
-        }
+      const value = formData[key];
+      if (
+        value !== undefined &&
+        value !== null &&
+        key !== "members" &&
+        key !== "departments"
+      ) {
+        submitData.append(key, value);
       }
     });
+
+    formData.members.forEach((method) =>
+      submitData.append("members[]", method)
+    );
+    formData.departments.forEach((method) =>
+      submitData.append("departments[]", method)
+    );
 
     // Append file if selected
     if (relatedFile) {
       submitData.append("relatedFile", relatedFile);
     }
-
+    console.log(submitData);
     if (edit) {
       updateMutation.mutate({ id, data: submitData });
     } else {
       createMutation.mutate(submitData);
     }
-  };
-
-  const handleSaveAndAddMore = (e) => {
-    e.preventDefault();
-
-    if (!formData.projectName || !formData.startDate || !formData.dueDate) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    const submitData = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && formData[key] !== undefined) {
-        if (Array.isArray(formData[key])) {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else if (typeof formData[key] === "object") {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else {
-          submitData.append(key, formData[key]);
-        }
-      }
-    });
-
-    if (relatedFile) {
-      submitData.append("relatedFile", relatedFile);
-    }
-
-    createMutation.mutate(submitData, {
-      onSuccess: () => {
-        // Reset form for adding more
-        setFormData({
-          shortCode: "",
-          projectName: "",
-          startDate: "",
-          dueDate: "",
-          noDeadline: false,
-          service: "",
-          department: [],
-          client: null,
-          members: [],
-          summary: "",
-          ganttChart: "Enable",
-          taskBoard: "Enable",
-          taskApproval: "Disable",
-          status: "In Progress",
-          progress: 0,
-          calculateProgress: false,
-          projectPrice: "",
-          discount: "",
-          teamMembersPay: "",
-          amountPaidByClient: "",
-          amountOwedByClient: "",
-          amountPaidToTeam: "",
-          amountOwedToTeam: "",
-          notifyClients: false,
-        });
-        setRelatedFile(null);
-      },
-    });
   };
 
   const handleDelete = () => {
@@ -217,6 +139,76 @@ function ProjectForm({ edit, title = "Add Project" }) {
     }
   };
 
+  useEffect(() => {
+    if (projectData) {
+      setFormData({
+        shortCode: projectData.shortCode || "",
+        projectName: projectData.projectName || "",
+        startDate: projectData.startDate.split("T")[0] || "",
+        dueDate: projectData.dueDate.split("T")[0] || "",
+        noDeadline: projectData.noDeadline ?? false,
+        service: projectData.service || null,
+        departments: projectData.department || [],
+        client: projectData.client || null,
+        members: projectData.members || [],
+        summary: projectData.summary || "",
+        ganttChart: projectData.ganttChart || true,
+        taskBoard: projectData.taskBoard || true,
+        taskApproval: projectData.taskApproval || false,
+        status: projectData.status || "In Progress",
+        progress: projectData.progress ?? 0,
+        calculateProgress: projectData.calculateProgress ?? false,
+        projectPrice: projectData.projectPrice ?? null,
+        discount: projectData.discount ?? null,
+        teamMembersPay: projectData.teamMembersPay ?? null,
+        amountPaidByClient: projectData.amountPaidByClient ?? null,
+        amountOwedByClient: projectData.amountOwedByClient ?? null,
+        amountPaidToTeam: projectData.amountPaidToTeam ?? null,
+        amountOwedToTeam: projectData.amountOwedToTeam ?? null,
+        notifyClients: projectData.notifyClients ?? false,
+      });
+      setRelatedFile(
+        projectData.profilePicture?.filePath &&
+          `${baseURL}/${projectData.profilePicture.filePath}`
+      ) || null;
+    }
+  }, [projectData]);
+
+  useEffect(() => {
+    const iscreated = createMutation.isSuccess;
+    if (iscreated && more) {
+      setFormData({
+        shortCode: "",
+        projectName: "",
+        startDate: "",
+        dueDate: "",
+        noDeadline: false,
+        service: null,
+        departments: [],
+        client: null,
+        members: [],
+        summary: "",
+        ganttChart: "Enable",
+        taskBoard: "Enable",
+        taskApproval: "Disable",
+        status: "In Progress",
+        progress: 0,
+        calculateProgress: false,
+        projectPrice: "",
+        discount: "",
+        teamMembersPay: "",
+        amountPaidByClient: "",
+        amountOwedByClient: "",
+        amountPaidToTeam: "",
+        amountOwedToTeam: "",
+        notifyClients: false,
+      });
+      setRelatedFile(null);
+    } else {
+      if (iscreated) navigate("/projects");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createMutation.isSuccess]);
   const isLoading =
     createMutation.isPending ||
     updateMutation.isPending ||
@@ -243,7 +235,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 <Input
                   placeholder="Enter Short Code"
                   value={formData.shortCode}
-                  onChange={(e) => handleChange("shortCode", e.target.value)}
+                  onChange={(val) => handleChange("shortCode", val)}
                 />
               </FormField>
 
@@ -251,16 +243,16 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 <Input
                   placeholder="Enter Name"
                   value={formData.projectName}
-                  onChange={(e) => handleChange("projectName", e.target.value)}
+                  onChange={(val) => handleChange("projectName", val)}
                 />
               </FormField>
 
               <FormField label="Start Date" required>
                 <div className="relative">
-                  <input
+                  <Input
                     type="date"
                     value={formData.startDate}
-                    onChange={(e) => handleChange("startDate", e.target.value)}
+                    onChange={(val) => handleChange("startDate", val)}
                     className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                   />
                   <Icon
@@ -272,10 +264,10 @@ function ProjectForm({ edit, title = "Add Project" }) {
 
               <FormField label="Due Date" required>
                 <div className="relative">
-                  <input
+                  <Input
                     type="date"
                     value={formData.dueDate}
-                    onChange={(e) => handleChange("dueDate", e.target.value)}
+                    onChange={(val) => handleChange("dueDate", val)}
                     className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                   />
                   <Icon
@@ -318,23 +310,41 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 label="Department"
                 options={
                   Array.isArray(departments) && departments.length > 0
-                    ? departments.map((dept) => dept.title)
+                    ? departments.map((dept) => ({
+                        value: dept._id,
+                        label: dept.title,
+                      }))
                     : ["Design", "Development", "Marketing", "UI/UX"]
                 }
-                value={formData.department}
-                onChange={(vals) => handleChange("department", vals)}
+                value={formData.departments}
+                onChange={(vals) => handleChange("departments", vals)}
               />
 
               <ClientSelect
-                onSelect={(client) => handleChange("client", client)}
+                value={formData.client}
+                clients={clients.map((f) => ({
+                  id: f._id,
+                  name: f.name,
+                  email: f.user.email,
+                  profilePicture: f.profilePicture?.filePath,
+                }))}
+                onChange={(client) => handleChange("client", client)}
                 label="Clients"
               />
 
               <ClientSelect
-                onSelect={(member) =>
-                  handleChange("members", [...formData.members, member])
-                }
+                value={formData.members}
+                clients={freelancers.map((f) => ({
+                  id: f._id,
+                  name: f.name,
+                  email: f.user.email,
+                  profilePicture: f.profilePicture?.filePath,
+                }))}
+                onChange={(members) => handleChange("members", members)}
+                mode="multi"
                 label="Add Project Members"
+                addingTitle="Add new member"
+                placeHolder="Select Members...."
               />
 
               <FormField
@@ -353,9 +363,9 @@ function ProjectForm({ edit, title = "Add Project" }) {
               <div className="flex flex-col gap-2">
                 <label className="typo-b2 text-text2">Public Gantt Chart</label>
                 <div className="flex typo-cta">
-                  {["Enable", "Disable"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.ganttChart === val
                           ? "bg-brand text-white"
@@ -370,7 +380,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                         onChange={() => handleChange("ganttChart", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Enable" : "Disable"}</span>
                     </label>
                   ))}
                 </div>
@@ -380,9 +390,9 @@ function ProjectForm({ edit, title = "Add Project" }) {
               <div className="flex flex-col gap-2">
                 <label className="typo-b2 text-text2">Public Task Board</label>
                 <div className="flex typo-cta">
-                  {["Enable", "Disable"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.taskBoard === val
                           ? "bg-brand text-white"
@@ -397,7 +407,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                         onChange={() => handleChange("taskBoard", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Enable" : "Disable"}</span>
                     </label>
                   ))}
                 </div>
@@ -409,9 +419,9 @@ function ProjectForm({ edit, title = "Add Project" }) {
                   Task needs approval by Admin/Project Admin
                 </label>
                 <div className="flex typo-cta">
-                  {["Enable", "Disable"].map((val, idx) => (
+                  {[true, false].map((val, idx) => (
                     <label
-                      key={val}
+                      key={idx}
                       className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
                         formData.taskApproval === val
                           ? "bg-brand text-white"
@@ -426,7 +436,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                         onChange={() => handleChange("taskApproval", val)}
                         className="hidden"
                       />
-                      <span>{val}</span>
+                      <span>{val ? "Enable" : "Disable"}</span>
                     </label>
                   ))}
                 </div>
@@ -561,11 +571,11 @@ function ProjectForm({ edit, title = "Add Project" }) {
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text2 typo-b3">
                       $
                     </span>
-                    <input
+                    <Input
                       type="text"
                       placeholder="0.00"
                       value={formData[field]}
-                      onChange={(e) => handleChange(field, e.target.value)}
+                      onChange={(val) => handleChange(field, val)}
                       className="w-full h-12 bg-surface2 border border-divider rounded-lg pl-6 pr-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                     />
                   </div>
@@ -597,7 +607,11 @@ function ProjectForm({ edit, title = "Add Project" }) {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? "Saving..." : "Save"}
+              {(createMutation.isPending || updateMutation.isPending) && !more
+                ? "Saving..."
+                : edit
+                ? "Update"
+                : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -606,10 +620,15 @@ function ProjectForm({ edit, title = "Add Project" }) {
             ) : (
               <RedBorderButton
                 type="button"
-                onClick={handleSaveAndAddMore}
+                onClick={() => {
+                  handleSubmit(true);
+                  setMore(true);
+                }}
                 disabled={isLoading}
               >
-                {isLoading ? "Saving..." : "Save & Add More"}
+                {createMutation.isPending && more
+                  ? "Saving..."
+                  : "Save & Add More"}
               </RedBorderButton>
             )}
           </div>
@@ -620,7 +639,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
               onClick={handleDelete}
               disabled={isLoading}
             >
-              {isLoading ? "Deleting..." : "Delete Project"}
+              {deleteMutation.isPending ? "Deleting..." : "Delete Client"}
             </RedButton>
           ) : (
             <Back>

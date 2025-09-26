@@ -3,9 +3,10 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { Link } from "react-router";
 import { useState } from "react";
 import { Bin, Pin } from "../../components/Icon";
-import { FilterDropdown, Th } from "../../components/Component";
+import { FilterDropdown, ImageName, Td, Th } from "../../components/Component";
 import { useDeleteProject, useProjects } from "../../hooks/useProjects";
 
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function Projects() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [filters, setFilters] = useState({
@@ -34,8 +35,6 @@ function Projects() {
   ];
   const { data: projectsData, isLoading, isError } = useProjects(filters);
   const deleteClientMutation = useDeleteProject();
-
-  // const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -108,91 +107,88 @@ function Projects() {
           ))}
         </div>
       </div>
-      <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
-        <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
-          <thead className="table-header-group after:content-[''] after:block after:h-1">
-            <tr className="text-left">
-              <Th title="Project ID" />
-              <Th title="Client" />
-              <Th title="Project Name" />
-              <Th title="Members" />
-              <Th title="Start Date" />
-              <Th title="Deadline" />
-              <Th title="status" />
-              <Th title="Action" />
-            </tr>
-          </thead>
-          <tbody>
-            {projectsData.map((project, index) => (
-              <tr
-                key={index}
-                className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
-              >
-                <td className="typo-b2 pl-4 text-text  first:rounded-l-[4px] bg-divider">
-                  {project.shortCode}
-                </td>
-                <td className=" bg-divider">
-                  <Link to={`/projects/${project.id}/manage`}>
-                    <div className="flex items-center gap-2">
-                      <img
-                        src="/images/profile.png"
-                        alt="client"
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      <span className="typo-b2 text-text">
-                        {project.client}
-                      </span>
-                    </div>
-                  </Link>
-                </td>
-                <td className="typo-b2 text-text  bg-divider">
-                  {project.projectName}
-                </td>
-                <td className=" bg-divider">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/images/profile.png"
-                      alt="assigned"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <span className="typo-b2 text-text">{project.members}</span>
-                  </div>
-                </td>
-                <td className="typo-b2 text-text  bg-divider">
-                  {project.startDate}
-                </td>
-                <td className="typo-b2 text-text  bg-divider">
-                  {project.deadline}
-                </td>
-
-                <td className=" bg-divider">
-                  <div className="flex flex-col gap-1.5">
-                    <ProgressBar value={parseInt(project.progress)} />
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2  rounded-full bg-success"></div>
-                      <p className="typo-b3">{project.status}</p>
-                    </div>
-                  </div>
-                </td>
-
-                <td className="text-center last:rounded-r-[4px] bg-divider ">
-                  <button
-                    onClick={(e) => handleMenuClick(index, e)}
-                    className="p-2 rounded-sm border border-text2 cursor-pointer hover:bg-surface2/60 relative"
-                  >
-                    <Icon name="menu" size={20} />
-                    <DropdownMenu
-                      isOpen={activeMenu === index}
-                      onClose={() => setActiveMenu(null)}
-                      menuItems={menuItems(project.id)}
-                    />
-                  </button>
-                </td>
+      {projectsData?.length > 0 ? (
+        <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
+          <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
+            <thead className="table-header-group after:content-[''] after:block after:h-1">
+              <tr className="text-left">
+                <Th title="Project ID" />
+                <Th title="Client" />
+                <Th title="Project Name" />
+                <Th title="Members" />
+                <Th title="Start Date" />
+                <Th title="Deadline" />
+                <Th title="status" />
+                <Th title="Action" />
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {projectsData.map((project, index) => {
+                const clientImage = project.client?.profilePicture?.filePath
+                  ? `${baseURL}/${project.client.profilePicture.filePath}`
+                  : "/images/profile.png";
+                return (
+                  <tr
+                    key={index}
+                    className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+                  >
+                    <Td className="typo-b2 pl-4 text-text  first:rounded-l-[4px] bg-divider">
+                      {project.shortCode}
+                    </Td>
+                    <Td className=" bg-divider">
+                      {project.client ? (
+                        <ImageName image={clientImage} username={""} />
+                      ) : (
+                        "----"
+                      )}
+                    </Td>
+                    <Td className="typo-b2 text-text  bg-divider">
+                      <Link to={`/projects/${project.id}/manage`}>
+                        {project.projectName}
+                      </Link>
+                    </Td>
+                    <Td className=" bg-divider">
+                      <ProjectMembers members={project.members} />
+                    </Td>
+                    <Td className="typo-b2 text-text  bg-divider">
+                      {project.startDate}
+                    </Td>
+                    <Td className="typo-b2 text-text  bg-divider">
+                      {project.deadline}
+                    </Td>
+
+                    <Td className=" bg-divider">
+                      <div className="flex flex-col gap-1.5">
+                        <ProgressBar value={parseInt(project.progress)} />
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2  rounded-full bg-success"></div>
+                          <p className="typo-b3">{project.status}</p>
+                        </div>
+                      </div>
+                    </Td>
+
+                    <Td className="text-center last:rounded-r-[4px] bg-divider ">
+                      <button
+                        onClick={(e) => handleMenuClick(index, e)}
+                        className="p-2 rounded-sm border border-text2 cursor-pointer hover:bg-surface2/60 relative"
+                      >
+                        <Icon name="menu" size={20} />
+                        <DropdownMenu
+                          isOpen={activeMenu === index}
+                          onClose={() => setActiveMenu(null)}
+                          menuItems={menuItems(project._id)}
+                        />
+                      </button>
+                    </Td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="text-center">No project found</div>
+      )}
     </>
   );
 }
@@ -216,5 +212,43 @@ const ProgressBar = ({ value = 0, color = "#8FC951", height = 4 }) => {
     </div>
   );
 };
+
+function ProjectMembers({ members }) {
+  if (!members || members.length === 0) return "-------";
+
+  // ✅ Only 1 member → avatar + name
+  if (members.length === 1) {
+    const m = members[0];
+    const memberImage = m?.profilePicture?.filePath
+      ? `${baseURL}/${m.profilePicture.filePath}`
+      : "/images/profile.png";
+    return <ImageName image={memberImage} username={m.name} />;
+  }
+
+  return (
+    <div className="flex -space-x-3">
+      {members.slice(0, 5).map((m, idx) => {
+        const memberImage = m?.profilePicture?.filePath
+          ? `${baseURL}/${m.profilePicture.filePath}`
+          : "/images/profile.png";
+
+        return (
+          <img
+            key={idx}
+            src={memberImage}
+            alt={m?.name || `member ${idx}`}
+            title={m?.name}
+            className="w-8 h-8 rounded-full object-cover border-2 border-white"
+          />
+        );
+      })}
+      {members.length > 5 && (
+        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-700 border-2 border-white">
+          +{members.length - 5}
+        </span>
+      )}
+    </div>
+  );
+}
 
 export default Projects;
