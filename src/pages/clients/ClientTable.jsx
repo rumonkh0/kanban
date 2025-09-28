@@ -35,7 +35,6 @@ function ClientTable({ filters }) {
     return <div>Error loading clients</div>;
   }
 
-  // const clients = Array.isArray(clientsData) || [
   //   {
   //     clientName: "Gustave Koeipin",
   //     email: "caitlyn66@example.net7",

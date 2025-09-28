@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { financeApi } from "../services/finance";
+import { useNavigate } from "react-router";
 
 export const usePaidFroms = (params) => {
   return useQuery({
@@ -29,12 +30,14 @@ export const useCreatePaidFrom = () => {
 
 export const useUpdatePaidFrom = (id) => {
   const queryFinance = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data) => financeApi.updatePaidFrom(id, data),
     onSuccess: () => {
       queryFinance.invalidateQueries({ queryKey: ["paidfrom", id] });
       queryFinance.invalidateQueries({ queryKey: ["paidfrom"] });
+      navigate(-1);
     },
   });
 };

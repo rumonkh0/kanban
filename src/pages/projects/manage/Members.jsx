@@ -11,63 +11,13 @@ import {
 } from "../../../hooks/useProjects";
 import { ImageName, Td } from "../../../components/Component";
 import { Bin } from "../../../components/Icon";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Members() {
   const { id } = useParams();
   const [projectMemberModal, setProjectMemberModal] = useState(false);
-  const {
-    data: projectsMembersData,
-    isLoading,
-    isError,
-  } = useProjectMembers(id);
+  const { data: projectMembers, isLoading, isError } = useProjectMembers(id);
   const { mutate: removeProjectMember } = useRemoveProjectMember(id);
-  const projectMembers = Array.isArray(projectsMembersData) || [
-    {
-      id: 1,
-      name: "John Doe",
-      haveToPay: 1000,
-      amountToMembers: 400,
-      amountOwed: 200,
-      image: "/images/profile.png",
-      role: "Designer",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      haveToPay: 1500,
-      amountToMembers: 600,
-      amountOwed: 300,
-      image: "/images/profile.png",
-      role: "Developer",
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      haveToPay: 2000,
-      amountToMembers: 800,
-      amountOwed: 400,
-      image: "/images/profile.png",
-      role: "Project Manager",
-    },
-    {
-      id: 4,
-      name: "Bob Williams",
-      haveToPay: 1200,
-      amountToMembers: 500,
-      amountOwed: 250,
-      image: "/images/profile.png",
-      role: "QA",
-    },
-    {
-      id: 5,
-      name: "Emma Brown",
-      haveToPay: 1800,
-      amountToMembers: 700,
-      amountOwed: 350,
-      image: "/images/profile.png",
-      role: "Designer",
-    },
-  ];
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -94,7 +44,7 @@ function Members() {
         <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
           <thead className="table-header-group after:content-[''] after:block after:h-1">
             <tr className="text-left">
-              <th className="typo-b3 text-text2 py-3 px-4">#</th>
+              {/* <th className="typo-b3 text-text2 py-3 px-4">#</th> */}
               <th className="typo-b3 text-text2 py-3 px-4">Name</th>
               <th className="typo-b3 text-text2 py-3 px-4">Have to pay</th>
               <th className="typo-b3 text-text2 py-3 px-4">
@@ -108,58 +58,67 @@ function Members() {
             </tr>
           </thead>
           <tbody>
-            {projectMembers.map((member) => (
-              <tr
-                key={member.id}
-                className="h-16 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
-              >
-                <Td data={member.id}></Td>
-                {/* Name */}
-                <Td>
-                  <ImageName username={member.name} image={member.image} />
-                </Td>
+            {projectMembers.map((member) => {
+              const memberImage = member.freelancer?.profilePicture?.filePath
+                ? `${baseURL}/${member.freelancer.profilePicture?.filePath}`
+                : "/images/profile.png";
+              return (
+                <tr
+                  key={member._id}
+                  className="h-16 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+                >
+                  {/* <Td data={member.id} className="first:rounded-l-[4px]"></Td> */}
+                  {/* Name */}
+                  <Td>
+                    <ImageName
+                      className="first:rounded-l-[4px]"
+                      username={member.freelancer.name}
+                      image={memberImage}
+                    />
+                  </Td>
 
-                {/* Have to pay */}
-                <td className="py-2 px-4 bg-divider">
-                  <EditableCell
-                    memberId={member.id}
-                    field="haveToPay"
-                    value={member.haveToPay}
-                  />
-                </td>
+                  {/* Have to pay */}
+                  <Td className="py-2 px-4 bg-divider">
+                    <EditableCell
+                      memberId={member.id}
+                      field="haveToPay"
+                      value={member.haveToPay}
+                    />
+                  </Td>
 
-                {/* Amount to pay members */}
-                <td className="py-2 px-4 bg-divider">
-                  <EditableCell
-                    memberId={member.id}
-                    field="amountToMembers"
-                    value={member.amountToMembers}
-                  />
-                </td>
+                  {/* Amount to pay members */}
+                  <Td className="py-2 px-4 bg-divider">
+                    <EditableCell
+                      memberId={member.id}
+                      field="amountToMembers"
+                      value={member.amountToMembers}
+                    />
+                  </Td>
 
-                {/* Amount owed to member */}
-                <td className="py-2 px-4 bg-divider">
-                  <EditableCell
-                    memberId={member.id}
-                    field="amountOwed"
-                    value={member.amountOwed}
-                  />
-                </td>
+                  {/* Amount owed to member */}
+                  <Td className="py-2 px-4 bg-divider">
+                    <EditableCell
+                      memberId={member.id}
+                      field="amountOwed"
+                      value={member.amountOwed}
+                    />
+                  </Td>
 
-                {/* Role */}
-                <td className="py-2 px-4 bg-divider">{member.role}</td>
+                  {/* Role */}
+                  <Td className="py-2 px-4 bg-divider">{member.role}</Td>
 
-                {/* Delete button */}
-                <td className="py-2 px-4 text-left last:rounded-r-[4px] bg-divider">
-                  <button
-                    onClick={() => removeProjectMember(member.id)}
-                    className="p-2 border border-text2 rounded-sm cursor-pointer hover:bg-brand/20 hover:text-brand group"
-                  >
-                    <Bin className="text-text2 group-hover:text-brand" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  {/* Delete button */}
+                  <Td className="py-2 px-4 text-left last:rounded-r-[4px] bg-divider">
+                    <button
+                      onClick={() => removeProjectMember(member.id)}
+                      className="p-2 border border-text2 rounded-sm cursor-pointer hover:bg-brand/20 hover:text-brand group"
+                    >
+                      <Bin className="text-text2 group-hover:text-brand" />
+                    </button>
+                  </Td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

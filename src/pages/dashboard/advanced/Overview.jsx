@@ -116,23 +116,25 @@ function Overview() {
     { name: "Growth Fund", sales: 250, color: "#5EB7E0" },
   ];
   const weekdata = [
-    { Day: "Mon", Active: 5, Completed: 2, Due: 1 },
-    { Day: "Tue", Active: 3, Completed: 4, Due: 2 },
-    { Day: "Wed", Active: 4, Completed: 3, Due: 3 },
-    { Day: "Thu", Active: 6, Completed: 5, Due: 0 },
-    { Day: "Fri", Active: 2, Completed: 6, Due: 1 },
-    { Day: "Sat", Active: 1, Completed: 3, Due: 2 },
-    { Day: "Sun", Active: 0, Completed: 2, Due: 4 },
+    { Key: "Mon", Active: 5, Completed: 2, Due: 1 },
+    { Key: "Tue", Active: 3, Completed: 4, Due: 2 },
+    { Key: "Wed", Active: 4, Completed: 3, Due: 3 },
+    { Key: "Thu", Active: 6, Completed: 5, Due: 0 },
+    { Key: "Fri", Active: 2, Completed: 6, Due: 1 },
+    { Key: "Sat", Active: 1, Completed: 3, Due: 2 },
+    { Key: "Sun", Active: 0, Completed: 2, Due: 4 },
   ];
   const deadlineData = [
-    { Day: "Mon", Deadline: 5 },
-    { Day: "Tue", Deadline: 3 },
-    { Day: "Wed", Deadline: 4 },
-    { Day: "Thu", Deadline: 6 },
-    { Day: "Fri", Deadline: 2 },
-    { Day: "Sat", Deadline: 1 },
-    { Day: "Sun", Deadline: 0 },
+    { Day: "Mon", DeadlineCount: 5 },
+    { Day: "Tue", DeadlineCount: 3 },
+    { Day: "Wed", DeadlineCount: 4 },
+    { Day: "Thu", DeadlineCount: 6 },
+    { Day: "Fri", DeadlineCount: 2 },
+    { Day: "Sat", DeadlineCount: 1 },
+    { Day: "Sun", DeadlineCount: 0 },
   ];
+
+  
 
   return (
     <div className="flex flex-col gap-4">
@@ -353,7 +355,7 @@ function Overview() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weekdata} barCategoryGap="20%">
                 <XAxis
-                  dataKey="Day"
+                  dataKey="Key"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
@@ -409,7 +411,7 @@ function Overview() {
           {/* Header */}
           <div className="flex justify-between">
             <ChartHeader
-              primaryLabel="Deadlines"
+              primaryLabel="DeadlineCounts"
               keyValue="4"
               secondaryLabel="Project Deadlines Today"
             />
@@ -445,7 +447,7 @@ function Overview() {
                     border: "none",
                   }}
                 />
-                <Bar dataKey="Deadline" fill="#A88AED" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="DeadlineCount" fill="#A88AED" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

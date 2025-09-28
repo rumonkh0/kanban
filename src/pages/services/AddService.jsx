@@ -10,48 +10,25 @@ import {
 } from "@/components/Component";
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { useTeamMembers } from "../../hooks/useTeam";
+import {
+  useCreateService,
+  useDeleteService,
+  useService,
+  useUpdateService,
+} from "../../hooks/useService";
 import { useNavigate, useParams } from "react-router";
-
-// API Functions
-const serviceAPI = {
-  // Get single service
-  getById: async (id) => {
-    const response = await axios.get(`/api/services/${id}`);
-    return response.data;
-  },
-
-  // Create new service
-  create: async (data) => {
-    const response = await axios.post("/api/services", data);
-    return response.data;
-  },
-
-  // Update service
-  update: async ({ id, data }) => {
-    const response = await axios.put(`/api/services/${id}`, data);
-    return response.data;
-  },
-
-  // Delete service
-  delete: async (id) => {
-    const response = await axios.delete(`/api/services/${id}`);
-    return response.data;
-  },
-};
 
 function AddService({ edit = false, title = "Add Service" }) {
   const navigate = useNavigate();
   const { id } = useParams();
-  const queryClient = useQueryClient();
 
+  const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
     serviceName: "",
     clientsPay: "",
     teamsPayment: "",
-    client: null,
     description: "",
     addons: "",
   });
@@ -60,103 +37,28 @@ function AddService({ edit = false, title = "Add Service" }) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Fetch service data for editing
-  // eslint-disable-next-line no-unused-vars
-  const { data: serviceData, isLoading: isLoadingService } = useQuery({
-    queryKey: ["service", id],
-    queryFn: () => serviceAPI.getById(id),
-    enabled: edit && !!id,
-    onSuccess: (data) => {
-      setFormData({
-        serviceName: data.serviceName || "",
-        clientsPay: data.clientsPay || "",
-        teamsPayment: data.teamsPayment || "",
-        client: data.client || null,
-        description: data.description || "",
-        addons: data.addons || "",
-      });
-    },
-  });
+  const { data: serviceData, isLoading: isLoadingService } = useService(id);
+  const createMutation = useCreateService();
+  const updateMutation = useUpdateService(id);
+  const deleteMutation = useDeleteService();
+  const { data: freelancers = [] } = useTeamMembers();
 
-  // Create service mutation
-  const createMutation = useMutation({
-    mutationFn: serviceAPI.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["services"] });
-      navigate("/services");
-    },
-    onError: (error) => {
-      console.error("Error creating service:", error);
-      alert("Failed to create service. Please try again.");
-    },
-  });
+  const isLoading =
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending;
 
-  // Update service mutation
-  const updateMutation = useMutation({
-    mutationFn: serviceAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["services"] });
-      queryClient.invalidateQueries({ queryKey: ["service", id] });
-      navigate("/services");
-    },
-    onError: (error) => {
-      console.error("Error updating service:", error);
-      alert("Failed to update service. Please try again.");
-    },
-  });
-
-  // Delete service mutation
-  const deleteMutation = useMutation({
-    mutationFn: serviceAPI.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["services"] });
-      navigate("/services");
-    },
-    onError: (error) => {
-      console.error("Error deleting service:", error);
-      alert("Failed to delete service. Please try again.");
-    },
-  });
-
-  const isLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData)
-    // Basic validation
+  const handleSubmit = () => {
+    console.log(formData);
     if (!formData.serviceName || !formData.description) {
       alert("Please fill in the required fields.");
       return;
     }
-
     if (edit) {
-      updateMutation.mutate({ id, data: formData });
+      updateMutation.mutate(formData);
     } else {
       createMutation.mutate(formData);
     }
-  };
-
-  const handleSaveAndAddMore = (e) => {
-    e.preventDefault();
-    
-    if (!formData.serviceName || !formData.description) {
-      alert("Please fill in the required fields.");
-      return;
-    }
-
-    createMutation.mutate(formData, {
-      onSuccess: () => {
-        // Reset form for adding more
-        setFormData({
-          serviceName: "",
-          clientsPay: "",
-          teamsPayment: "",
-          client: null,
-          description: "",
-          addons: "",
-        });
-      }
-    });
   };
 
   const handleDelete = () => {
@@ -164,6 +66,37 @@ function AddService({ edit = false, title = "Add Service" }) {
       deleteMutation.mutate(id);
     }
   };
+
+  useEffect(() => {
+    const iscreated = createMutation.isSuccess;
+    if (iscreated && more) {
+      setFormData({
+        serviceName: "",
+        clientsPay: "",
+        teamsPayment: "",
+        description: "",
+        addons: "",
+      });
+      setMore(false);
+    } else {
+      if (iscreated) navigate("/services/services");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (serviceData) {
+      setFormData({
+        serviceName: serviceData.serviceName || "",
+        clientsPay: serviceData.clientsPay || "",
+        teamsPayment: serviceData.teamsPayment || "",
+        freelancers: serviceData.freelancers?.map((f) => f._id) || null,
+        description: serviceData.description || "",
+        addons: serviceData.addons || "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serviceData]);
 
   if (edit && isLoadingService) {
     return <div>Loading service data...</div>;
@@ -183,29 +116,41 @@ function AddService({ edit = false, title = "Add Service" }) {
           <div className="bg-surface1 rounded-xl">
             <form className="grid grid-cols-3 gap-4">
               <FormField label="Service Name">
-                <Input 
-                  placeholder="Enter Service Name" 
+                <Input
+                  placeholder="Enter Service Name"
                   value={formData.serviceName}
                   onChange={(val) => handleChange("serviceName", val)}
                 />
               </FormField>
               <FormField label="Clients Pay">
-                <Input 
-                  placeholder="Enter Amount" 
+                <InputMoney
+                  placeholder="0"
                   value={formData.clientsPay}
                   onChange={(val) => handleChange("clientsPay", val)}
                 />
               </FormField>
               <FormField label="Team's Payment">
-                <Input 
-                  placeholder="Enter Amount" 
+                <InputMoney
+                  placeholder="0"
                   value={formData.teamsPayment}
                   onChange={(val) => handleChange("teamsPayment", val)}
                 />
               </FormField>
-              <ClientSelect 
-                label="client" 
-                onSelect={(client) => handleChange("client", client)}
+              <ClientSelect
+                value={formData.freelancers}
+                clients={freelancers.map((f) => ({
+                  id: f._id,
+                  name: f.name,
+                  email: f.user.email,
+                  profilePicture: f.profilePicture,
+                }))}
+                onChange={(freelancers) =>
+                  handleChange("freelancers", freelancers)
+                }
+                mode="multi"
+                label="Add Project Members"
+                addingTitle="Add new member"
+                placeHolder="Select Members...."
               />
               <FormField label="Description" className="col-span-3">
                 <textarea
@@ -227,37 +172,53 @@ function AddService({ edit = false, title = "Add Service" }) {
           </div>
         </div>
 
-        {edit ? (
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <RedButton type="button" onClick={handleSubmit} disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save"}
-              </RedButton>
+        <div className="flex justify-between">
+          <div className="flex gap-4">
+            <RedButton
+              type="button"
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              {(createMutation.isPending || updateMutation.isPending) && !more
+                ? "Saving..."
+                : edit
+                ? "Update"
+                : "Save"}
+            </RedButton>
+            {edit ? (
               <Back>
                 <RedBorderButton disabled={isLoading}>Cancel</RedBorderButton>
               </Back>
-            </div>
-
-            <RedButton type="button" onClick={handleDelete} disabled={isLoading}>
-              {isLoading ? "Deleting..." : "Delete"}
-            </RedButton>
-          </div>
-        ) : (
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <RedButton type="button" onClick={handleSubmit} disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save"}
-              </RedButton>
-              <RedBorderButton type="button" onClick={handleSaveAndAddMore} disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save & Add More"}
+            ) : (
+              <RedBorderButton
+                type="button"
+                onClick={() => {
+                  handleSubmit(true);
+                  setMore(true);
+                }}
+                disabled={isLoading}
+              >
+                {createMutation.isPending && more
+                  ? "Saving..."
+                  : "Save & Add More"}
               </RedBorderButton>
-            </div>
+            )}
+          </div>
 
+          {edit ? (
+            <RedButton
+              type="button"
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete Client"}
+            </RedButton>
+          ) : (
             <Back>
               <RedButton disabled={isLoading}>Cancel</RedButton>
             </Back>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </>
   );

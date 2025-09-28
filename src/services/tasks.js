@@ -1,9 +1,33 @@
 import apiClient from "../lib/axios";
 
 export const tasksApi = {
-  getAll: (params) => apiClient.get("/tasks", { params }),
-  getById: (id) => apiClient.get(`/tasks/${id}`),
-  create: (data) => apiClient.post("/tasks", data),
-  update: (id, data) => apiClient.put(`/tasks/${id}`, data),
-  delete: (id) => apiClient.delete(`/tasks/${id}`),
+  getAll: async (params) => {
+    const response = await apiClient.get("/tasks", { params });
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || "Failed to fetch tasks");
+  },
+
+  getById: async (id) => {
+    const response = await apiClient.get(`/tasks/${id}`);
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || `Failed to fetch task ${id}`);
+  },
+
+  create: async (data) => {
+    const response = await apiClient.post("/tasks", data);
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || "Failed to create task");
+  },
+
+  update: async (id, data) => {
+    const response = await apiClient.put(`/tasks/${id}`, data);
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || `Failed to update task ${id}`);
+  },
+
+  delete: async (id) => {
+    const response = await apiClient.delete(`/tasks/${id}`);
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || `Failed to delete task ${id}`);
+  },
 };

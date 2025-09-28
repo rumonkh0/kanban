@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Icon from "./Icon";
 import { RedButton } from "./Component";
+import { Link } from "react-router";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
@@ -14,7 +15,10 @@ export default function ClientSelect({
   required,
   mode = "single", // "single" | "multi"
   addingTitle = "Add new client",
+  linkTo = "/clients/add-client",
   placeHolder = "Select Client...",
+  disabled = false,
+  addButton = true,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -68,7 +72,7 @@ export default function ClientSelect({
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          setIsOpen(!isOpen);
+          !disabled && setIsOpen(!isOpen);
         }}
         className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-brand"
       >
@@ -78,13 +82,14 @@ export default function ClientSelect({
               <img
                 src={
                   selectedClients?.profilePicture
-                    ? `${baseURL}/${selectedClients.profilePicture}`
+                    ? `${baseURL}/${selectedClients.profilePicture.filePath}`
                     : "/images/profile.png"
                 }
                 alt={selectedClients.name}
                 width={32}
                 height={32}
-                className="rounded-full"
+                title={selectedClients.name}
+                className="rounded-full  w-8 h-8 object-cover"
               />
               <div className="flex flex-col items-start">
                 <span className="text-text">{selectedClients.name}</span>
@@ -102,14 +107,15 @@ export default function ClientSelect({
               <img
                 key={idx}
                 src={
-                  selectedClients?.profilePicture
-                    ? `${baseURL}/${selectedClients.profilePicture}`
+                  client?.profilePicture
+                    ? `${baseURL}/${client.profilePicture.filePath}`
                     : "/images/profile.png"
                 }
                 alt={client.name}
                 width={32}
                 height={32}
-                className="rounded-full border-2 border-white"
+                title={client.name}
+                className="rounded-full border-2 border-white   w-8 h-8 object-cover"
               />
             ))}
           </div>
@@ -156,13 +162,14 @@ export default function ClientSelect({
                 <img
                   src={
                     client?.profilePicture
-                      ? `${baseURL}/${client.profilePicture}`
+                      ? `${baseURL}/${client.profilePicture.filePath}`
                       : "/images/profile.png"
                   }
                   alt={client.name}
                   width={40}
                   height={40}
-                  className="rounded-full"
+                  title={client.name}
+                  className="rounded-full   w-10 h-10 object-cover"
                 />
                 <div className="flex flex-col gap-2 items-start">
                   <span className="text-text">{client.name}</span>
@@ -172,18 +179,22 @@ export default function ClientSelect({
                 </div>
               </button>
             ))}
-            <div className="w-full h-16 flex justify-center items-center">
-              <RedButton
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault(); /* Handle add new client */
-                }}
-                className="flex items-center px-4"
-              >
-                <Icon name="plus" size={16} className="mr-2" />
-                <span className="typo-b2">{addingTitle}</span>
-              </RedButton>
-            </div>
+            {addButton && (
+              <div className="w-full h-16 flex justify-center items-center">
+                <Link to={linkTo}>
+                  <RedButton
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault(); /* Handle add new client */
+                    }}
+                    className="flex items-center px-4"
+                  >
+                    <Icon name="plus" size={16} className="mr-2" />
+                    <span className="typo-b2">{addingTitle}</span>
+                  </RedButton>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

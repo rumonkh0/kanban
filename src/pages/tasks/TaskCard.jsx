@@ -111,8 +111,8 @@ const TaskCard = ({
               onClick={() => {
                 if (!newTaskTitle) return;
                 onAddTask({
-                  containerID: id,
-                  taskTitle: newTaskTitle,
+                  stage: id,
+                  title: newTaskTitle,
                 });
                 setNewTaskTitle("");
                 setAddTask(false);

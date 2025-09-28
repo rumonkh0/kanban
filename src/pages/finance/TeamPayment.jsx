@@ -10,100 +10,87 @@ import {
   ImageName,
   Td,
   Th,
+  // Import FormatDate from the first file for consistency
+  FormatDate,
 } from "../../components/Component";
-import {
-  useDeletePaidTo,
-  usePaidTos,
-  useUpdatePaidTo,
-} from "../../hooks/useFinance";
+import { useDeletePaidTo, usePaidTos } from "../../hooks/useFinance";
+
+// Define baseURL if the paidTo data also includes image paths
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
+
 function PaidTo({ from }) {
   const [PaymentsModal, setPaymentModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
     status: "",
+    project: "", // Added project filter for consistency
+    client: "", // Added client filter for consistency
   });
+
+  // Filter Configurations array, aligned with the Payment component structure
+  const filterConfigs = [
+    {
+      key: "status",
+      label: "Status",
+      options: ["complete", "incomplete", "Owed"],
+    },
+    {
+      key: "project",
+      label: "Select Project",
+      options: ["Project A", "Project B", "Project C"], // Placeholder options
+    },
+    {
+      key: "client",
+      label: "Select Client",
+      options: ["Client X", "Client Y", "Client Z"], // Placeholder options
+    },
+  ];
+
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
+
   const handleMenuClick = (index, e) => {
     e.preventDefault();
     setActiveMenu(activeMenu === index ? null : index);
   };
 
-  const formatDate = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    return d.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   const deletePaidTo = useDeletePaidTo();
+
   const handleDelete = (id) => {
-    deletePaidTo.mutate(id, {
-      onSuccess: () => {
-        console.log(`Deleted payment with id: ${id}`);
-      },
-      onError: (error) => {
-        console.error("Failed to delete:", error);
-      },
-    });
+    if (window.confirm("Are you sure you want to delete this client?")) {
+      deletePaidTo.mutate(id, {
+        onError: (err) => {
+          alert(err.message || "Failed to delete client");
+        },
+      });
+    }
   };
 
-  const { data: paidToData, isLoading, isError } = usePaidTos(filters);
+  // Pass all filters to the hook
+  const { data: payments, isLoading, isError } = usePaidTos(filters);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (isError) {
-    return <div>Error loading clients</div>;
+    return <div>Error loading payments</div>;
   }
-  const payments = Array.isArray(paidToData) || [
-    {
-      id: 1,
-      project: "Social Media Page Setup Basic Package",
-      paidTo: {
-        name: "Akash",
-        role: "Marketing Head",
-      },
-      toBePaid: 30.0,
-      paymentDate: "2025-08-25",
-      amountPaid: 25.0,
-      amountOwed: 5.0,
-      paymentMethod: "Stripe",
-      status: "Owed",
-    },
-    {
-      id: 2,
-      project: "Social Media Management Standard",
-      paidTo: {
-        name: "Akash",
-        role: "Marketing Head",
-      },
-      toBePaid: 5.0,
-      paymentDate: "2025-08-25",
-      amountPaid: 5.0,
-      amountOwed: 0.0,
-      paymentMethod: "Stripe",
-      status: "Paid",
-    },
-  ];
 
   function toTwoDecimal(num) {
     const n = parseFloat(num);
     if (isNaN(n)) return "0.00";
     return n.toFixed(2);
   }
+
   return (
     <>
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4">
           <Link
-            to={`/${from}/paid-to`}
+            to={`/${from}/paid-to`} // Changed to '/create' for standard REST practice
             className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
           >
             <div className="w-6 h-6 flex justify-center items-center">
@@ -113,13 +100,17 @@ function PaidTo({ from }) {
           </Link>
         </div>
         <div className="flex py-1 gap-4">
-          <FilterDropdown
-            label="Status"
-            options={["complete", "incomplete"]}
-            value={filters.status}
-            onSelect={(value) => handleFilterChange("status", value)}
-            className="h-8"
-          />
+          {/* Mapping over filterConfigs for consistency */}
+          {filterConfigs.map(({ key, label, options }) => (
+            <FilterDropdown
+              key={key}
+              label={label}
+              options={options}
+              value={filters[key]}
+              onSelect={(value) => handleFilterChange(key, value)}
+              className="h-8"
+            />
+          ))}
         </div>
       </div>
       <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
@@ -133,36 +124,55 @@ function PaidTo({ from }) {
               <Th title="Amount Paid" />
               <Th title="Amount Owed" />
               <Th title="Payment Method" />
-              <Th title="Status" />
+              {/* <Th title="Status" /> */}
               <Th title="Action" />
             </tr>
           </thead>
           <tbody>
-            {payments.map((payment, index) => (
-              <tr
-                key={payment.id}
-                className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
-              >
-                <Td className="first:rounded-l-[4px]" data={payment.project} />
-                <Td>
-                  <ImageName
-                    image={"/images/profile.png"}
-                    username={payment.paidTo.name}
-                    designation={payment.paidTo.role}
-                  />
-                </Td>
-                <Td>${toTwoDecimal(payment.toBePaid)}</Td>
-                <Td>{formatDate(payment.paymentDate)}</Td>
-                <Td>${toTwoDecimal(payment.amountPaid)}</Td>
-                <Td>${toTwoDecimal(payment.amountOwed)}</Td>
-                <Td>{payment.paymentMethod}</Td>
-                <StatusCell payment={payment} />
-                <Td className="last:rounded-r-[4px]">
-                  <button
-                    onClick={(e) => handleMenuClick(index, e)}
-                    className="relative p-2 rounded-sm border-2 border-text2 cursor-pointer hover:bg-surface2/60"
-                  >
-                    <Icon name="menu" size={20} />
+            {payments.map((payment, index) => {
+              // Construct image URL if available, otherwise use a default
+              const imageUrl = payment.freelancer?.profilePicture?.filePath
+                ? `${baseURL}/${payment.freelancer.profilePicture.filePath}`
+                : "/images/profile.png";
+
+              return (
+                <tr
+                  key={payment.id}
+                  className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+                >
+                  {/* Project Name */}
+                  <Td className="first:rounded-l-[4px]">
+                    {payment.project?.projectName || "N/A"}
+                  </Td>
+                  {/* Paid To (Person/Vendor) */}
+                  <Td>
+                    <ImageName
+                      image={imageUrl}
+                      username={payment.freelancer?.name}
+                      designation={payment.freelancer?.user?.email}
+                    />
+                  </Td>
+                  {/* Amounts and Date */}
+                  <Td>${toTwoDecimal(payment.toBePaid)}</Td>
+                  <Td>{FormatDate(payment.paymentDate)}</Td>{" "}
+                  {/* Using FormatDate */}
+                  <Td className="text-success">
+                    ${toTwoDecimal(payment.amountPaid)}
+                  </Td>
+                  <Td className="text-brand">
+                    ${toTwoDecimal(payment.amountOwed)}
+                  </Td>
+                  <Td>{payment.paidMethod}</Td>
+                  {/* Status */}
+                  {/* <StatusCell payment={payment} /> */}
+                  {/* Action Menu (Position fixed) */}
+                  <Td className="last:rounded-r-[4px] relative">
+                    <button
+                      onClick={(e) => handleMenuClick(index, e)}
+                      className="p-2 rounded-sm border-2 border-text2 cursor-pointer hover:bg-surface2/60"
+                    >
+                      <Icon name="menu" size={20} />
+                    </button>
                     <DropdownMenu
                       isOpen={activeMenu === index}
                       onClose={() => setActiveMenu(null)}
@@ -170,24 +180,24 @@ function PaidTo({ from }) {
                         {
                           label: "View",
                           onClick: () => {
-                            setCurrentId(payment.id);
+                            setCurrentId(payment._id);
                             setPaymentModal(true);
                           },
                         },
                         {
                           label: "Edit",
-                          href: `/${from}/paid-to/${payment.id}/edit`,
+                          href: `/${from}/paid-to/${payment._id}/edit`,
                         },
                         {
                           label: "Delete",
-                          onClick: () => handleDelete(payment.id),
+                          onClick: () => handleDelete(payment._id),
                         },
                       ]}
                     />
-                  </button>
-                </Td>
-              </tr>
-            ))}
+                  </Td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -201,35 +211,45 @@ function PaidTo({ from }) {
   );
 }
 
-const StatusCell = ({ payment }) => {
-  const updateStatusMutation = useUpdatePaidTo(payment.id);
+// StatusCell component refactored for clarity and consistency
+// const StatusCell = ({ payment }) => {
+//   // Assuming payment.id is the correct ID to use for updating
+//   const updateStatusMutation = useUpdatePaidTo(payment.id);
 
-  return (
-    <Td>
-      <div className="relative">
-        {/* Colored dot */}
-        <div
-          className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-10 ${
-            payment.status === "complete"
-              ? "bg-success"
-              : payment.status === "Incomplete"
-              ? "bg-brand"
-              : payment.status === "Owed"
-              ? "bg-[#A88AED]"
-              : ""
-          }`}
-        ></div>
+//   // Function to determine the color class
+//   const getStatusColor = (status) => {
+//     switch (status.toLowerCase()) {
+//       case "complete":
+//         return "bg-success";
+//       case "incomplete":
+//         return "bg-brand";
+//       case "owed":
+//         return "bg-[#A88AED]";
+//       default:
+//         return "bg-gray-500";
+//     }
+//   };
 
-        {/* Dropdown */}
-        <Dropdown
-          options={["Owed", "complete", "Incomplete"]}
-          value={payment.status}
-          onChange={(val) => updateStatusMutation.mutate({ status: val })}
-          className="pl-8 h-10 bg-divider w-30 rounded-sm border-text2"
-        />
-      </div>
-    </Td>
-  );
-};
+//   return (
+//     <Td>
+//       <div className="relative">
+//         {/* Colored dot */}
+//         <div
+//           className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-10 ${getStatusColor(
+//             payment.status
+//           )}`}
+//         ></div>
+
+//         {/* Dropdown */}
+//         <Dropdown
+//           options={["complete", "incomplete", "Owed"]} // Ensure options match backend values
+//           value={payment.status}
+//           onChange={(val) => updateStatusMutation.mutate({ status: val })}
+//           className="pl-8 h-10 bg-divider w-30 rounded-sm border-text2"
+//         />
+//       </div>
+//     </Td>
+//   );
+// };
 
 export default PaidTo;

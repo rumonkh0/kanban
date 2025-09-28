@@ -42,6 +42,16 @@ export const Back = ({ children }) => {
   );
 };
 
+export const FormatDate = (date) => {
+  if (!date) return "";
+  const d = new Date(date);
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
 export const ChartHeader = ({ primaryLabel, keyValue, secondaryLabel }) => {
   return (
     <div className="flex flex-col justify-between gap-2">
@@ -137,6 +147,7 @@ export const InputMoney = ({
   onChange,
   className,
   required,
+  disabled = false,
 }) => (
   <div className="relative">
     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text2 typo-b3">
@@ -151,6 +162,7 @@ export const InputMoney = ({
       className={`w-full h-12 bg-surface2 border border-divider rounded-lg px-4 pl-6 focus:outline-none focus:ring-2 focus:ring-brand typo-b3 ${
         className || ""
       }`}
+      disabled={disabled}
     />
   </div>
 );
@@ -201,10 +213,12 @@ export const Dropdown = ({
   onChange,
   placeholder,
   className,
+  disabled = false,
+  allowClear = false,
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-  // console.log("options", options);
+
   // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -231,7 +245,8 @@ export const Dropdown = ({
     <div ref={ref} className="relative flex-1">
       <button
         type="button"
-        onClick={() => setOpen((prev) => !prev)}
+        disabled={disabled}
+        onClick={() => !disabled && setOpen((prev) => !prev)}
         className={`flex-1 px-4 border flex justify-between items-center typo-b3 focus:outline-none focus:ring-2 focus:ring-brand ${
           className || "w-full h-12 bg-surface2 rounded-lg border-divider"
         }`}
@@ -240,8 +255,9 @@ export const Dropdown = ({
         <Icon name="arrow" className="ml-2" size={20} />
       </button>
 
-      {open && (
+      {!disabled && open && (
         <div className="absolute mt-1 w-full bg-surface2 border border-divider rounded-lg shadow-lg z-60 max-h-60 overflow-auto">
+          {/* Normal options */}
           {normalized.map((opt, i) => (
             <div
               key={i}
@@ -254,6 +270,19 @@ export const Dropdown = ({
               {opt.label}
             </div>
           ))}
+
+          {/* Clear option */}
+          {allowClear && (
+            <div
+              onClick={() => {
+                onChange(null);
+                setOpen(false);
+              }}
+              className="px-4 py-2 cursor-pointer text-red-500 hover:bg-red-100 flex justify-center items-center gap-2"
+            >
+              ✖ Clear
+            </div>
+          )}
         </div>
       )}
     </div>

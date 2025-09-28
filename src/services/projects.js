@@ -42,21 +42,27 @@ export const projectsApi = {
 
   // Add member to project
   addMember: async (id, data) => {
-    const response = await apiClient.post(`/projects/${id}/members`, data);
+    const response = await apiClient.post(
+      `/projects/${id}/projectmembers`,
+      data
+    );
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to add member");
   },
 
   // Get project members
   getMembers: async (id) => {
-    const response = await apiClient.get(`/projects/${id}/members`);
+    const response = await apiClient.get(`/projects/${id}/projectmembers`);
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to fetch members");
   },
 
   // Update project member
   updateMember: async (id, data) => {
-    const response = await apiClient.put(`/projects/${id}/members`, data);
+    const response = await apiClient.put(
+      `/projects/${id}/projectmembers`,
+      data
+    );
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to update member");
   },
@@ -64,7 +70,7 @@ export const projectsApi = {
   // Remove member from project
   removeMember: async (projectId, memberId) => {
     const response = await apiClient.delete(
-      `/projects/${projectId}/members/${memberId}`
+      `/projects/${projectId}/projectmembers/${memberId}`
     );
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to remove member");

@@ -41,7 +41,7 @@ export const useUpdateService = (id) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["services", id] });
       queryClient.invalidateQueries({ queryKey: ["services"] });
-      navigate("/services");
+      navigate("/services/services");
     },
   });
 };

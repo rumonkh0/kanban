@@ -3,71 +3,80 @@ import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
 import { Cell, Tooltip, ResponsiveContainer, PieChart, Pie } from "recharts";
 import { ChartHeader } from "@/components/Component";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { Edit } from "../../components/Icon";
+import { useClientDetails } from "../../hooks/useClients";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ClientDetails() {
-  const client = {
-    salutation: "Mrs.",
-    fullName: "Gustave Koelpin",
-    email: "catityn66@example.net7",
-    country: "USA",
-    mobile: "+0954820528",
-    gender: "Female",
-    language: "English",
-    clientCategory: "Design",
-    dateOfBirth: "Aug 27, 1990",
-    status: "Active",
-    companyName: "@example",
-    officialWebsite: "example.com",
-    taxName: "GST",
-    gstVatNumber: "E2A456987",
-    officePhoneNumber: "+56987412.3",
-    city: "New York",
-    state: "USA",
-    postalCode: "568742",
-    addedBy: "Admin",
-    companyAddress: "I32, My Street, Kingston, New York 12401",
-    shippingAddress: "I32, My Street, Kingston, New York 12401",
-    paymentMethod: "Zelle, Venmo",
+  const { id } = useParams();
+
+  const { data: client, isLoading, isError } = useClientDetails(id);
+  const statusColors = {
+    Completed: "#8FC951",
+    Active: "#5EB7E0",
+    "On Hold": "#A88AED",
   };
+
   const data = [
-    { name: "Complete", sales: 2, color: "#8FC951" },
-    { name: "In Progress", sales: 1, color: "#5EB7E0" },
-    { name: "On Hold", sales: 1, color: "#A88AED" },
-    { name: "Cancelled", sales: 1, color: "#FE4E4D" },
+    { key: "Completed", value: 2 },
+    { key: "Active", value: 1 },
+    { key: "On Hold", value: 1 },
   ];
-  const earnings = [
-    { name: "Paid", sales: 200, color: "#8FC951" },
-    { name: "Pending", sales: 120, color: "#FE4E4D" },
+  const paymentColor = [
+    { "Total Paid": "#8FC951" },
+    { "Total Due": "#FE4E4D" },
   ];
+  // console.log(client.statusCounts, data);
+
+  const imageUrl = client?.profilePicture?.filePath
+    ? `${baseURL}/${client.profilePicture.filePath}`
+    : "/images/profile.png";
+
+  if (isLoading) return <div>Client Data Loading</div>;
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
         <PersonCard
-          name="creativezethdesign"
-          designation="Admin"
+          image={imageUrl}
+          name={client.name}
+          designation={client.role}
           active={true}
           className="relative"
         >
-          <Link to="/clients/id/edit" className="absolute right-4 top-4 ">
-            <Edit/>
+          <Link to={`/clients/${id}/edit`} className="absolute right-4 top-4 ">
+            <Edit />
           </Link>
         </PersonCard>
-        <MetricCard title="Total Projects:" growth={12} value={5} />
-        <MetricCard title="Total Earnings:" growth={12} value="$160" />
-        <MetricCard title="Due Payments:" growth={-22} value="$60" />
+        <MetricCard
+          title="Total Projects:"
+          // growth={12}
+          value={client.totalProjects}
+        />
+        <MetricCard
+          title="Total Earnings:"
+          // growth={12}
+          value={`$${client.totalEarnings}`}
+        />
+        <MetricCard
+          title="Due Payments:"
+          // growth={-22}
+          value={`$${client.totalDue}`}
+        />
       </div>
       <div className="grid grid-cols-2 grid-rows-2 gap-4">
         <div className="row-span-2 border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
           <h2 className="typo-b1">Profile Info</h2>
           <div className="flex flex-col gap-4">
             <InfoItem label="Salutation" value={client.salutation} />
-            <InfoItem label="Full Name" value={client.fullName} />
+            <InfoItem label="Full Name" value={client.name} />
             <InfoItem label="Email" value={client.email} />
             <InfoItem label="Country" value={client.country} />
-            <InfoItem label="Mobile" value={client.mobile} />
+            <InfoItem
+              label="Mobile"
+              value={`${client.mobile?.countryCode}${client.mobile?.number}`}
+            />
             <InfoItem label="Gender" value={client.gender} />
             <InfoItem label="Language" value={client.language} />
             <InfoItem label="Client Category" value={client.clientCategory} />
@@ -87,7 +96,10 @@ function ClientDetails() {
             <InfoItem label="Added By" value={client.addedBy} />
             <InfoItem label="Company Address" value={client.companyAddress} />
             <InfoItem label="Shipping Address" value={client.shippingAddress} />
-            <InfoItem label="Payment Method" value={client.paymentMethod} />
+            <InfoItem
+              label="Payment Methods"
+              value={client.paymentMethods?.join(", ")}
+            />
           </div>
           <div className="flex justify-between">
             <RedBorderButton>Edit</RedBorderButton>
@@ -97,7 +109,10 @@ function ClientDetails() {
         <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
           {/* Header */}
           <div className="flex justify-between">
-            <ChartHeader primaryLabel="Total Projects:" keyValue="4" />
+            <ChartHeader
+              primaryLabel="Total Projects:"
+              keyValue={client.totalProjects}
+            />
           </div>
 
           {/* Chart */}
@@ -105,9 +120,9 @@ function ClientDetails() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={data}
-                  dataKey="sales"
-                  nameKey="name"
+                  data={client?.statusCounts || []}
+                  dataKey="value"
+                  nameKey="key"
                   cx="50%"
                   cy="50%"
                   innerRadius={0}
@@ -117,7 +132,7 @@ function ClientDetails() {
                   // labelLine={false}
                 >
                   {data.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
+                    <Cell key={index} fill={statusColors[entry.key]} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -130,15 +145,15 @@ function ClientDetails() {
 
           {/* Legend */}
           <div className="flex justify-center gap-4 flex-wrap">
-            {data.map((item) => {
+            {client.statusCounts.map((item) => {
               return (
-                <div key={item.name} className="flex items-center gap-2">
+                <div key={item.key} className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: statusColors[item.key] }}
                   ></div>
                   <span className="typo-b3">
-                    {item.name}: {item.sales}
+                    {item.key}: {item.value}
                   </span>
                 </div>
               );
@@ -148,7 +163,12 @@ function ClientDetails() {
         <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
           {/* Header */}
           <div className="flex justify-between">
-            <ChartHeader primaryLabel="Total Earnings:" keyValue="$400" />
+            <ChartHeader
+              primaryLabel="Total Earnings:"
+              keyValue={`$${
+                client.paymentStatus[0].value + client.paymentStatus[1].value
+              }`}
+            />
           </div>
 
           {/* Chart */}
@@ -156,20 +176,20 @@ function ClientDetails() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={earnings}
-                  dataKey="sales"
-                  nameKey="name"
+                  data={client?.paymentStatus}
+                  dataKey="key"
+                  nameKey="value"
                   cx="50%"
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
                   outerRadius={150}
                   paddingAngle={0}
-                  label={({ name, sales }) => `${name} : $${sales}`}
+                  label={({ key, value }) => `${key} : $${value}`}
                   // labelLine={false}
                 >
-                  {earnings.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
+                  {client?.paymentStatus.map((entry, index) => (
+                    <Cell key={index} fill={paymentColor[entry.key]} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -182,15 +202,15 @@ function ClientDetails() {
 
           {/* Legend */}
           <div className="flex justify-center gap-4 flex-wrap">
-            {earnings.map((item) => {
+            {client?.paymentStatus.map((item) => {
               return (
-                <div key={item.name} className="flex items-center gap-2">
+                <div key={item.key} className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: paymentColor[item.key] }}
                   ></div>
                   <span className="typo-b3">
-                    {item.name}: {item.sales}
+                    {item.key}: {item.value}
                   </span>
                 </div>
               );

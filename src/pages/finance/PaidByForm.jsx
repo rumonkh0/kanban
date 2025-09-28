@@ -1,6 +1,6 @@
 import Icon from "@/components/Icon";
 import ClientSelect from "@/components/ClientSelect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Back,
   Dropdown,
@@ -10,81 +10,43 @@ import {
   RedBorderButton,
   RedButton,
 } from "@/components/Component";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router";
 import PageTitle from "@/components/PageTitle";
-
-// API Functions
-const paidByAPI = {
-  // Get all paid by records
-  getAll: async () => {
-    const response = await axios.get("/api/paidby");
-    return response.data;
-  },
-
-  // Get single paid by record
-  getById: async (id) => {
-    const response = await axios.get(`/api/paidby/${id}`);
-    return response.data;
-  },
-
-  // Create new paid by record
-  create: async (data) => {
-    const response = await axios.post("/api/paidby", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Update paid by record
-  update: async ({ id, data }) => {
-    const response = await axios.put(`/api/paidby/${id}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-
-  // Delete paid by record
-  delete: async (id) => {
-    const response = await axios.delete(`/api/paidby/${id}`);
-    return response.data;
-  },
-};
-
-// Get projects for dropdown
-const getProjects = async () => {
-  const response = await axios.get("/api/projects");
-  return response.data;
-};
-
-// Get clients for dropdown
-const getClients = async () => {
-  const response = await axios.get("/api/clients");
-  return response.data;
-};
+import { useProject, useProjects } from "../../hooks/useProjects";
+import {
+  useCreatePaidFrom,
+  useDeletePaidFrom,
+  usePaidFrom,
+  useUpdatePaidFrom,
+} from "../../hooks/useFinance";
 
 function PaidByForm({ edit = false, title = "Add Payment" }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
+  const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
     project: "",
     client: null,
     toBePaid: "",
-    discount: "",
     teamPayment: "",
     revenue: "",
     paymentDate: "",
     amountPaid: "",
     amountOwed: "",
     paidMethod: "",
-    paymentStatus: "Owed",
     invoiceNo: "",
   });
-  const [invoiceFile, setInvoiceFile] = useState(null);
+  const [relatedFile, setInvoiceFile] = useState(null);
   const [, setInvoicePreview] = useState(null);
+
+  // Fetch paid by data for editing
+  const { data: paidByData, isLoading: isLoadingPaidBy } = usePaidFrom(id);
+  const { data: projectData } = useProject(!edit && formData.project);
+  const { data: projects = [] } = useProjects({}, { enabled: !edit });
+  const createMutation = useCreatePaidFrom();
+  const updateMutation = useUpdatePaidFrom(id);
+  const deleteMutation = useDeletePaidFrom();
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -92,11 +54,11 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
 
   const handleFileChange = (file) => {
     if (!file) return;
-    
+
     setInvoiceFile(file);
-    
+
     // Create preview for certain file types
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setInvoicePreview(reader.result);
@@ -107,168 +69,41 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
     }
   };
 
-  // Fetch paid by data for editing
-  // eslint-disable-next-line no-unused-vars
-  const { data: paidByData, isLoading: isLoadingPaidBy } = useQuery({
-    queryKey: ["paidBy", id],
-    queryFn: () => paidByAPI.getById(id),
-    enabled: edit && !!id,
-    onSuccess: (data) => {
-      setFormData({
-        project: data.project || "",
-        client: data.client || null,
-        toBePaid: data.toBePaid || "",
-        discount: data.discount || "",
-        teamPayment: data.teamPayment || "",
-        revenue: data.revenue || "",
-        paymentDate: data.paymentDate || "",
-        amountPaid: data.amountPaid || "",
-        amountOwed: data.amountOwed || "",
-        paidMethod: data.paidMethod || "",
-        paymentStatus: data.paymentStatus || "Owed",
-        invoiceNo: data.invoiceNo || "",
-      });
-      if (data.invoiceFile) {
-        setInvoicePreview(data.invoiceFile);
-      }
-    },
-  });
-
-  // Fetch projects
-  const { data: projects = [] } = useQuery({
-    queryKey: ["projects"],
-    queryFn: getProjects,
-  });
-
-  // Fetch clients
-  // eslint-disable-next-line no-unused-vars
-  const { data: clients = [] } = useQuery({
-    queryKey: ["clients"],
-    queryFn: getClients,
-  });
-
-  // Create payment mutation
-  const createMutation = useMutation({
-    mutationFn: paidByAPI.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["paidByList"] });
-      queryClient.invalidateQueries({ queryKey: ["paidBy"] });
-      navigate("/finance/paid-by");
-    },
-    onError: (error) => {
-      console.error("Error creating payment:", error);
-      alert("Failed to create payment. Please try again.");
-    },
-  });
-
-  // Update payment mutation
-  const updateMutation = useMutation({
-    mutationFn: paidByAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["paidByList"] });
-      queryClient.invalidateQueries({ queryKey: ["paidBy", id] });
-      navigate("/finance/paid-by");
-    },
-    onError: (error) => {
-      console.error("Error updating payment:", error);
-      alert("Failed to update payment. Please try again.");
-    },
-  });
-
-  // Delete payment mutation
-  const deleteMutation = useMutation({
-    mutationFn: paidByAPI.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["paidByList"] });
-      navigate("/finance/paid-by");
-    },
-    onError: (error) => {
-      console.error("Error deleting payment:", error);
-      alert("Failed to delete payment. Please try again.");
-    },
-  });
-
-  const isLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
+  const handleSubmit = () => {
     // Basic validation
-    if (!formData.project || !formData.toBePaid || !formData.paymentDate || !formData.amountPaid || !formData.paidMethod || !formData.paymentStatus) {
+    if (
+      // !formData.project ||
+      // !formData.toBePaid ||
+      !formData.paymentDate ||
+      !formData.amountPaid ||
+      !formData.paidMethod
+      // !formData.paymentStatus
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
 
     // Create FormData for file upload
     const submitData = new FormData();
-    
+
     // Append all form fields
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && formData[key] !== undefined) {
-        if (typeof formData[key] === "object") {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else {
-          submitData.append(key, formData[key]);
-        }
+      const value = formData[key];
+      if (value !== undefined && value !== null) {
+        submitData.append(key, value);
       }
     });
 
     // Append file if selected
-    if (invoiceFile) {
-      submitData.append("invoiceFile", invoiceFile);
+    if (relatedFile) {
+      submitData.append("relatedFile", relatedFile);
     }
 
     if (edit) {
-      updateMutation.mutate({ id, data: submitData });
+      updateMutation.mutate(submitData);
     } else {
       createMutation.mutate(submitData);
     }
-  };
-
-  const handleSaveAndAddMore = (e) => {
-    e.preventDefault();
-    
-    if (!formData.project || !formData.toBePaid || !formData.paymentDate || !formData.amountPaid || !formData.paidMethod || !formData.paymentStatus) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    const submitData = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && formData[key] !== undefined) {
-        if (typeof formData[key] === "object") {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else {
-          submitData.append(key, formData[key]);
-        }
-      }
-    });
-
-    if (invoiceFile) {
-      submitData.append("invoiceFile", invoiceFile);
-    }
-
-    createMutation.mutate(submitData, {
-      onSuccess: () => {
-        // Reset form for adding more
-        setFormData({
-          project: "",
-          client: null,
-          toBePaid: "",
-          discount: "",
-          teamPayment: "",
-          revenue: "",
-          paymentDate: "",
-          amountPaid: "",
-          amountOwed: "",
-          paidMethod: "",
-          paymentStatus: "Owed",
-          invoiceNo: "",
-        });
-        setInvoiceFile(null);
-        setInvoicePreview(null);
-      }
-    });
   };
 
   const handleDelete = () => {
@@ -276,6 +111,60 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
       deleteMutation.mutate(id);
     }
   };
+
+  useEffect(() => {
+    const iscreated = createMutation.isSuccess;
+    if (iscreated && more) {
+      setFormData({
+        project: "",
+        client: null,
+        toBePaid: "",
+        discount: "",
+        teamPayment: "",
+        revenue: "",
+        paymentDate: "",
+        amountPaid: "",
+        amountOwed: "",
+        paidMethod: "",
+        paymentStatus: "Owed",
+        invoiceNo: "",
+      });
+      setInvoiceFile(null);
+      setInvoicePreview(null);
+      setMore(false);
+    } else {
+      if (iscreated) navigate(-1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (paidByData) {
+      setFormData({
+        project: paidByData.project || "",
+        client: paidByData.client || null,
+        projectPrice: paidByData.projectPrice || "",
+        haveToPay: paidByData.haveToPay || "",
+        toBePaid: paidByData.toBePaid || "",
+        teamPayment: paidByData.teamPayment || "",
+        revenue: paidByData.revenue || "",
+        paymentDate: paidByData.paymentDate || "",
+        amountPaid: paidByData.amountPaid || "",
+        amountOwed: paidByData.amountOwed || "",
+        paidMethod: paidByData.paidMethod || "",
+        paymentStatus: paidByData.paymentStatus || "Owed",
+        invoiceNo: paidByData.invoiceNo || "",
+      });
+      if (paidByData.relatedFile) {
+        setInvoicePreview(paidByData.relatedFile);
+      }
+    }
+  }, [paidByData]);
+
+  const isLoading =
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending;
 
   if (edit && isLoadingPaidBy) {
     return <div>Loading payment data...</div>;
@@ -295,57 +184,111 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
           <div className="bg-surface1 rounded-xl">
             <form className="grid grid-cols-3 gap-4">
               <FormField label="Project" required>
-                <Dropdown
-                  options={
-                    Array.isArray(projects) && projects.length > 0
-                      ? projects.map((p) => p.name)
-                      : ["project one"]
-                  }
-                  value={formData.project || ""}
-                  onChange={(val) => handleChange("project", val)}
-                />
+                {!edit ? (
+                  <Dropdown
+                    options={
+                      Array.isArray(projects) && projects.length > 0
+                        ? projects.map((service) => ({
+                            value: service._id,
+                            label: service.projectName,
+                          }))
+                        : []
+                    }
+                    value={formData.project || ""}
+                    onChange={(val) => handleChange("project", val)}
+                  />
+                ) : (
+                  <Input
+                    className="typo-b3"
+                    value={formData.project?.projectName || ""}
+                    disabled
+                  />
+                )}
               </FormField>
-
               <ClientSelect
-                onSelect={(client) => handleChange("client", client)}
+                value={edit ? formData.client?._id : projectData?.client?._id}
+                clients={
+                  edit
+                    ? [
+                        {
+                          id: formData?.client?._id,
+                          name: formData?.client?.name,
+                          email: formData?.client?.user?.email,
+                          profilePicture: formData?.client?.profilePicture,
+                        },
+                      ]
+                    : [
+                        {
+                          id: projectData?.client?._id,
+                          name: projectData?.client?.name,
+                          email: projectData?.client?.user?.email,
+                          profilePicture: projectData?.client?.profilePicture,
+                        },
+                      ]
+                }
+                onChange={(client) => handleChange("client", client)}
                 label="Paid By"
+                disabled
               />
 
-              <FormField label="To Be Paid" required>
+              <FormField label="Project Price" required>
                 <InputMoney
-                  value={formData.toBePaid}
-                  onChange={(val) => handleChange("toBePaid", val)}
+                  value={
+                    edit
+                      ? formData.haveToPay
+                      : projectData?.finalAmountForClient
+                  }
+                  // onChange={(val) => handleChange("toBePaid", val)}
+                  disabled
                 />
               </FormField>
 
-              <FormField label="Discount">
+              <FormField label="Amount Owed By Client" required>
+                <InputMoney
+                  value={
+                    edit
+                      ? formData.amountOwedByClient
+                      : projectData?.amountOwedByClient
+                  }
+                  // onChange={(val) => handleChange("toBePaid", val)}
+                  disabled
+                />
+              </FormField>
+
+              {/* <FormField label="Discount">
                 <Input
                   type="text"
                   value={formData.discount}
                   onChange={(e) => handleChange("discount", e.target.value)}
                 />
-              </FormField>
+              </FormField> */}
 
-              <FormField label="Team Payment (Auto)">
-                <InputMoney
-                  value={formData.teamPayment}
-                  onChange={(val) => handleChange("teamPayment", val)}
-                />
-              </FormField>
+              {!edit && (
+                <>
+                  <FormField label="Team Payment (Auto)">
+                    <InputMoney
+                      value={projectData?.amountPayableToMembers}
+                      disabled
+                    />
+                  </FormField>
 
-              <FormField label="Revenue (Auto)">
-                <InputMoney
-                  value={formData.revenue}
-                  onChange={(val) => handleChange("revenue", val)}
-                />
-              </FormField>
+                  <FormField label="Revenue (Auto)">
+                    <InputMoney
+                      value={projectData?.finalAmountEarned}
+                      disabled
+                    />
+                  </FormField>
+                </>
+              )}
 
               <FormField label="Payment Date" required>
                 <div className="relative">
                   <input
                     type="date"
                     value={formData.paymentDate}
-                    onChange={(e) => handleChange("paymentDate", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("paymentDate", e.target.value)
+                    }
                     className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                   />
                   <Icon
@@ -362,22 +305,28 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
                 />
               </FormField>
 
-              <FormField label="Amount Owed">
+              <FormField label="Amount Owed (After Payment)">
                 <InputMoney
-                  value={formData.amountOwed}
+                  value={
+                    projectData?.amountOwedByClient != null &&
+                    formData.amountPaid !== ""
+                      ? projectData.amountOwedByClient -
+                        Number(formData.amountPaid)
+                      : ""
+                  }
                   onChange={(val) => handleChange("amountOwed", val)}
                 />
               </FormField>
 
               <FormField label="Payment Method" required>
                 <Dropdown
-                  options={["Cash", "Bank Transfer", "Cheque", "Other"]}
+                  options={["Cash", "Bank Transfer", "Stripe", "Other"]}
                   value={formData.paidMethod}
                   onChange={(val) => handleChange("paidMethod", val)}
                 />
               </FormField>
 
-              <FormField label="Status" required>
+              {/* <FormField label="Status" required>
                 <div className="relative">
                   <div
                     className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
@@ -397,12 +346,12 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
                     className="pl-8 w-full h-12 bg-surface2 rounded-lg border-divider"
                   />
                 </div>
-              </FormField>
+              </FormField> */}
 
               <FormField label="Invoice No.">
                 <Input
                   value={formData.invoiceNo}
-                  onChange={(e) => handleChange("invoiceNo", e.target.value)}
+                  onChange={(val) => handleChange("invoiceNo", val)}
                 />
               </FormField>
 
@@ -411,7 +360,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
                   <label className="flex items-center gap-2 text-text2 cursor-pointer">
                     <Icon name="upload" size={24} />
                     <span className="typo-b3">
-                      {invoiceFile ? invoiceFile.name : "Upload Invoice Here"}
+                      {relatedFile ? relatedFile.name : "Upload Invoice Here"}
                     </span>
                     <input
                       type="file"
@@ -425,11 +374,18 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
           </div>
         </div>
 
-        {/* Action buttons */}
         <div className="flex justify-between">
           <div className="flex gap-4">
-            <RedButton type="button" onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save"}
+            <RedButton
+              type="button"
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              {(createMutation.isPending || updateMutation.isPending) && !more
+                ? "Saving..."
+                : edit
+                ? "Update"
+                : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -438,17 +394,26 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
             ) : (
               <RedBorderButton
                 type="button"
-                onClick={handleSaveAndAddMore}
+                onClick={() => {
+                  handleSubmit(true);
+                  setMore(true);
+                }}
                 disabled={isLoading}
               >
-                {isLoading ? "Saving..." : "Save & Add More"}
+                {createMutation.isPending && more
+                  ? "Saving..."
+                  : "Save & Add More"}
               </RedBorderButton>
             )}
           </div>
 
           {edit ? (
-            <RedButton type="button" onClick={handleDelete} disabled={isLoading}>
-              {isLoading ? "Deleting..." : "Delete Payment"}
+            <RedButton
+              type="button"
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete Client"}
             </RedButton>
           ) : (
             <Back>

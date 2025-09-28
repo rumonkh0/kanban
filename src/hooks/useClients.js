@@ -17,6 +17,14 @@ export const useClient = (id) => {
   });
 };
 
+export const useClientDetails = (id) => {
+  return useQuery({
+    queryKey: ["clientsDetails", id],
+    queryFn: () => clientsApi.getClientDetailsById(id),
+    enabled: !!id,
+  });
+};
+
 export const useCreateClient = () => {
   const queryClient = useQueryClient();
 

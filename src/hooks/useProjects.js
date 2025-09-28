@@ -2,16 +2,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectsApi } from "../services/projects";
 import { useNavigate } from "react-router";
 
-export const useProjects = (params) => {
+export const useProjects = (params, options = {}) => {
   return useQuery({
     queryKey: ["projects", params],
     queryFn: () => projectsApi.getAll(params),
+    ...options, // allow passing enabled, staleTime, etc.
   });
 };
-
 export const useProject = (id) => {
   return useQuery({
-    queryKey: ["projects", id],
+    queryKey: ["project", id],
     queryFn: () => projectsApi.getById(id),
     enabled: !!id,
   });

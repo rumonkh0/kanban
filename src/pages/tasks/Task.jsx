@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FilterDropdown } from "../../components/Component";
 import KanbanBoard from "./KanbanBoard";
 import AddCardModal from "@/components/AddCardModal";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
+import { useStages } from "../../hooks/useStages";
+import { useParams } from "react-router";
 
 function Tasks() {
+  const { id } = useParams();
   const [addCardModal, setaddCardModal] = useState(false);
-  const [containers, setContainers] = useState([
-    { id: "container1", title: "To Do", color: "#f1f5f9" },
-    { id: "container2", title: "In Progress", color: "#555555" },
-    { id: "container3", title: "Review", color: "#fef3c7" },
-  ]);
+  const [containers, setContainers] = useState([]);
+  const { data: stages, isLoading } = useStages();
+  console.log("id", id);
+  useEffect(() => {
+    if (stages) {
+      console.log("stages:  ", stages);
+      setContainers(stages);
+    }
+  }, [stages]);
+
+  if (isLoading) return <div className="text-center">Loading tasks</div>;
   return (
     <div className="bg-surface2 p-2 rounded-sm border-2 border-divider">
       <div className=" h-10 flex justify-between mb-4">
@@ -26,23 +35,25 @@ function Tasks() {
             Add Another Card
           </div>
         </div>
-        <div className="flex py-1 gap-4">
-          <FilterDropdown
-            label="Select Project"
-            options={["project one", "project two", "project three"]}
-            className="h-8"
-          />
-          <FilterDropdown
-            label="Select Project"
-            options={["project one", "project two", "project three"]}
-            className="h-8"
-          />
-          <FilterDropdown
-            label="Select Project"
-            options={["project one", "project two", "project three"]}
-            className="h-8"
-          />
-        </div>
+        {!id && (
+          <div className="flex py-1 gap-4">
+            <FilterDropdown
+              label="Select Project"
+              options={["project one", "project two", "project three"]}
+              className="h-8"
+            />
+            <FilterDropdown
+              label="Select Project"
+              options={["project one", "project two", "project three"]}
+              className="h-8"
+            />
+            <FilterDropdown
+              label="Select Project"
+              options={["project one", "project two", "project three"]}
+              className="h-8"
+            />
+          </div>
+        )}
       </div>
       <KanbanBoard
         containers={containers}

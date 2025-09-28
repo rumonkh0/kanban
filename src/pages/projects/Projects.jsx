@@ -3,7 +3,13 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { Link } from "react-router";
 import { useState } from "react";
 import { Bin, Pin } from "../../components/Icon";
-import { FilterDropdown, ImageName, Td, Th } from "../../components/Component";
+import {
+  FilterDropdown,
+  FormatDate,
+  ImageName,
+  Td,
+  Th,
+} from "../../components/Component";
 import { useDeleteProject, useProjects } from "../../hooks/useProjects";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
@@ -137,24 +143,27 @@ function Projects() {
                     </Td>
                     <Td className=" bg-divider">
                       {project.client ? (
-                        <ImageName image={clientImage} username={""} />
+                        <ImageName
+                          image={clientImage}
+                          username={project.client?.name}
+                        />
                       ) : (
                         "----"
                       )}
                     </Td>
                     <Td className="typo-b2 text-text  bg-divider">
-                      <Link to={`/projects/${project.id}/manage`}>
+                      <Link to={`/projects/${project._id}/manage`}>
                         {project.projectName}
                       </Link>
                     </Td>
                     <Td className=" bg-divider">
-                      <ProjectMembers members={project.members} />
+                      <Members members={project.members} />
                     </Td>
                     <Td className="typo-b2 text-text  bg-divider">
-                      {project.startDate}
+                      {project.startDate && FormatDate(project.startDate)}
                     </Td>
                     <Td className="typo-b2 text-text  bg-divider">
-                      {project.deadline}
+                      {project.deadline && FormatDate(project.deadline)}
                     </Td>
 
                     <Td className=" bg-divider">
@@ -213,7 +222,7 @@ const ProgressBar = ({ value = 0, color = "#8FC951", height = 4 }) => {
   );
 };
 
-function ProjectMembers({ members }) {
+function Members({ members }) {
   if (!members || members.length === 0) return "-------";
 
   // ✅ Only 1 member → avatar + name

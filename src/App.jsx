@@ -176,9 +176,9 @@ function App() {
 
         <Route path="finance" element={<FinanceLayout />}>
           <Route index element={<Navigate to="payment" replace />} />
-          <Route path="payment" element={<Payment from="finance" />} />
+          <Route path="payments" element={<Payment from="finance" />} />
           <Route
-            path="team-payment"
+            path="team-payments"
             element={<TeamPayment toHref="/finance/paid-to" from="finance" />}
           />
           <Route path="paid-by" element={<PaidByForm from="finance" />} />
@@ -197,13 +197,15 @@ function App() {
           <Route element={<TableLayout />}>
             <Route
               index
-              element={<Navigate to="/services/main-tracker" replace />}
+              element={<Navigate to="/services/trackers" replace />}
             />
-            <Route path="main-tracker" element={<MainTracker />} />
-            <Route path="service-details" element={<ServiceDetails />} />
+            <Route path="trackers" element={<MainTracker />} />
+            <Route path="services" element={<ServiceDetails />} />
           </Route>
           <Route path="add-tracker" element={<AddTracker />} />
           <Route path="add-service" element={<AddService />} />
+          <Route path="trackers/:id/edit" element={<AddTracker edit title="Edit Tracker"/>} />
+          <Route path="services/:id/edit" element={<AddService edit title="Edit Service"/>} />
         </Route>
 
         <Route path="reports" element={<Reports />} />

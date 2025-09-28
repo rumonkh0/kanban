@@ -10,49 +10,18 @@ import {
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
+import { useCreateTask, useTasks } from "../../hooks/useTasks";
 function KanbanBoard({ containers, setContainers, role = "member" }) {
-  const [tasks, setTasks] = useState([
-    {
-      taskID: 1,
-      containerID: "container1",
-      taskTitle: "Design Homepage",
-      image: "/images/demo.png",
-      deadline: 3,
-      comment: 2,
-      attachment: 1,
-    },
-    {
-      taskID: 2,
-      containerID: "container2",
-      taskTitle: "Develop Login Feature",
-      image: "/images/demo.png",
-      deadline: 2,
-      comment: 0,
-      attachment: 0,
-    },
-    {
-      taskID: 3,
-      containerID: "container1",
-      taskTitle: "Write Blog Post",
-      image: "/images/demo.png",
-      deadline: 5,
-      comment: 1,
-      attachment: 2,
-    },
-    {
-      taskID: 4,
-      containerID: "container3",
-      taskTitle: "Prepare Presentation",
-      image: "/images/demo.png",
-      deadline: 1,
-      comment: 3,
-      attachment: 0,
-    },
-  ]);
+  const { data: tasks, isLoading } = useTasks();
+  const createTask = useCreateTask();
 
   const [activeContainer, setActiveContainer] = useState(null);
   const [activeTask, setActiveTask] = useState(null);
-  const containerId = useMemo(() => containers.map((c) => c.id), [containers]);
+  console.log("form kanban", containers);
+  const containerId = useMemo(
+    () => containers?.map((c) => c._id),
+    [containers]
+  );
   const onDragStart = (event) => {
     if (event.active.data.current?.type === "container") {
       setActiveContainer(event.active.data.current.container);
@@ -71,8 +40,8 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
       over.data.current?.type === "container"
     ) {
       setContainers((containers) => {
-        const oldIndex = containers.findIndex((c) => c.id === active.id);
-        const newIndex = containers.findIndex((c) => c.id === over.id);
+        const oldIndex = containers.findIndex((c) => c._id === active._id);
+        const newIndex = containers.findIndex((c) => c._id === over._id);
         return arrayMove(containers, oldIndex, newIndex);
       });
     }
@@ -141,6 +110,8 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 0 } })
   );
+
+  if (isLoading) return <div className="text-center">Loading tasks</div>;
   return (
     <>
       <DndContext
@@ -151,24 +122,19 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
       >
         <div className="grid grid-cols-[repeat(auto-fill,minmax(290px,1fr))] gap-2">
           <SortableContext items={containerId}>
-            {containers.map((container) => (
+            {containers?.map((container) => (
               <TaskCard
-                key={container.id}
-                id={container.id}
+                key={container._id}
+                id={container._id}
                 cardTitle={container.title}
                 color={container.color}
                 tasks={tasks.filter(
-                  (task) => task.containerID === container.id
+                  (task) => task.containerID === container._id
                 )}
                 onAddTask={({ containerID, taskTitle }) => {
                   const newTask = {
-                    taskID: tasks.length + 1,
                     containerID,
                     taskTitle,
-                    image: null,
-                    deadline: 0,
-                    comment: 0,
-                    attachment: 0,
                   };
                   setTasks([...tasks, newTask]);
                 }}

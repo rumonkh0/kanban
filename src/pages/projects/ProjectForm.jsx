@@ -46,7 +46,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
     calculateProgress: false,
     projectPrice: "",
     discount: "",
-    teamMembersPay: "",
+    amountPayableToMembers: "",
     amountPaidByClient: "",
     amountOwedByClient: "",
     amountPaidToTeam: "",
@@ -60,7 +60,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
   const { data: services = [] } = useServices();
   const { data: departments = [] } = useDepartments();
   const createMutation = useCreateProject();
-  const updateMutation = useUpdateProject();
+  const updateMutation = useUpdateProject(id);
   const deleteMutation = useDeleteProject();
   const { data: freelancers = [] } = useTeamMembers();
   const { data: clients = [] } = useClients();
@@ -127,7 +127,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
     }
     console.log(submitData);
     if (edit) {
-      updateMutation.mutate({ id, data: submitData });
+      updateMutation.mutate(submitData);
     } else {
       createMutation.mutate(submitData);
     }
@@ -145,12 +145,14 @@ function ProjectForm({ edit, title = "Add Project" }) {
         shortCode: projectData.shortCode || "",
         projectName: projectData.projectName || "",
         startDate: projectData.startDate.split("T")[0] || "",
-        dueDate: projectData.dueDate.split("T")[0] || "",
+        dueDate: projectData.dueDate?.split("T")[0] || "",
         noDeadline: projectData.noDeadline ?? false,
         service: projectData.service || null,
         departments: projectData.department || [],
-        client: projectData.client || null,
-        members: projectData.members || [],
+        client: projectData.client?._id || null,
+        members: projectData.members
+          ? projectData.members?.map((m) => m._id)
+          : [],
         summary: projectData.summary || "",
         ganttChart: projectData.ganttChart || true,
         taskBoard: projectData.taskBoard || true,
@@ -160,7 +162,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
         calculateProgress: projectData.calculateProgress ?? false,
         projectPrice: projectData.projectPrice ?? null,
         discount: projectData.discount ?? null,
-        teamMembersPay: projectData.teamMembersPay ?? null,
+        amountPayableToMembers: projectData.amountPayableToMembers ?? null,
         amountPaidByClient: projectData.amountPaidByClient ?? null,
         amountOwedByClient: projectData.amountOwedByClient ?? null,
         amountPaidToTeam: projectData.amountPaidToTeam ?? null,
@@ -196,7 +198,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
         calculateProgress: false,
         projectPrice: "",
         discount: "",
-        teamMembersPay: "",
+        amountPayableToMembers: "",
         amountPaidByClient: "",
         amountOwedByClient: "",
         amountPaidToTeam: "",
@@ -209,6 +211,22 @@ function ProjectForm({ edit, title = "Add Project" }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (formData.service && services?.length > 0) {
+      const selectedService = services.find((s) => s._id === formData.service);
+
+      if (selectedService) {
+        const memberIds = selectedService.freelancers?.map((m) => m._id) || [];
+
+        setFormData((prev) => ({
+          ...prev,
+          members: memberIds,
+        }));
+      }
+    }
+  }, [formData.service, services]);
+
   const isLoading =
     createMutation.isPending ||
     updateMutation.isPending ||
@@ -303,6 +321,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                   }
                   value={formData.service}
                   onChange={(val) => handleChange("service", val)}
+                  allowClear
                 />
               </FormField>
 
@@ -326,7 +345,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                   id: f._id,
                   name: f.name,
                   email: f.user.email,
-                  profilePicture: f.profilePicture?.filePath,
+                  profilePicture: f.profilePicture,
                 }))}
                 onChange={(client) => handleChange("client", client)}
                 label="Clients"
@@ -338,13 +357,14 @@ function ProjectForm({ edit, title = "Add Project" }) {
                   id: f._id,
                   name: f.name,
                   email: f.user.email,
-                  profilePicture: f.profilePicture?.filePath,
+                  profilePicture: f.profilePicture,
                 }))}
                 onChange={(members) => handleChange("members", members)}
                 mode="multi"
                 label="Add Project Members"
                 addingTitle="Add new member"
                 placeHolder="Select Members...."
+                disabled={!!formData.service}
               />
 
               <FormField
@@ -447,17 +467,17 @@ function ProjectForm({ edit, title = "Add Project" }) {
                     <div className="relative">
                       <div
                         className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
-                          formData.status === "Done"
+                          formData.status === "Completed"
                             ? "bg-success"
-                            : formData.status === "Cancelled"
+                            : formData.status === "On Hold"
                             ? "bg-brand"
-                            : formData.status === "In Progress"
+                            : formData.status === "Active"
                             ? "bg-[#5EB7E0]"
                             : ""
                         }`}
                       />
                       <Dropdown
-                        options={["Done", "Cancelled", "In Progress"]}
+                        options={["Active", "Completed", "On Hold"]}
                         value={formData.status}
                         onChange={(val) => handleChange("status", val)}
                         className="pl-8 w-full h-12 bg-surface2 rounded-lg border-divider"
@@ -559,7 +579,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
               {[
                 ["Project Price", "projectPrice"],
                 ["Discount", "discount"],
-                ["Team Members Pay", "teamMembersPay"],
+                ["Team Members Pay", "amountPayableToMembers"],
                 ["Amount Paid By Client", "amountPaidByClient"],
                 ["Amount Owed By Client", "amountOwedByClient"],
                 ["Amount Paid To Team Members", "amountPaidToTeam"],
