@@ -1,8 +1,8 @@
 import Icon from "./Icon";
-import { usePageTitle } from "../context/PageTitleContext";
+import { usePageTitleStore } from "@/stores/usePageTitleStore";
 
 function Header() {
-  const { title } = usePageTitle();
+  const title = usePageTitleStore((state) => state.title);
   return (
     <div className="flex justify-between items-center h-16 py-2 mx-2 rounded-lg bg-surface2 border-2 border-divider">
       <div className="ml-4 typo-h4 text-text">{title}</div>

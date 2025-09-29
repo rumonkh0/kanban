@@ -1,10 +1,36 @@
 import React, { useState } from "react";
 import { FormField, Icon, Input, RedButton } from "../../components/Component";
 import { Link } from "react-router";
+import { useLogin } from "../../hooks/useAuth";
 
 function Login() {
+  // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [, setError] = useState(null);
+  const loginMutation = useLogin();
+
   const togglePassword = () => setShowPassword(!showPassword);
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!formData.email || !formData.password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    loginMutation.mutate(formData, {
+      onError: (err) => {
+        setError(err.message || "Login failed");
+      },
+    });
+  };
   return (
     <>
       <div className="flex justify-between items-center">
@@ -13,20 +39,23 @@ function Login() {
           Forgot Password
         </Link>
       </div>
-      <div className="flex flex-col gap-2">
+      <form className="flex flex-col gap-4" onSubmit={handleLogin}>
         <FormField label="Email" required>
-          <Input type="email" placeholder="Enter Email" />
+          <Input
+            type="email"
+            placeholder="Enter Email"
+            value={formData.email}
+            onChange={(e) => handleChange("email", e)}
+          />
         </FormField>
-        <div className="flex flex-col gap-2 mt-2">
-          <label className="flex justify-between items-center w-full typo-b2 text-text2">
-            <span>Password</span>
-            
-          </label>
 
-          <div className="relative w-full">
+        <FormField label="Password" required>
+          <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
-              placeholder={`Enter Password`}
+              placeholder="Enter Password"
+              value={formData.password}
+              onChange={(e) => handleChange("password", e)}
             />
             <button
               type="button"
@@ -37,22 +66,26 @@ function Login() {
               <Icon name={showPassword ? "eye" : "eye"} className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        </FormField>
+
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
-            id="noDeadline"
+            id="rememberMe"
             className="form-checkbox h-5 w-5 rounded border-divider bg-surface focus:ring-brand focus:ring-offset-0"
           />
-          <label htmlFor="noDeadline" className="typo-b3 text-text">
+          <label htmlFor="rememberMe" className="typo-b3 text-text">
             Remember Me
           </label>
         </div>
-      </div>
-<Link to="/dashboard/private">
-      <RedButton className="typo-cta py-3 w-full">
-        Log In
-      </RedButton></Link>
+        <RedButton
+          type="submit"
+          className="typo-cta py-3 w-full mt-4"
+          disabled={loginMutation.isLoading}
+        >
+          {loginMutation.isLoading ? "Logging In..." : "Log In"}
+        </RedButton>
+      </form>
     </>
   );
 }

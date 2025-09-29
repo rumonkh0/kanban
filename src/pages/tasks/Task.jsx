@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
 import { useStages } from "../../hooks/useStages";
 import { useParams } from "react-router";
+import PageTitle from "../../components/PageTitle";
 
 function Tasks() {
   const { id } = useParams();
@@ -23,6 +24,7 @@ function Tasks() {
   if (isLoading) return <div className="text-center">Loading tasks</div>;
   return (
     <div className="bg-surface2 p-2 rounded-sm border-2 border-divider">
+      <PageTitle title="Tasks" />
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4 cursor-pointer">
           <div

@@ -13,7 +13,7 @@ import {
 import { ChartHeader } from "@/components/Component";
 import ClientTable from "@/pages/clients/ClientTable";
 import { Link } from "react-router";
-import Icon from "@/components/Icon";
+import { ToastContainer, toast } from "react-toastify";
 import { FilterDropdown, ToggleTabs } from "../../../components/Component";
 function page() {
   const data = [
@@ -216,6 +216,7 @@ function page() {
         </div>
         <ClientTable />
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -204,8 +204,14 @@ function App() {
           </Route>
           <Route path="add-tracker" element={<AddTracker />} />
           <Route path="add-service" element={<AddService />} />
-          <Route path="trackers/:id/edit" element={<AddTracker edit title="Edit Tracker"/>} />
-          <Route path="services/:id/edit" element={<AddService edit title="Edit Service"/>} />
+          <Route
+            path="trackers/:id/edit"
+            element={<AddTracker edit title="Edit Tracker" />}
+          />
+          <Route
+            path="services/:id/edit"
+            element={<AddService edit title="Edit Service" />}
+          />
         </Route>
 
         <Route path="reports" element={<Reports />} />
@@ -229,6 +235,7 @@ function App() {
         <Route path="settings" element={<ProfileSetting role="member" />} />
         <Route path="*" element={<NotFound />} />
       </Route>
+
       <Route path="/client" element={<RootLayout sidebar="client" />}>
         <Route index element={<Navigate to="/client/dashboard" replace />} />
         <Route path="dashboard" element={<ClientDashboard />} />

@@ -1,5 +1,6 @@
 import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
+import PageTitle from "../../components/PageTitle";
 
 function Private() {
   const days = [
@@ -14,6 +15,7 @@ function Private() {
 
   return (
     <div className="flex flex-col gap-4">
+      <PageTitle title="Dashboard" />
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
         <PersonCard

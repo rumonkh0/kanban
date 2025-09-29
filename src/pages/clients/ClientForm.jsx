@@ -10,6 +10,7 @@ import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
 import { Back } from "../../components/Component";
 import { Navigate, useNavigate, useParams } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 import PageTitle from "@/components/PageTitle";
 import {
   useClient,
@@ -36,9 +37,9 @@ function ClientForm({ edit, title = "Add Client" }) {
   const togglePassword = () => setShowPassword(!showPassword);
 
   const [formData, setFormData] = useState({
-    salutation: "",
+    salutation: undefined,
     category: "",
-    gender: "",
+    gender: null,
     name: "",
     email: "",
     country: "",
@@ -144,7 +145,14 @@ function ClientForm({ edit, title = "Add Client" }) {
   };
 
   useEffect(() => {
+    console.log(createClientMutation.error?.response?.data?.error);
+    createClientMutation.isError &&
+      toast.error(createClientMutation?.error?.response?.data?.error);
+  }, [createClientMutation.isError, createClientMutation.error]);
+
+  useEffect(() => {
     const iscreated = createClientMutation.isSuccess;
+    if (iscreated) toast.success("User Created");
     if (iscreated && more) {
       setFormData({
         salutation: "",
@@ -701,6 +709,18 @@ function ClientForm({ edit, title = "Add Client" }) {
           )}
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 }

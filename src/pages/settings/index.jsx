@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router";
+import PageTitle from "../../components/PageTitle";
 
 function SettingLayout() {
   const location = useLocation();
@@ -13,6 +14,7 @@ function SettingLayout() {
 
   return (
     <>
+      <PageTitle title="Setting" />
       <div className="grid grid-cols-5 h-12 mb-4 typo-cta text-text2 -mt-4 z-10">
         {menuItems.map((item) => (
           <Link

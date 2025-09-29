@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router";
+import PageTitle from "../../../components/PageTitle";
 
 function DashboardAdvancedLayout() {
   const location = useLocation();
@@ -14,6 +15,7 @@ function DashboardAdvancedLayout() {
 
   return (
     <div>
+      <PageTitle title="Dashboard" />
       <div className="grid grid-cols-6 h-12 mb-4 typo-cta text-text2 -mt-4 z-10">
         {menuItems.map((item) => (
           <Link

@@ -17,6 +17,7 @@ import {
   RedBorderButton,
   RedButton,
 } from "../../components/Component";
+import PageTitle from "../../components/PageTitle";
 
 function Reports() {
   const teamPerformance = [
@@ -48,6 +49,7 @@ function Reports() {
   ];
   return (
     <div>
+      <PageTitle title="Report" />
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4">
           <Link to="/services/add-tracker">

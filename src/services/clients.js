@@ -17,7 +17,7 @@ export const clientsApi = {
     throw new Error(response.data?.message || "Failed to fetch client");
   },
 
-   // Get single client
+  // Get single client
   getClientDetailsById: async (id) => {
     const response = await apiClient.get(`/clients/${id}/details`);
 
