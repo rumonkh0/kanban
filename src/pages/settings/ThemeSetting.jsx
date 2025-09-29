@@ -186,7 +186,7 @@ function ThemeSetting() {
 
   return (
     <div className="flex flex-col gap-4">
-      <form className="grid grid-cols-3">
+      <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <FormField label="App Name" required>
           <Input
             placeholder="Type Name"
@@ -217,7 +217,7 @@ function ThemeSetting() {
         ))}
       </div>
 
-      <form className="grid grid-cols-3 gap-4">
+      <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* File upload fields with preview – unchanged UI */}
         {[
           { key: "lightModeLogo", label: "Light Mode Logo" },
@@ -298,11 +298,14 @@ function ThemeSetting() {
 
         {/* Panels */}
         {["public", "admin", "employee", "client"].map((panel) => (
-          <div key={panel} className="flex flex-col gap-4 col-span-3">
+          <div
+            key={panel}
+            className="flex flex-col gap-4 md:col-span-2 lg:col-span-3"
+          >
             <div className="typo-b1">
               {panel.charAt(0).toUpperCase() + panel.slice(1)} Panel Theme
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Primary Color" required>
                 <Input
                   type="color"

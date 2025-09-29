@@ -79,7 +79,7 @@ export const Thead = ({ children }) => (
 
 export const Td = ({ data, className, children }) => (
   <td
-    className={`min-w-30 typo-b2 text-text py-2 px-4 bg-divider ${
+    className={`min-w-30 w-auto typo-b2 text-text py-2 px-2 md:px-4 bg-divider ${
       className || ""
     }`}
   >
@@ -87,22 +87,38 @@ export const Td = ({ data, className, children }) => (
   </td>
 );
 export const Th = ({ title }) => (
-  <th className="typo-b3 text-left min-w-fit text-text2 py-3 px-4">{title}</th>
+  <th className="typo-b3 text-left min-w-fit text-text2 py-3 px-2 md:px-4">
+    {title}
+  </th>
 );
 export const ImageName = ({ image, username, designation }) => (
-  <div className="flex items-center gap-2">
+  <div className="flex min-w-[150px] w-auto items-center gap-2">
     <img
       src={image}
       alt="image"
       className="w-8 h-8 rounded-full object-cover"
     />
-    <div className="flex flex-col justify-between">
-      <span>{username}</span>
-      {designation && <p className="typo-b3 text-text2">{designation}</p>}
+    <div className="flex flex-col justify-between min-w-fit">
+      <span className="whitespace-nowrap min-w-fit">{username}</span>
+      {designation && (
+        <p className="typo-b3 text-text2 whitespace-nowrap">{designation}</p>
+      )}
     </div>
   </div>
 );
-
+// export const ImageName = ({ image, username, designation }) => (
+//   <div className="flex items-center gap-2">
+//     <img
+//       src={image}
+//       alt="image"
+//       className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover"
+//     />
+//     <div className="flex flex-col justify-between">
+//       <span className="truncate max-w-[100px] md:max-w-none">{username}</span>
+//       {designation && <p className="typo-b3 text-text2">{designation}</p>}
+//     </div>
+//   </div>
+// );
 export const FormField = ({
   label,
   required,
@@ -361,6 +377,21 @@ export const ToggleTabs = ({
   };
 
   return (
+    // <div
+    //   className={`bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2 ${className}`}
+    // >
+    //   {options.map((val) => (
+    //     <div
+    //       key={val}
+    //       onClick={() => handleSelect(val)}
+    //       className={`px-2 py-1.5 rounded-sm transition-colors ${
+    //         selected === val ? "bg-brand text-white" : "text-text2"
+    //       }`}
+    //     >
+    //       {val}
+    //     </div>
+    //   ))}
+    // </div>
     <div
       className={`bg-divider h-[30px] flex items-center rounded-sm typo-b3 cursor-pointer text-text2 ${className}`}
     >
@@ -368,7 +399,7 @@ export const ToggleTabs = ({
         <div
           key={val}
           onClick={() => handleSelect(val)}
-          className={`px-2 py-1.5 rounded-sm transition-colors ${
+          className={`px-1.5 md:px-2 py-1.5 rounded-sm transition-colors whitespace-nowrap ${
             selected === val ? "bg-brand text-white" : "text-text2"
           }`}
         >

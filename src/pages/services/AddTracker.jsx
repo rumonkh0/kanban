@@ -169,7 +169,7 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData)
+    console.log(formData);
 
     // Basic validation
     if (!formData.projectName || !formData.description) {
@@ -244,7 +244,7 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
             </Back>
           </div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Project" required>
                 <Dropdown
                   options={
@@ -301,7 +301,7 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
               </FormField>
               <FormField
                 label="Description (auto or Type)"
-                className="col-span-3"
+                className="md:col-span-2 lg:col-span-3"
               >
                 <textarea
                   placeholder="Enter Message"

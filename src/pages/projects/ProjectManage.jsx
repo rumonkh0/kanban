@@ -18,12 +18,12 @@ function ProjectManage() {
 
   return (
     <div>
-      <div className="w-full flex justify-between h-12 mb-4 typo-cta border-b-2  border-divider text-text2 z-10">
+      <div className="w-full flex justify-between h-12 mb-4 typo-cta border-b-2 overflow-x-auto scrollbar-hide border-divider text-text2 z-10">
         {menuItems.map((item) => (
           <Link
             key={item.label}
             to={item.href}
-            className={`h-full px-4 flex justify-center items-center transition-colors hover:text-text ${
+            className={`h-full px-4 flex justify-center items-center transition-colors min-w-fit hover:text-text ${
               pathname === item.href
                 ? " border-b-2 text-text border-brand"
                 : "text-text2"

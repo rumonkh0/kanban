@@ -2,11 +2,11 @@ import { Table, Th, Thead, Td, ImageName } from "@/components/Component";
 import Modal from "@/components/Modal";
 import DropdownMenu from "@/components/DropdownMenu";
 import Icon from "@/components/Icon";
-import PageTitle from "@/components/PageTitle";
 import { useState } from "react";
 import { Link } from "react-router";
 import ServiceDetailsModal from "../../components/ServiceDetailsModal";
 import { useDeleteService, useServices } from "../../hooks/useService";
+import PageTitle from "../../components/PageTitle";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function ServiceDetails() {

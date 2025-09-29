@@ -248,7 +248,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
             </Back>
           </div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Short code">
                 <Input
                   placeholder="Enter Short Code"
@@ -369,7 +369,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
 
               <FormField
                 label=" Project Summary and Notes"
-                className="col-span-3"
+                className="md:col-span-2 lg:col-span-3"
               >
                 <textarea
                   placeholder="Enter Message"
@@ -553,8 +553,8 @@ function ProjectForm({ edit, title = "Add Project" }) {
           <div className="typo-b1 mb-4">Other Details</div>
 
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
-              <div className="col-span-3 flex flex-col gap-2">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-2">
                 <label className="typo-b2 text-text2">
                   Add Project Related File
                 </label>

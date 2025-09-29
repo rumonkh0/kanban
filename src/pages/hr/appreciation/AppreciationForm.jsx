@@ -21,7 +21,7 @@ function AppreciationForm({ title, edit }) {
           </Back>
         </div>
         <div className="bg-surface1 rounded-xl">
-          <form className="grid grid-cols-3 gap-4">
+          <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <FormField label="Award Name" required>
               <Input placeholder="Project Manager" />
             </FormField>

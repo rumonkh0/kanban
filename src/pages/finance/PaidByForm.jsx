@@ -182,7 +182,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
             </Back>
           </div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Project" required>
                 {!edit ? (
                   <Dropdown
@@ -355,7 +355,10 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
                 />
               </FormField>
 
-              <FormField label="Upload Invoice" className="col-span-3">
+              <FormField
+                label="Upload Invoice"
+                className="md:col-span-2 lg:col-span-3"
+              >
                 <div className="flex items-center justify-center h-16 bg-surface2 border-2 border-divider rounded-lg">
                   <label className="flex items-center gap-2 text-text2 cursor-pointer">
                     <Icon name="upload" size={24} />

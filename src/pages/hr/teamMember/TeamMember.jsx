@@ -2,7 +2,7 @@ import { Icon } from "@/components/Component";
 import HrTable from "@/components/HrTable";
 import { useState } from "react";
 import { Link } from "react-router";
-import { FilterDropdown } from "../../../components/Component";
+import { FilterDropdown, RedButton } from "../../../components/Component";
 
 function TeamMember() {
   const [filters, setFilters] = useState({
@@ -34,19 +34,17 @@ function TeamMember() {
   };
   return (
     <>
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
-          <Link
-            to="/hr/add-team-member"
-            className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
-          >
+      <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
+        <Link to="/hr/add-team-member" className="flex">
+          <RedButton className="flex-1 px-4">
             <div className="w-6 h-6 flex justify-center items-center">
               <Icon name="plus" size={15} />
             </div>
             Add New Members
-          </Link>
-        </div>
-        <div className="flex py-1 gap-4">
+          </RedButton>
+        </Link>
+
+        <div className="flex flex-wrap gap-2 lg:gap-4 py-1">
           {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
@@ -54,11 +52,12 @@ function TeamMember() {
               options={options}
               value={filters[key]}
               onSelect={(value) => handleFilterChange(key, value)}
-              className="h-8"
+              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
             />
           ))}
         </div>
       </div>
+
       <HrTable filters={filters} />
     </>
   );

@@ -1,28 +1,21 @@
+import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Outlet } from "react-router";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// })
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// })
-
-// export const metadata = {
-//   title: "Creative CRM",
-//   description: "kanban style CRM for creative agencies",
-// };
-
 export default function RootLayout({ sidebar = "admin" }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <>
-      <Sidebar sidebar={sidebar} />
-      <div className="fixed left-57 top-0 bottom-0 right-0 py-2  flex flex-col flex-1 gap-4">
-        <Header />
+      <Sidebar
+        sidebar={sidebar}
+        isMobileOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
+      {/* Changed: left-57 becomes left-0 on mobile, left-57 on lg+ screens */}
+      <div className="fixed left-0 lg:left-57 top-0 bottom-0 right-0 py-2 flex flex-col flex-1 gap-4">
+        <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
         <main className="relative flex-1 px-2 overflow-y-auto">
           <Outlet />
         </main>

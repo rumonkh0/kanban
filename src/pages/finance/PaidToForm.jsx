@@ -239,7 +239,7 @@ function PaidToForm({ edit = false, title = "Add Payment" }) {
           </div>
           <div className="bg-surface1 rounded-xl">
             <form
-              className="grid grid-cols-3 gap-4"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
               onSubmit={(e) => e.preventDefault()}
             >
               {/* Added onSubmit to prevent default browser behavior */}
@@ -262,9 +262,7 @@ function PaidToForm({ edit = false, title = "Add Payment" }) {
               {console.log(formData, paidToEntity)}
               <ClientSelect
                 value={edit ? formData.member : formData.paidTo}
-                clients={
-                  edit && paidToEntity?.id ? paidToEntity : paidToEntity
-                }
+                clients={edit && paidToEntity?.id ? paidToEntity : paidToEntity}
                 onChange={(entity) => {
                   handleChange("paidTo", entity);
                 }}
@@ -356,7 +354,10 @@ function PaidToForm({ edit = false, title = "Add Payment" }) {
                   onChange={(e) => handleChange("invoiceNo", e)}
                 />
               </FormField>
-              <FormField label="Upload Invoice" className="col-span-3">
+              <FormField
+                label="Upload Invoice"
+                className="md:col-span-2 lg:col-span-3"
+              >
                 <div className="flex items-center justify-center h-16 bg-surface2 border-2 border-divider rounded-lg">
                   <label className="flex items-center gap-2 text-text2 cursor-pointer">
                     <Icon name="upload" size={24} />

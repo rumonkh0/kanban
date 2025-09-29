@@ -89,7 +89,7 @@ function DepartmentForm({ title, edit }) {
         <div className="bg-surface1 rounded-xl">
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="grid grid-cols-3 gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <FormField label="Department Name" required>
               <Input

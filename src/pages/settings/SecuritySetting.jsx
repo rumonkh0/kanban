@@ -94,7 +94,7 @@ function SecuritySetting() {
   }
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(570px,1fr))]">
+      <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(400px,1fr))]">
         <div className="p-4 bg-surface2 border border-divider rounded-lg flex flex-col gap-4">
           <div className="flex gap-6">
             <div className="flex-shrink-0">
@@ -152,7 +152,7 @@ function SecuritySetting() {
           </label>
         </div>
       </div>
-      <form className="grid grid-cols-3 gap-4">
+      <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <FormField label="Choose Google Recaptcha Version">
           <div className="flex typo-cta">
             <label

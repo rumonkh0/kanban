@@ -41,7 +41,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     department: null,
     country: "USA",
     mobile: { countryCode: "", number: "" },
-    gender:null,
+    gender: null,
     joiningDate: new Date().toISOString().split("T")[0],
     dob: "",
     language: "English",
@@ -177,8 +177,8 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
         memberId: teamMember.memberId ?? "",
         salutation: teamMember.salutation ?? null,
         name: teamMember.name ?? "",
-          email: teamMember.user?.email ?? "",
-          password: "",
+        email: teamMember.user?.email ?? "",
+        password: "",
         designation: teamMember.designation ?? "",
         department: teamMember.department?._id ?? null,
         country: teamMember.country ?? "USA",
@@ -232,7 +232,10 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
             </Back>
           </div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4" onSubmit={handleSubmit}>
+            <form
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              onSubmit={handleSubmit}
+            >
               <FormField label="Members ID">
                 <Input
                   value={formData.memberId}
@@ -471,7 +474,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   placeholder="Enter Role"
                 />
               </FormField> */}
-              <FormField label="Address" className="col-span-3">
+              <FormField label="Address" className="md:col-span-2 lg:col-span-3">
                 <Input
                   value={formData.address}
                   onChange={(val) => handleChange("address", val)}
@@ -480,7 +483,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   className="h-16"
                 />
               </FormField>
-              <FormField label="About" className="col-span-3">
+              <FormField label="About" className="md:col-span-2 lg:col-span-3">
                 <textarea
                   value={formData.about}
                   onChange={(e) => handleChange("about", e.target.value)}
@@ -494,7 +497,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
         <div>
           <div className="typo-b1 mb-4">Other Details</div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Login Allowed?">
                 <div className="flex typo-cta">
                   {[true, false].map((val, idx) => (

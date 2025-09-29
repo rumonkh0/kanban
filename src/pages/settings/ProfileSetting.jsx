@@ -130,66 +130,74 @@ function ProfileSetting({ role }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Profile Picture + Emergency Section */}
-      <div className="flex gap-2">
-        <div>
-          <img
-            src="/images/profile.png"
-            alt=""
-            className="w-40 h-43 rounded-sm"
-          />
-        </div>
-        {role === "admin" && (
-          <div className="flex-1 flex flex-wrap border border-divider rounded-lg bg-surface2 p-4">
-            {/* Emergency Contact */}
-            <div className="flex-[4] border-r-2 border-divider flex flex-col gap-2 pr-8">
-              <div className="typo-b2">Emergency Contact</div>
-              <Input
-                placeholder="Enter Email"
-                value={formData.emergencyEmail}
-                onChange={(val) => handleChange("emergencyEmail", val)}
-              />
-              <Input
-                placeholder="Enter Phone"
-                value={formData.emergencyPhone}
-                onChange={(val) => handleChange("emergencyPhone", val)}
-              />
-            </div>
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-2">
+  {/* Profile Image */}
+  <div className="flex-shrink-0">
+    <img
+      src="/images/profile.png"
+      alt=""
+      className="w-40 h-43 rounded-sm mx-auto lg:mx-0"
+    />
+  </div>
 
-            {/* Document Upload */}
-            <div className="flex-[6] flex flex-col gap-2 pl-4">
-              <div className="typo-b2">Documents</div>
-              <div className="flex items-center justify-center h-12 bg-surface2 border-2 border-divider rounded-lg">
-                <label className="flex items-center gap-2 text-text2 cursor-pointer">
-                  <Icon name="upload" size={24} />
-                  <span className="typo-b3">
-                    {documentFile ? documentFile.name : "Upload File Here"}
-                  </span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e.target.files[0])}
-                  />
-                </label>
-              </div>
-              {documentFile && (
-                <div className="w-[184px] h-12 bg-divider flex justify-between items-center gap-1 p-1.5 rounded-sm">
-                  <Icon name="file" size={35} />
-                  <div className="typo-b3 text-text flex flex-col">
-                    <h2>Document</h2>
-                    <p>{documentFile.name}</p>
-                  </div>
-                  <button onClick={() => setDocumentFile(null)}>
-                    <Icon name="cross-red" size={16} />
-                  </button>
-                </div>
-              )}
+  {role === "admin" && (
+    <div className="flex-1 flex flex-col lg:flex-row flex-wrap border border-divider rounded-lg bg-surface2 p-4 gap-4 lg:gap-0">
+      
+      {/* Emergency Contact */}
+      <div className="flex-1 lg:flex-[4] border-r lg:border-r-2 border-divider flex flex-col gap-2 pr-0 lg:pr-8">
+        <div className="typo-b2">Emergency Contact</div>
+        <Input
+          placeholder="Enter Email"
+          value={formData.emergencyEmail}
+          onChange={(val) => handleChange("emergencyEmail", val)}
+        />
+        <Input
+          placeholder="Enter Phone"
+          value={formData.emergencyPhone}
+          onChange={(val) => handleChange("emergencyPhone", val)}
+        />
+      </div>
+
+      {/* Document Upload */}
+      <div className="flex-1 lg:flex-[6] flex flex-col gap-2 pl-0 lg:pl-4">
+        <div className="typo-b2">Documents</div>
+        <div className="flex items-center justify-center h-12 bg-surface2 border-2 border-divider rounded-lg">
+          <label className="flex items-center gap-2 text-text2 cursor-pointer">
+            <Icon name="upload" size={24} />
+            <span className="typo-b3">
+              {documentFile ? documentFile.name : "Upload File Here"}
+            </span>
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => handleFileChange(e.target.files[0])}
+            />
+          </label>
+        </div>
+
+        {documentFile && (
+          <div className="w-full lg:w-[184px] h-12 bg-divider flex justify-between items-center gap-1 p-1.5 rounded-sm">
+            <Icon name="file" size={35} />
+            <div className="typo-b3 text-text flex flex-col">
+              <h2>Document</h2>
+              <p>{documentFile.name}</p>
             </div>
+            <button onClick={() => setDocumentFile(null)}>
+              <Icon name="cross-red" size={16} />
+            </button>
           </div>
         )}
       </div>
+    </div>
+  )}
+</div>
+
 
       {/* Profile Form */}
-      <form className="grid grid-cols-3 gap-4" onSubmit={handleSubmit}>
+      <form
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        onSubmit={handleSubmit}
+      >
         <FormField label="Your Name">
           <Input
             placeholder="Enter Name"
@@ -365,7 +373,7 @@ function ProfileSetting({ role }) {
         </FormField>
 
         {/* Address */}
-        <FormField label="Address" className="col-span-3">
+        <FormField label="Address" className="md:col-span-2 lg:col-span-3">
           <Input
             placeholder="Enter Address"
             className="h-16"

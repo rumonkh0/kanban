@@ -75,16 +75,15 @@ function Reports() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 grid-rows-2 gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* Team Performance Report */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
           {/* Header */}
           <div className="flex justify-between">
             <ChartHeader primaryLabel="Team Performance Report" />
           </div>
-
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={teamPerformance}
@@ -104,8 +103,6 @@ function Reports() {
                 <Tooltip
                   contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
                 />
-
-                {/* Bars with individual colors */}
                 <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
                   {teamPerformance.map((entry, index) => (
                     <Cell key={index} fill="#A88AED" cursor="none" />
@@ -114,34 +111,28 @@ function Reports() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
-            {data.map((item) => {
-              return (
-                <div key={item.name} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{
-                      backgroundColor: item.color,
-                    }}
-                  ></div>
-                  <span className="typo-b3">{item.name}</span>
-                </div>
-              );
-            })}
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+            {data.map((item) => (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="typo-b3">{item.name}</span>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Revenue */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
           {/* Header */}
           <div className="flex justify-between">
             <ChartHeader primaryLabel="Revenue:" keyValue="$10,000" />
           </div>
-
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -152,10 +143,9 @@ function Reports() {
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
-                  outerRadius={200}
+                  outerRadius="80%" // make responsive
                   paddingAngle={0}
                   label={({ name, sales }) => `${name} $${sales}`}
-                  // labelLine={false}
                 >
                   {data.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -168,32 +158,28 @@ function Reports() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
-            {revenue.map((item) => {
-              return (
-                <div key={item.name} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
-                  ></div>
-                  <span className="typo-b3">{item.name}</span>
-                </div>
-              );
-            })}
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+            {revenue.map((item) => (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="typo-b3">{item.name}</span>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Project report */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
           {/* Header */}
           <div className="flex justify-between">
             <ChartHeader primaryLabel="Project report:" keyValue="50" />
           </div>
-
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -204,10 +190,9 @@ function Reports() {
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
-                  outerRadius={200}
+                  outerRadius="80%" // make responsive
                   paddingAngle={0}
                   label={({ name, sales }) => `${name} ${sales}`}
-                  // labelLine={false}
                 >
                   {data.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -220,32 +205,28 @@ function Reports() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
-            {projectReport.map((item) => {
-              return (
-                <div key={item.name} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
-                  ></div>
-                  <span className="typo-b3">{item.name}</span>
-                </div>
-              );
-            })}
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+            {projectReport.map((item) => (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="typo-b3">{item.name}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* task anlysis */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        {/* Task Analytics */}
+        <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
           {/* Header */}
           <div className="flex justify-between">
             <ChartHeader primaryLabel="Task Analytics" />
           </div>
-
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
@@ -265,8 +246,6 @@ function Reports() {
                 <Tooltip
                   contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
                 />
-
-                {/* Bars with individual colors */}
                 <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
                   {data.map((entry, index) => (
                     <Cell key={index} fill={entry.color} cursor="none" />
@@ -275,22 +254,17 @@ function Reports() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
-            {data.map((item) => {
-              return (
-                <div key={item.name} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{
-                      backgroundColor: item.color,
-                    }}
-                  ></div>
-                  <span className="typo-b3">{item.name}</span>
-                </div>
-              );
-            })}
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+            {data.map((item) => (
+              <div key={item.name} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <span className="typo-b3">{item.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

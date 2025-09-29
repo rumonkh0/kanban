@@ -72,9 +72,13 @@ function CompanySetting() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Basic validation
-    if (!formData.companyName || !formData.companyEmail || !formData.companyPhone) {
+    if (
+      !formData.companyName ||
+      !formData.companyEmail ||
+      !formData.companyPhone
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -93,31 +97,31 @@ function CompanySetting() {
           <div className="typo-b1">Company Settings</div>
         </div>
         <div className="bg-surface1 rounded-xl">
-          <form className="grid grid-cols-3 gap-4">
+          <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <FormField label="Company Name" required>
-              <Input 
-                placeholder="Enter Name" 
+              <Input
+                placeholder="Enter Name"
                 value={formData.companyName}
                 onChange={(val) => handleChange("companyName", val)}
               />
             </FormField>
             <FormField label="Company Email" required>
-              <Input 
-                placeholder="Enter Email" 
+              <Input
+                placeholder="Enter Email"
                 value={formData.companyEmail}
                 onChange={(val) => handleChange("companyEmail", val)}
               />
             </FormField>
             <FormField label="Company Phone" required>
-              <Input 
-                placeholder="Enter Phone" 
+              <Input
+                placeholder="Enter Phone"
                 value={formData.companyPhone}
                 onChange={(val) => handleChange("companyPhone", val)}
               />
             </FormField>
-            <FormField label="Company Website" className="col-span-3">
-              <Input 
-                placeholder="Enter website" 
+            <FormField label="Company Website" className="md:col-span-2 lg:col-span-3">
+              <Input
+                placeholder="Enter website"
                 value={formData.companyWebsite}
                 onChange={(val) => handleChange("companyWebsite", val)}
               />

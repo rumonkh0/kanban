@@ -257,7 +257,7 @@ function ClientForm({ edit, title = "Add Client" }) {
             </Back>
           </div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Salutation">
                 <Dropdown
                   options={["Mr.", "Mrs.", "Dr."]}
@@ -522,8 +522,8 @@ function ClientForm({ edit, title = "Add Client" }) {
         <div>
           <div className="typo-b1 mb-4">Company Details</div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-6 gap-4">
-              <FormField label="Company Name" className="col-span-2">
+            <form className="grid grid-cols-1 md:grid-cols-6 gap-4">
+              <FormField label="Company Name" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.companyName}
                   onChange={(val) => handleChange("companyName", val)}
@@ -532,7 +532,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Official Website" className="col-span-2">
+              <FormField label="Official Website" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.website}
                   onChange={(val) => handleChange("website", val)}
@@ -541,7 +541,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Tax Name" className="col-span-2">
+              <FormField label="Tax Name" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.taxName}
                   onChange={(val) => handleChange("taxName", val)}
@@ -550,7 +550,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="GST/VAT Number" className="col-span-2">
+              <FormField label="GST/VAT Number" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.gstNumber}
                   onChange={(val) => handleChange("gstNumber", val)}
@@ -559,7 +559,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Office Phone Number" className="col-span-2">
+              <FormField label="Office Phone Number" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.officePhone}
                   onChange={(val) => handleChange("officePhone", val)}
@@ -568,7 +568,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="City" className="col-span-2">
+              <FormField label="City" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.city}
                   onChange={(val) => handleChange("city", val)}
@@ -577,7 +577,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="State" className="col-span-2">
+              <FormField label="State" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.state}
                   onChange={(val) => handleChange("state", val)}
@@ -586,7 +586,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Postal code" className="col-span-2">
+              <FormField label="Postal code" className="md:col-span-3 lg:col-span-2">
                 <Input
                   value={formData.postalCode}
                   onChange={(val) => handleChange("postalCode", val)}
@@ -595,7 +595,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Company Address" className="col-span-3">
+              <FormField label="Company Address" className="md:col-span-6 lg:col-span-3">
                 <Input
                   value={formData.address}
                   onChange={(val) => handleChange("address", val)}
@@ -605,7 +605,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Shipping Address" className="col-span-3">
+              <FormField label="Shipping Address" className="md:col-span-6 lg:col-span-3">
                 <Input
                   value={formData.shippingAddress}
                   onChange={(val) => handleChange("shippingAddress", val)}

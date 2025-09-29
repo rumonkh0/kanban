@@ -58,11 +58,11 @@ function Tasks() {
           desc="This Month"
         />
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* first */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] lg:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
           {/* Header */}
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Total Tasks:"
               keyValue="32"
@@ -76,9 +76,13 @@ function Tasks() {
           </div>
 
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weekdata} barCategoryGap="20%">
+              <BarChart
+                data={weekdata}
+                barCategoryGap="20%"
+                margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+              >
                 <XAxis
                   dataKey="Day"
                   axisLine={false}
@@ -107,34 +111,39 @@ function Tasks() {
           </div>
 
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             <div className="flex items-center gap-2">
               <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: "#5EB7E0" }}
-              ></div>
-              <span className="typo-b3 text-white">Active</span>
+              />
+              <span className="typo-b3 text-white text-xs md:text-sm">
+                Active
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: "#8FC951" }}
-              ></div>
-              <span className="typo-b3 text-white">Completed</span>
+              />
+              <span className="typo-b3 text-white text-xs md:text-sm">
+                Completed
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: "#FE4E4D" }}
-              ></div>
-              <span className="typo-b3 text-white">Due</span>
+              />
+              <span className="typo-b3 text-white text-xs md:text-sm">Due</span>
             </div>
           </div>
         </div>
+
         {/* second */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-6">
+        <div className="w-full h-[494px] md:h-[594px] lg:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-6">
           {/* Header */}
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Tasks Due:"
               keyValue="4"
@@ -148,9 +157,13 @@ function Tasks() {
           </div>
 
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={deadlineData} barCategoryGap="30%">
+              <BarChart
+                data={deadlineData}
+                barCategoryGap="30%"
+                margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+              >
                 <XAxis
                   dataKey="Day"
                   axisLine={false}
@@ -176,15 +189,19 @@ function Tasks() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+
           {/* Legend */}
-          <div className="flex justify-around">
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#A88AED]"></div>
-              <span className="typo-b3 text-white">Deadline</span>
+              <div className="w-3 h-3 rounded-full bg-[#A88AED]" />
+              <span className="typo-b3 text-white text-xs md:text-sm">
+                Deadline
+              </span>
             </div>
           </div>
         </div>
       </div>
+
       <div>
         <div className="flex justify-between mb-4">
           <h2 className="typo-b1">Tasks</h2>

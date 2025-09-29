@@ -13,7 +13,6 @@ import {
 import { ChartHeader } from "@/components/Component";
 import ClientTable from "@/pages/clients/ClientTable";
 import { Link } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
 import { FilterDropdown, ToggleTabs } from "../../../components/Component";
 function page() {
   const data = [
@@ -61,15 +60,15 @@ function page() {
           desc="Per Clients"
         />
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* first */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
           {/* Header */}
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Payment Owed"
               keyValue="$5,400"
-              secondaryLabel="From Clints"
+              secondaryLabel="From Clients"
             />
             <FilterDropdown
               label="Clients"
@@ -79,7 +78,7 @@ function page() {
           </div>
 
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -90,10 +89,9 @@ function page() {
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
-                  outerRadius={200}
+                  outerRadius="80%"
                   paddingAngle={0}
                   label={({ name, sales }) => `${name} $${sales}`}
-                  // labelLine={false}
                 >
                   {data.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -108,18 +106,21 @@ function page() {
           </div>
 
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             {data.map((item) => {
               const total = data.reduce((sum, d) => sum + d.sales, 0);
               const percentage = ((item.sales / total) * 100).toFixed(0);
 
               return (
-                <div key={item.name} className="flex items-center gap-2">
+                <div
+                  key={item.name}
+                  className="flex items-center gap-1 md:gap-2"
+                >
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="typo-b3">
+                  <span className="typo-b3 text-xs md:text-sm">
                     {item.name}: {percentage}%
                   </span>
                 </div>
@@ -127,16 +128,17 @@ function page() {
             })}
           </div>
         </div>
+
         {/* second */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
           {/* Header */}
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Total Clients"
               keyValue="7"
               secondaryLabel=""
             />
-            <div className="flex gap-4">
+            <div className="flex gap-2 flex-wrap">
               <FilterDropdown
                 label="Select Client"
                 options={["project one", "project two", "project three"]}
@@ -151,14 +153,18 @@ function page() {
           </div>
 
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weekdata} barCategoryGap="20%">
+              <BarChart
+                data={weekdata}
+                barCategoryGap="20%"
+                margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+              >
                 <XAxis
                   dataKey="Day"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+                  tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
                 />
                 <YAxis
                   allowDecimals={false}
@@ -182,31 +188,23 @@ function page() {
           </div>
 
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: "#5EB7E0" }}
-              ></div>
-              <span className="typo-b3 text-white">Active</span>
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+            <div className="flex items-center gap-1 md:gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#5EB7E0]"></div>
+              <span className="typo-b3 text-xs md:text-sm">Active</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: "#8FC951" }}
-              ></div>
-              <span className="typo-b3 text-white">Completed</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#8FC951]"></div>
+              <span className="typo-b3 text-xs md:text-sm">Completed</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: "#FE4E4D" }}
-              ></div>
-              <span className="typo-b3 text-white">Due</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#FE4E4D]"></div>
+              <span className="typo-b3 text-xs md:text-sm">Due</span>
             </div>
           </div>
         </div>
       </div>
+
       <div>
         <div className="flex justify-between mb-4">
           <h2 className="typo-b1">Clients</h2>
@@ -216,7 +214,6 @@ function page() {
         </div>
         <ClientTable />
       </div>
-      <ToastContainer />
     </div>
   );
 }

@@ -36,9 +36,11 @@ function Private() {
       </div>
 
       {/* <Calendar month={8} year={2025} data={tasks} /> */}
-      <div className="bg-surface2 border-2 border-divider rounded-lg">
+      <div className="bg-surface2 border-2 border-divider rounded-lg overflow-x-auto">
         {/* Header */}
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 min-w-[62rem]">
+          {" "}
+          {/* increased min width */}
           {days.map((day) => (
             <div
               key={day}
@@ -50,7 +52,7 @@ function Private() {
         </div>
 
         {/* Dates */}
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 min-w-[62rem]">
           {Array.from({ length: 35 }).map((_, i) => (
             <div
               key={i}
@@ -59,39 +61,37 @@ function Private() {
               } ${i > 27 ? "" : "border-b"} border-divider last:border-r-0`}
             >
               {i < 30 && (
-                <>
-                  <div className="flex flex-col justify-between gap-1 typo-b3 p-2">
-                    {i == 9 && (
-                      <>
-                        <div>
-                          <div className="text-text2">10:20</div>
-                          <div>Management in Parliament</div>
-                        </div>
-                        <div className="bg-success rounded-full w-fit px-1">
-                          Zoom
-                        </div>
-                      </>
-                    )}
-                  </div>
+  <div className="flex flex-1 flex-col justify-between h-full w-full">
+    {/* Event/data on the left */}
+    <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
+      {i == 9 && (
+        <>
+          <div className="text-text2">10:20</div>
+          <div>Management in Parliament</div>
+        </>
+      )}
+    </div>
 
-                  <div className="flex flex-col justify-between items-end typo-b1 ">
-                    <div
-                      className={` p-2 ${
-                        i == 9 ? "bg-brand rounded-sm text-white" : "text-text2"
-                      } `}
-                    >
-                      {i + 1}
-                    </div>
-                    <div className="p-2">July</div>
-                  </div>
-                </>
-              )}
+    {/* Date on top, month at bottom (right side) */}
+    <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
+      <div
+        className={`${
+          i == 9 ? "bg-brand rounded-sm text-white px-2 py-1" : "text-text2"
+        }`}
+      >
+        {i + 1} {/* Date */}
+      </div>
+      <div className="text-text2">{/* Month */}July</div>
+    </div>
+  </div>
+)}
+
             </div>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(594px,1fr))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(310px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(510px,1fr))] gap-2">
         <DuelCardHolder title="Upcoming Birthdays">
           <PersonCard
             name="creativezethdesign"
@@ -183,7 +183,7 @@ const DuelCardHolder = ({ title, children }) => {
   return (
     <div className="p-4 flex flex-col gap-4 bg-surface2 border-2 border-divider rounded-lg">
       <p className="typo-b2">{title}</p>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(227px,1fr))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(256px,1fr))] gap-2">
         {/* <div className="grid grid-cols-[repeat(2,minmax(227px,1fr))] gap-2"> */}
         {children}
       </div>

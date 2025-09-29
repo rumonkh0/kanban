@@ -4,6 +4,7 @@ import PageTitle from "@/components/PageTitle";
 import { useState } from "react";
 import { Link } from "react-router";
 import { useDepartments } from "../../../hooks/hr/useDepartments";
+import { RedButton } from "../../../components/Component";
 
 function DepartmentTable() {
   // const [filters] = useState({});
@@ -52,25 +53,17 @@ function DepartmentTable() {
   return (
     <>
       <PageTitle title="Role" />
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
-          <Link
-            to="/hr/add-department"
-            className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
-          >
+      <div className="h-10 flex justify-between mb-4">
+        <Link to="/hr/add-department" className="flex flex-1 sm:flex-none">
+          <RedButton className="w-full sm:w-auto px-4">
             <div className="w-6 h-6 flex justify-center items-center">
               <Icon name="plus" size={15} />
             </div>
             Add Department
-          </Link>
-        </div>
-        {/* <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-        </div> */}
+          </RedButton>
+        </Link>
       </div>
+
       <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
         <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
           <thead className="table-header-group after:content-[''] after:block after:h-1">

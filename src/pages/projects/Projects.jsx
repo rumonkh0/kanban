@@ -7,6 +7,7 @@ import {
   FilterDropdown,
   FormatDate,
   ImageName,
+  RedButton,
   Td,
   Th,
 } from "../../components/Component";
@@ -78,16 +79,15 @@ function Projects() {
   }
   return (
     <>
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
-          <Link
-            to="/projects/add-project"
-            className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
-          >
-            <div className="w-6 h-6 flex justify-center items-center">
-              <Icon name="plus" size={15} />
-            </div>
-            Add New Project
+      <div className="flex flex-col lg:flex-row justify-between mb-4 gap-4 lg:gap-0">
+        <div className="flex flex-wrap gap-4">
+          <Link to="/projects/add-project" className="flex flex-1">
+            <RedButton className="flex-1 px-4">
+              <div className="w-6 h-6 flex justify-center items-center">
+                <Icon name="plus" size={15} />
+              </div>
+              Add New Project
+            </RedButton>
           </Link>
           <div className="w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60">
             <Bin className="text-text2 " />
@@ -95,12 +95,13 @@ function Projects() {
           <div
             onClick={() => handleFilterChange("pinned", !filters.pinned)}
             className={`w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer 
-    ${filters.pinned ? "border-brand" : ""}`}
+        ${filters.pinned ? "border-brand" : ""}`}
           >
             <Pin className={filters.pinned ? "text-brand" : "text-text2"} />
           </div>
         </div>
-        <div className="flex py-1 gap-4">
+
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 lg:gap-4">
           {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
@@ -108,11 +109,12 @@ function Projects() {
               options={options}
               value={filters[key]}
               onSelect={(value) => handleFilterChange(key, value)}
-              className="h-8"
+              className="h-8 w-full sm:w-auto"
             />
           ))}
         </div>
       </div>
+
       {projectsData?.length > 0 ? (
         <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
           <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">

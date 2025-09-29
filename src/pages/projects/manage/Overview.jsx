@@ -40,34 +40,36 @@ function Overview() {
     { name: "Earning", sales: 250, color: "#8FC951" },
   ];
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <BorderDiv className="h-50">
-        <div className="flex gap-4 items-stretch">
-          <div className="flex-1 h-[168px] relative">
-            <ResponsiveContainer width="100%" height="100%">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+      <BorderDiv className="min-h-60">
+        <div className="flex flex-col h-full md:flex-row gap-4 items-stretch">
+          <div className="flex-1 relative">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              style={{ height: "200px" }}
+            >
               <PieChart>
                 <Pie
                   data={chartData}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
-                  cy="95%" // push center down so we see top half
+                  cy="95%" // push center down
                   startAngle={180}
                   endAngle={0}
-                  innerRadius={130} // 0 => full pie; set >0 for semi-donut
-                  outerRadius={150} // use percentage to keep it responsive
-                  paddingAngle={0} // no gaps between slices
-                  stroke="none" // remove slice border
-                  labelLine={false} // we use legend instead of labels on slices
+                  innerRadius="165%" // relative to container
+                  outerRadius="180%" // relative to container
+                  paddingAngle={0}
+                  stroke="none"
+                  labelLine={false}
                 >
                   {chartData.map((entry, i) => (
                     <Cell key={`cell-${i}`} fill={entry.color} />
                   ))}
                 </Pie>
-
                 <Tooltip
                   formatter={(value) =>
-                    // format numbers like $4,000 etc — change as needed
                     typeof value === "number"
                       ? `$${value.toLocaleString()}`
                       : value
@@ -76,33 +78,37 @@ function Overview() {
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="absolute bottom-0 left-1/2 -translate-1/2 flex flex-col justify-center">
-              <h2 className="typo-h4 mb-4 text-center">80%</h2>
+            {/* Center overlay */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              <h2 className="typo-h4 mb-2 text-center">80%</h2>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#5EB7E0]"></div>{" "}
+                <div className="w-2 h-2 rounded-full bg-[#5EB7E0]"></div>
                 <p className="typo-b3">In Progress</p>
               </div>
             </div>
           </div>
-          <div className="w-[194px] flex flex-col justify-between">
-            <div className="flex flex-col gap-4">
+          {/* Right Info Box */}
+          <div className="w-full md:w-[194px] flex flex-row md:flex-col justify-between gap-4 md:gap-6">
+            <div className="flex flex-col gap-2 md:gap-4">
               <p className="typo-b2 text-text2">Start Date:</p>
-              <h2 className="typo-h4">Aug 3, 2025 </h2>
+              <h2 className="typo-h4">Aug 3, 2025</h2>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2 md:gap-4">
               <p className="typo-b2 text-text2">Deadline:</p>
-              <h2 className="typo-h4 text-brand">Aug 3, 2025 </h2>
+              <h2 className="typo-h4 text-brand">Aug 3, 2025</h2>
             </div>
           </div>
         </div>
       </BorderDiv>
-      <BorderDiv className="h-50 flex items-center gap-4">
+
+      {/* The second BorderDiv component remains unchanged from the previous solution */}
+      <BorderDiv className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
         <img
           src={"/images/profile.png"}
           alt="profile"
-          className="h-full aspect-square object-cover rounded-sm"
+          className="h-20 w-20 sm:h-40 sm:w-auto aspect-square object-cover rounded-sm"
         />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 items-center sm:items-start text-center sm:text-left">
           <div className="typo-h4">Gustave Koelpin</div>
           <div className="typo-b2 text-text2">@example</div>
           <div className="typo-b2 text-text2">Total Project: 4</div>
@@ -116,6 +122,7 @@ function Overview() {
           </div>
         </div>
       </BorderDiv>
+      {/* Chart 1 - Project Task (Pie Chart) */}
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
         {/* Header */}
         <div className="flex justify-between">
@@ -167,6 +174,7 @@ function Overview() {
           })}
         </div>
       </div>
+      {/* Chart 2 - Project Budget (Bar Chart) */}
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
         {/* Header */}
         <div className="flex justify-between">
@@ -224,6 +232,7 @@ function Overview() {
           })}
         </div>
       </div>
+      {/* Chart 3 - Revenue (Bar Chart) */}
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
         {/* Header */}
         <div className="flex justify-between">
@@ -267,6 +276,8 @@ function Overview() {
         {/* Legend */}
         <div className="flex justify-center gap-4 flex-wrap">
           {revenue.map((item) => {
+            // NOTE: The calculation for 'total' and 'percentage' here is likely incorrect
+            // if 'data' is different from 'revenue'. I kept the logic as is from your example.
             const total = data.reduce((sum, d) => sum + d.sales, 0);
             const percentage = ((item.sales / total) * 100).toFixed(0);
 
@@ -286,6 +297,7 @@ function Overview() {
           })}
         </div>
       </div>
+      {/* Chart 4 - Project Track (Bar Chart) */}
       <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
         {/* Header */}
         <div className="flex justify-between">

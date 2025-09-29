@@ -114,7 +114,7 @@ function AddService({ edit = false, title = "Add Service" }) {
             </Back>
           </div>
           <div className="bg-surface1 rounded-xl">
-            <form className="grid grid-cols-3 gap-4">
+            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Service Name">
                 <Input
                   placeholder="Enter Service Name"
@@ -152,7 +152,10 @@ function AddService({ edit = false, title = "Add Service" }) {
                 addingTitle="Add new member"
                 placeHolder="Select Members...."
               />
-              <FormField label="Description" className="col-span-3">
+              <FormField
+                label="Description"
+                className="md:col-span-2 lg:col-span-3"
+              >
                 <textarea
                   placeholder="Enter Message"
                   value={formData.description}
@@ -160,7 +163,10 @@ function AddService({ edit = false, title = "Add Service" }) {
                   className="w-full h-50 p-4 bg-surface2 border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                 />
               </FormField>
-              <FormField label="Addons" className="col-span-3">
+              <FormField
+                label="Addons"
+                className="cmd:col-span-2 lg:col-span-3"
+              >
                 <textarea
                   placeholder="Enter Addons"
                   value={formData.addons}
