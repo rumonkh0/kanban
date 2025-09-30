@@ -39,8 +39,6 @@ function Private() {
       <div className="bg-surface2 border-2 border-divider rounded-lg overflow-x-auto">
         {/* Header */}
         <div className="grid grid-cols-7 min-w-[62rem]">
-          {" "}
-          {/* increased min width */}
           {days.map((day) => (
             <div
               key={day}
@@ -56,36 +54,39 @@ function Private() {
           {Array.from({ length: 35 }).map((_, i) => (
             <div
               key={i}
-              className={`h-40 flex items-stretch justify-between p-2 border-r ${
-                i < 8 ? "" : "border-t"
-              } ${i > 27 ? "" : "border-b"} border-divider last:border-r-0`}
+              className={`h-40 flex items-stretch justify-between p-2 ${
+                (i + 1) % 7 ? "border-r" : ""
+              } ${i < 8 ? "" : "border-t"} ${
+                i > 27 ? "" : "border-b"
+              } border-divider last:border-r-0`}
             >
               {i < 30 && (
-  <div className="flex flex-1 flex-col justify-between h-full w-full">
-    {/* Event/data on the left */}
-    <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
-      {i == 9 && (
-        <>
-          <div className="text-text2">10:20</div>
-          <div>Management in Parliament</div>
-        </>
-      )}
-    </div>
+                <div className="flex flex-1 flex-col justify-between h-full w-full">
+                  {/* Event/data on the left */}
+                  <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
+                    {i == 9 && (
+                      <>
+                        <div className="text-text2">10:20</div>
+                        <div>Management in Parliament</div>
+                      </>
+                    )}
+                  </div>
 
-    {/* Date on top, month at bottom (right side) */}
-    <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
-      <div
-        className={`${
-          i == 9 ? "bg-brand rounded-sm text-white px-2 py-1" : "text-text2"
-        }`}
-      >
-        {i + 1} {/* Date */}
-      </div>
-      <div className="text-text2">{/* Month */}July</div>
-    </div>
-  </div>
-)}
-
+                  {/* Date on top, month at bottom (right side) */}
+                  <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
+                    <div
+                      className={`${
+                        i == 9
+                          ? "bg-brand rounded-sm text-white px-2 py-1"
+                          : "text-text2"
+                      }`}
+                    >
+                      {i + 1} {/* Date */}
+                    </div>
+                    <div className="text-text2">{/* Month */}July</div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

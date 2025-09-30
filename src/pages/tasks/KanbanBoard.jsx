@@ -11,7 +11,11 @@ import {
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
-import { useCreateTask, useTasks } from "../../hooks/useTasks";
+import {
+  useCreateTask,
+  useTasks,
+  useUpdateTaskOrder,
+} from "../../hooks/useTasks";
 import { useParams } from "react-router";
 import { useUpdateStageOrder } from "../../hooks/useStages";
 
@@ -25,6 +29,7 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
   const [activeTask, setActiveTask] = useState(null);
   const stageId = useMemo(() => stages?.map((c) => c._id), [stages]);
   const updateStageOrder = useUpdateStageOrder();
+  const updateTaskOrder = useUpdateTaskOrder();
 
   useEffect(() => {
     if (tasksData) {
@@ -43,20 +48,45 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
     }
   };
 
-  useEffect(() => {
-    console.log("--------------------");
-    if (tasks.length > 0)
-      for (let i = 0; i < tasks.length; i++) {
-        console.log(tasks[i].title, tasks[i].order);
-      }
-  }, [tasks]);
-  useEffect(() => {
-    console.log("--------------------");
-    if (stages.length > 0)
-      for (let i = 0; i < stages.length; i++) {
-        console.log(stages[i].title, stages[i].order);
-      }
-  }, [stages]);
+  // useEffect(() => {
+  //   console.log("--------------------");
+  //   if (tasks.length > 0)
+  //     for (let i = 0; i < tasks.length; i++) {
+  //       console.log(tasks[i].title, tasks[i].order);
+  //     }
+  // }, [tasks]);
+  // useEffect(() => {
+  //   console.log("--------------------");
+  //   if (stages.length > 0)
+  //     for (let i = 0; i < stages.length; i++) {
+  //       console.log(stages[i].title, stages[i].order);
+  //     }
+  // }, [stages]);
+
+  const handleUpdateTask = (updatedArray, newIndex) => {
+    const tasksInTargetStage = updatedArray.filter(
+      (t) => t.stage === updatedArray[newIndex].stage
+    );
+
+    const filteredIndex = tasksInTargetStage.findIndex(
+      (t) => t._id === updatedArray[newIndex]._id
+    );
+
+    const prevTask = tasksInTargetStage[filteredIndex - 1];
+    const nextTask = tasksInTargetStage[filteredIndex + 1];
+    console.log(updatedArray)
+
+    const newOrder = generateKeyBetween(prevTask?.order, nextTask?.order);
+
+    updateTaskOrder.mutate({
+      id: updatedArray[newIndex]._id,
+      prev: prevTask?._id,
+      next: nextTask?._id,
+      newStage: updatedArray[newIndex].stage,
+    });
+
+    return newOrder;
+  };
 
   const onDragEnd = (event) => {
     const { active, over } = event;
@@ -90,19 +120,56 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
     // Task reorder
     if (
       active.data.current?.type === "task" &&
-      over.data.current?.type === "task"
+      over?.data.current?.type === "task"
     ) {
       setTasks((tasks) => {
         const oldIndex = tasks.findIndex((t) => t._id === active.id);
         const newIndex = tasks.findIndex((t) => t._id === over.id);
-        const updatedArray = arrayMove(stages, oldIndex, newIndex);
+        const updatedArray = arrayMove(tasks, oldIndex, newIndex);
 
-        const prevStage = updatedArray[newIndex - 1];
-        const nextStage = updatedArray[newIndex + 1];
+        const newOrder = handleUpdateTask(updatedArray, newIndex);
+        updatedArray[newIndex] = {
+          ...updatedArray[newIndex],
+          order: newOrder,
+        };
+        return updatedArray;
+      });
+    }
 
-        const newOrder = generateKeyBetween(prevStage?.order, nextStage?.order);
-        console.log("me called");
-        return arrayMove(tasks, oldIndex, newIndex);
+    if (
+      active.data.current?.type === "task" &&
+      over?.data.current?.type === "stage"
+    ) {
+      setTasks((tasks) => {
+        const updatedArray = [...tasks];
+        const newIndex = updatedArray.findIndex(
+          (t) => t._id === activeTask._id
+        );
+
+        const newOrder = handleUpdateTask(updatedArray, newIndex);
+        updatedArray[newIndex] = {
+          ...updatedArray[newIndex],
+          order: newOrder,
+        };
+        return updatedArray;
+      });
+    }
+
+    // console.log(active, over)
+
+    if (active.data.current?.type === "task" && over === null) {
+      setTasks((tasks) => {
+        const updatedArray = [...tasks];
+        const newIndex = updatedArray.findIndex(
+          (t) => t._id === activeTask._id
+        );
+
+        const newOrder = handleUpdateTask(updatedArray, newIndex);
+        updatedArray[newIndex] = {
+          ...updatedArray[newIndex],
+          order: newOrder,
+        };
+        return updatedArray;
       });
     }
 
@@ -154,6 +221,35 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
       }
 
       return tasks;
+
+      // if (isOverAStage) {
+      //   const activeTask = tasks[activeIndex];
+      //   const targetStageId = over.id;
+
+      //   if (activeTask.stage !== targetStageId) {
+      //     // Update stage
+      //     activeTask.stage = targetStageId;
+
+      //     // Find all tasks in target stage
+      //     const tasksInTargetStage = tasks.filter(
+      //       (t) => t.stage === targetStageId
+      //     );
+
+      //     if (tasksInTargetStage.length > 0) {
+      //       // Get the last task in that stage
+      //       const lastTask = tasksInTargetStage[tasksInTargetStage.length - 1];
+      //       const lastIndex = tasks.findIndex((t) => t._id === lastTask._id);
+
+      //       // Move active task to the last position
+      //       return arrayMove(tasks, activeIndex, lastIndex + 1);
+      //       // setTasks(updatedTasks);
+      //     } else {
+      //       // If stage empty, move to first position
+      //       return arrayMove(tasks, activeIndex, 0);
+      //       // setTasks(updatedTasks);
+      //     }
+      //   }
+      // }
     });
   };
 

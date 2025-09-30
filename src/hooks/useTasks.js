@@ -57,18 +57,18 @@ export const useUpdateTask = (id) => {
 };
 
 // Update task
-export const useUpdateTaskOrder = (id) => {
-  const queryClient = useQueryClient();
+export const useUpdateTaskOrder = () => {
+  // const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, prev, next, stage }) =>
-      tasksApi.updateOrder(id, prev, next, stage),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", id] });
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
+    mutationFn: ({ id, prev, next, newStage }) =>
+      tasksApi.updateOrder(id, prev, next, newStage),
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    //   queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    // },
     onError: (error) => {
-      console.error(`Error updating task ${id}:`, error.message);
+      console.error(`Error updating task`, error.message);
     },
   });
 };

@@ -27,8 +27,8 @@ export const tasksApi = {
     throw new Error(response.data?.message || `Failed to update task ${id}`);
   },
 
-  updateOrder: async (id, prev, next, stage) => {
-    const response = await apiClient.put(`/tasks/${id}`, { prev, next, stage });
+  updateOrder: async (id, prev, next, newStage) => {
+    const response = await apiClient.put(`/tasks/${id}/reorder`, { prev, next, newStage });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || `Failed to update task ${id}`);
   },
