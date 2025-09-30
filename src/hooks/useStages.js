@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { stagesApi } from "../services/stages";
-import { useNavigate } from "react-router";
 
 // Fetch all stages
 export const useStages = () => {
@@ -42,18 +41,36 @@ export const useCreateStage = () => {
 
 // Update a stage
 export const useUpdateStage = (id) => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  // const queryClient = useQueryClient();
+  // const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data) => stagesApi.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["stages", id] });
-      queryClient.invalidateQueries({ queryKey: ["stages"] });
-      navigate("/stages"); // adjust route if needed
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["stages", id] });
+    //   queryClient.invalidateQueries({ queryKey: ["stages"] });
+    //   navigate("/stages"); // adjust route if needed
+    // },
     onError: (error) => {
       console.error(`Error updating stage ${id}:`, error);
+    },
+  });
+};
+
+export const useUpdateStageOrder = () => {
+  // const queryClient = useQueryClient();
+  // const navigate = useNavigate();
+
+  return useMutation({
+    // console.log()
+    mutationFn: ({id, prev, next}) => stagesApi.updateOrder(id, prev, next),
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: ["stages", id] });
+    //   queryClient.invalidateQueries({ queryKey: ["stages"] });
+    //   navigate("/stages"); // adjust route if needed
+    // },
+    onError: (error) => {
+      console.error(`Error updating stage:`, error);
     },
   });
 };

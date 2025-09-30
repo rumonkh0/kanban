@@ -4,7 +4,7 @@ import Modal from "@/components/Modal";
 import VerifyPassword from "@/components/VerifyPassword";
 import NoteDetails from "@/components/NoteDetails";
 import { Link } from "react-router";
-import { FilterDropdown } from "../../../components/Component";
+import { FilterDropdown, Td, Th } from "../../../components/Component";
 
 function Notes() {
   const [PaymentsModal, setPaymentModal] = useState(false);
@@ -142,9 +142,9 @@ function Notes() {
         <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
           <thead className="table-header-group after:content-[''] after:block after:h-1">
             <tr className="text-left">
-              <th className="typo-b3 text-text2 py-3 pl-4">Note title</th>
-              <th className="typo-b3 text-text2 py-3 ">Privacy</th>
-              <th className="typo-b3 text-text2 py-3 ">Action</th>
+              <Th title="Note title" />
+              <Th title="Privacy" />
+              <Th title="Action" />
             </tr>
           </thead>
           <tbody>
@@ -153,17 +153,17 @@ function Notes() {
                 key={index}
                 className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
               >
-                <td className="typo-b2 pl-4 text-text  first:rounded-l-[4px] bg-divider">
-                  Social Media Page Setup Basic Package
-                </td>
+                <Td className="first:rounded-l-[4px]  truncate max-w-[400px]">
+                  rumon social media marketing
+                </Td>
 
-                <td className="typo-b2 text-text py-2 bg-divider">
-                  <div className="flex items-center w-[380px] h-10 border border-text2 pl-4 rounded-sm typo-b3 text-text">
+                <Td>
+                  <div className="flex items-center w-full h-10 border border-text2 pl-4 rounded-sm typo-b3 text-text">
                     <Icon name="lock" className="mr-2" /> Private
                   </div>
-                </td>
+                </Td>
 
-                <td className="text-left last:rounded-r-[4px] bg-divider relative">
+                <Td className="text-left last:rounded-r-[4px] relative">
                   <button
                     // onClick={(e) => handleMenuClick(index, e)}
                     onClick={() => setPaymentModal(true)}
@@ -175,7 +175,7 @@ function Notes() {
                           isOpen={activeMenu === index}
                           onClose={() => setActiveMenu(null)}
                         /> */}
-                </td>
+                </Td>
               </tr>
             ))}
           </tbody>

@@ -5,6 +5,7 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { RedButton } from "@/components/Component";
 import Icon from "@/components/Icon";
 import SingleTask from "./SingleTask";
+import { useDeleteStage } from "../../hooks/useStages";
 
 const TaskCard = ({
   id,
@@ -17,21 +18,8 @@ const TaskCard = ({
   const [isOpen, setIsOpen] = useState(false);
   const [addTask, setAddTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const menuItems = [
-    { label: "Copy", onClick: () => console.log("Copy clicked") },
-    {
-      label: "Edit",
-      onClick: () => console.log("Edit clicked"),
-    },
-    {
-      label: "Share",
-      onClick: () => console.log("Share clicked"),
-    },
-    {
-      label: "Delete",
-      onClick: () => console.log("Delete clicked"),
-    },
-  ];
+  const deleteStageMutation = useDeleteStage();
+
   const {
     attributes,
     listeners,
@@ -41,7 +29,7 @@ const TaskCard = ({
     isDragging,
   } = useSortable({
     id: id,
-    data: { type: "container", container: { id, title: cardTitle, color } },
+    data: { type: "stage", stage: { id, title: cardTitle, color } },
   });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -56,6 +44,15 @@ const TaskCard = ({
       ></div>
     );
   }
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this client?")) {
+      deleteStageMutation.mutate(id, {
+        onError: (err) => {
+          alert(err.message || "Failed to delete client");
+        },
+      });
+    }
+  };
   return (
     <>
       <div
@@ -84,7 +81,21 @@ const TaskCard = ({
             <DropdownMenu
               isOpen={isOpen}
               onClose={() => setIsOpen(false)}
-              menuItems={menuItems}
+              menuItems={[
+                // { label: "Copy", onClick: () => console.log("Copy clicked") },
+                {
+                  label: "Edit",
+                  onClick: () => console.log("Edit clicked"),
+                },
+                // {
+                //   label: "Share",
+                //   onClick: () => console.log("Share clicked"),
+                // },
+                {
+                  label: "Delete",
+                  onClick: () => handleDelete(id),
+                },
+              ]}
               className="top-full right-0 mt-1"
             />
           </div>
@@ -111,7 +122,6 @@ const TaskCard = ({
               onClick={() => {
                 if (!newTaskTitle) return;
                 onAddTask({
-                  stage: id,
                   title: newTaskTitle,
                 });
                 setNewTaskTitle("");
@@ -123,9 +133,13 @@ const TaskCard = ({
           </div>
         )}
         <div className="flex-1 overflow-y-auto flex flex-col gap-2">
-          <SortableContext items={tasks.map((task) => task.taskID)}>
+          <SortableContext items={tasks.map((task) => task._id)}>
             {tasks.map((task) => (
-              <SingleTask key={task.taskID} task={task} role={role} />
+              <SingleTask
+                key={task._id}
+                task={task}
+                role={role}
+              />
             ))}
           </SortableContext>
         </div>

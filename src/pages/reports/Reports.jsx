@@ -50,25 +50,36 @@ function Reports() {
   return (
     <div>
       <PageTitle title="Report" />
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
-          <Link to="/services/add-tracker">
-            <RedButton>Download PDF</RedButton>
+      <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
+        {/* Left buttons */}
+        <div className="flex gap-2 lg:gap-4 flex-wrap justify-center lg:justify-start">
+          <Link
+            to="/services/add-tracker"
+            className="flex-1 lg:flex-none min-w-[150px] lg:min-w-0"
+          >
+            <RedButton className="w-full lg:w-auto">Download PDF</RedButton>
           </Link>
-          <Link to="/services/add-tracker">
-            <RedBorderButton>Download CSV</RedBorderButton>
+          <Link
+            to="/services/add-tracker"
+            className="flex-1 lg:flex-none min-w-[150px] lg:min-w-0"
+          >
+            <RedBorderButton className="w-full lg:w-auto">
+              Download CSV
+            </RedBorderButton>
           </Link>
         </div>
-        <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
+
+        {/* Right filters */}
+        <div className="flex flex-wrap gap-2 lg:gap-4 py-1 justify-center lg:justify-end">
+          <div className="h-10 flex-1 min-w-[150px] lg:min-w-[140px] px-2 py-1 border border-divider flex justify-between items-center rounded-sm">
+            <div className="flex-1 text-center">Status</div>
             <Icon name="arrow" />
           </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
+          <div className="h-10 flex-1 min-w-[150px] lg:min-w-[140px] px-2 py-1 border border-divider flex justify-between items-center rounded-sm">
+            <div className="flex-1 text-center">Select Match</div>
             <Icon name="arrow" />
           </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
+          <div className="h-10 flex-1 min-w-[150px] lg:min-w-[140px] px-2 py-1 border border-divider flex justify-between items-center rounded-sm">
             <div className="flex-1 text-center">Select Client</div>
             <Icon name="arrow" />
           </div>

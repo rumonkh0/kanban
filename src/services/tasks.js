@@ -1,8 +1,10 @@
 import apiClient from "../lib/axios";
 
 export const tasksApi = {
-  getAll: async (params) => {
-    const response = await apiClient.get("/tasks", { params });
+  getAll: async (params, projectId) => {
+    const response = await apiClient.get(`/projects/${projectId}/tasks`, {
+      params,
+    });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to fetch tasks");
   },
@@ -21,6 +23,12 @@ export const tasksApi = {
 
   update: async (id, data) => {
     const response = await apiClient.put(`/tasks/${id}`, data);
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || `Failed to update task ${id}`);
+  },
+
+  updateOrder: async (id, prev, next, stage) => {
+    const response = await apiClient.put(`/tasks/${id}`, { prev, next, stage });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || `Failed to update task ${id}`);
   },

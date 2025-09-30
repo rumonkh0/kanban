@@ -7,6 +7,7 @@ import { Link } from "react-router";
 import ServiceDetailsModal from "../../components/ServiceDetailsModal";
 import { useDeleteService, useServices } from "../../hooks/useService";
 import PageTitle from "../../components/PageTitle";
+import { RedButton } from "../../components/Component";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function ServiceDetails() {
@@ -40,31 +41,31 @@ function ServiceDetails() {
     <>
       {console.log("from services", services)}
       <PageTitle title="Services" />
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
+        <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to="/services/add-service"
-            className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
+            to={`/services/add-service`}
+            className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
-            <div className="w-6 h-6 flex justify-center items-center">
-              <Icon name="plus" size={15} />
-            </div>
-            Add Service
+            <RedButton>
+              <div className="w-6 h-6 flex justify-center items-center">
+                <Icon name="plus" size={15} />
+              </div>
+              Add Services
+            </RedButton>
           </Link>
         </div>
-        {/* <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select Client</div>
-            <Icon name="arrow" />
-          </div>
+        {/* <div className="flex flex-wrap gap-2 lg:gap-4 py-1 justify-center lg:justify-end">
+          {filterConfigs.map(({ key, label, options }) => (
+            <FilterDropdown
+              key={key}
+              label={label}
+              options={options}
+              value={filters[key]}
+              onSelect={(value) => handleFilterChange(key, value)}
+              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
+            />
+          ))}
         </div> */}
       </div>
       <Table>

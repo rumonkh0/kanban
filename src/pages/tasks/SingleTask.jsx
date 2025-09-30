@@ -6,14 +6,15 @@ import TaskModal from "@/components/TaskModal";
 import Icon from "@/components/Icon";
 const SingleCard = ({ task, role }) => {
   const {
-    taskID,
-    taskTitle = "Task",
+    _id,
+    title: taskTitle = "Task",
     image = "/images/demo.png",
     deadline = 2,
     comment = 0,
     attachment = 0,
   } = task;
   const [taskModal, setTaskModal] = useState(false);
+
   const {
     attributes,
     listeners,
@@ -22,7 +23,7 @@ const SingleCard = ({ task, role }) => {
     transition,
     isDragging,
   } = useSortable({
-    id: taskID,
+    id: _id,
     data: { type: "task", task: task },
   });
   const style = {

@@ -2,10 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { tasksApi } from "../services/tasks";
 
 // Get all tasks
-export const useTasks = (params) => {
+export const useTasks = (params, projectId) => {
   return useQuery({
     queryKey: ["tasks", params],
-    queryFn: () => tasksApi.getAll(params),
+    queryFn: () => tasksApi.getAll(params, projectId),
+    enabled: !!projectId,
     onError: (error) => {
       console.error("Error fetching tasks:", error.message);
     },
@@ -45,6 +46,23 @@ export const useUpdateTask = (id) => {
 
   return useMutation({
     mutationFn: (data) => tasksApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+    onError: (error) => {
+      console.error(`Error updating task ${id}:`, error.message);
+    },
+  });
+};
+
+// Update task
+export const useUpdateTaskOrder = (id) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, prev, next, stage }) =>
+      tasksApi.updateOrder(id, prev, next, stage),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", id] });
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

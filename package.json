@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.1.13",
     "@tanstack/react-query": "^5.87.4",
     "axios": "^1.12.1",
+    "fractional-indexing": "^3.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.8.2",

@@ -7,6 +7,7 @@ import PageTitle from "@/components/PageTitle";
 import { useState } from "react";
 import { Link } from "react-router";
 import TrackerDetailsModal from "../../components/TrackerDetailsModal";
+import { FilterDropdown, RedButton } from "../../components/Component";
 
 function MainTracker() {
   const [trackerModal, setTrackerModal] = useState(false);
@@ -86,6 +87,34 @@ function MainTracker() {
       AmountClaimed: 800,
     },
   ];
+  const [filters, setFilters] = useState({
+    status: "",
+    project: "", // Added project filter for consistency
+    client: "", // Added client filter for consistency
+  });
+
+  // Filter Configurations array, aligned with the Payment component structure
+  const filterConfigs = [
+    {
+      key: "status",
+      label: "Status",
+      options: ["complete", "incomplete", "Owed"],
+    },
+    {
+      key: "project",
+      label: "Select Project",
+      options: ["Project A", "Project B", "Project C"], // Placeholder options
+    },
+    {
+      key: "client",
+      label: "Select Client",
+      options: ["Client X", "Client Y", "Client Z"], // Placeholder options
+    },
+  ];
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
   const [activeMenu, setActiveMenu] = useState(null);
   const handleMenuClick = (index, e) => {
     e.preventDefault();
@@ -95,33 +124,34 @@ function MainTracker() {
   return (
     <>
       <PageTitle title="Trackers" />
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
+        <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to="/services/add-tracker"
-            className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
+            to={`/services/add-tracker`}
+            className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
-            <div className="w-6 h-6 flex justify-center items-center">
-              <Icon name="plus" size={15} />
-            </div>
-            Add Tracker
+            <RedButton>
+              <div className="w-6 h-6 flex justify-center items-center">
+                <Icon name="plus" size={15} />
+              </div>
+              Add Tracker
+            </RedButton>
           </Link>
         </div>
-        <div className="flex py-1 gap-4">
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">status</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select Client</div>
-            <Icon name="arrow" />
-          </div>
+        <div className="flex flex-wrap gap-2 lg:gap-4 py-1 justify-center lg:justify-end">
+          {filterConfigs.map(({ key, label, options }) => (
+            <FilterDropdown
+              key={key}
+              label={label}
+              options={options}
+              value={filters[key]}
+              onSelect={(value) => handleFilterChange(key, value)}
+              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
+            />
+          ))}
         </div>
       </div>
+
       <Table>
         <Thead>
           <tr>

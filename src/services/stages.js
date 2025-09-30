@@ -19,9 +19,7 @@ export const stagesApi = {
 
   // Create new stage
   create: async (data) => {
-    const response = await apiClient.post("/stages", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await apiClient.post("/stages", data);
 
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to create stage");
@@ -29,9 +27,16 @@ export const stagesApi = {
 
   // Update stage
   update: async (id, data) => {
-    const response = await apiClient.put(`/stages/${id}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await apiClient.put(`/stages/${id}`, data);
+
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || "Failed to update stage");
+  },
+
+  // Update stage order
+  updateOrder: async (id, prev, next) => {
+    console.log(prev, next)
+    const response = await apiClient.put(`/stages/${id}/reorder`, { prev, next });
 
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to update stage");

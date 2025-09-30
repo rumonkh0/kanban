@@ -12,6 +12,7 @@ import {
   Th,
   // Import FormatDate from the first file for consistency
   FormatDate,
+  RedButton,
 } from "../../components/Component";
 import { useDeletePaidTo, usePaidTos } from "../../hooks/useFinance";
 
@@ -87,20 +88,21 @@ function PaidTo({ from }) {
 
   return (
     <>
-      <div className=" h-10 flex justify-between mb-4">
-        <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
+        <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to={`/${from}/paid-to`} // Changed to '/create' for standard REST practice
-            className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
+            to={`/${from}/paid-to`}
+            className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
-            <div className="w-6 h-6 flex justify-center items-center">
-              <Icon name="plus" size={15} />
-            </div>
-            Paid To
+            <RedButton>
+              <div className="w-6 h-6 flex justify-center items-center">
+                <Icon name="plus" size={15} />
+              </div>
+              Paid To
+            </RedButton>
           </Link>
         </div>
-        <div className="flex py-1 gap-4">
-          {/* Mapping over filterConfigs for consistency */}
+        <div className="flex flex-wrap gap-2 lg:gap-4 py-1 justify-center lg:justify-end">
           {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
@@ -108,11 +110,12 @@ function PaidTo({ from }) {
               options={options}
               value={filters[key]}
               onSelect={(value) => handleFilterChange(key, value)}
-              className="h-8"
+              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
             />
           ))}
         </div>
       </div>
+
       <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">
         <table className="min-w-full border-separate border-spacing-y-1 border-spacing-x-0">
           <thead className="table-header-group after:content-[''] after:block after:h-1">

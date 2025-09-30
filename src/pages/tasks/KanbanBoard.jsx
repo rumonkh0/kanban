@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { generateKeyBetween } from "fractional-indexing";
 import SingleTask from "./SingleTask";
 import {
   DndContext,
@@ -11,20 +12,29 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TaskCard from "./TaskCard";
 import { useCreateTask, useTasks } from "../../hooks/useTasks";
-function KanbanBoard({ containers, setContainers, role = "member" }) {
-  const { data: tasks, isLoading } = useTasks();
+import { useParams } from "react-router";
+import { useUpdateStageOrder } from "../../hooks/useStages";
+
+function KanbanBoard({ stages, setStages, role = "member" }) {
+  const { id } = useParams();
+  const [tasks, setTasks] = useState([]);
+  const { data: tasksData, isLoading } = useTasks({}, id);
   const createTask = useCreateTask();
 
-  const [activeContainer, setActiveContainer] = useState(null);
+  const [activeStage, setActiveStage] = useState(null);
   const [activeTask, setActiveTask] = useState(null);
-  console.log("form kanban", containers);
-  const containerId = useMemo(
-    () => containers?.map((c) => c._id),
-    [containers]
-  );
+  const stageId = useMemo(() => stages?.map((c) => c._id), [stages]);
+  const updateStageOrder = useUpdateStageOrder();
+
+  useEffect(() => {
+    if (tasksData) {
+      setTasks(tasksData);
+    }
+  }, [tasksData]);
+
   const onDragStart = (event) => {
-    if (event.active.data.current?.type === "container") {
-      setActiveContainer(event.active.data.current.container);
+    if (event.active.data.current?.type === "stage") {
+      setActiveStage(event.active.data.current.stage);
       return;
     }
     if (event.active.data.current?.type === "task") {
@@ -33,16 +43,47 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
     }
   };
 
+  useEffect(() => {
+    console.log("--------------------");
+    if (tasks.length > 0)
+      for (let i = 0; i < tasks.length; i++) {
+        console.log(tasks[i].title, tasks[i].order);
+      }
+  }, [tasks]);
+  useEffect(() => {
+    console.log("--------------------");
+    if (stages.length > 0)
+      for (let i = 0; i < stages.length; i++) {
+        console.log(stages[i].title, stages[i].order);
+      }
+  }, [stages]);
+
   const onDragEnd = (event) => {
     const { active, over } = event;
     if (
-      active.data.current?.type === "container" &&
-      over.data.current?.type === "container"
+      active.data.current?.type === "stage" &&
+      over.data.current?.type === "stage"
     ) {
-      setContainers((containers) => {
-        const oldIndex = containers.findIndex((c) => c._id === active._id);
-        const newIndex = containers.findIndex((c) => c._id === over._id);
-        return arrayMove(containers, oldIndex, newIndex);
+      setStages((stages) => {
+        const oldIndex = stages.findIndex((c) => c._id === active.id);
+        const newIndex = stages.findIndex((c) => c._id === over.id);
+        const updatedArray = arrayMove(stages, oldIndex, newIndex);
+
+        const prevStage = updatedArray[newIndex - 1];
+        const nextStage = updatedArray[newIndex + 1];
+
+        const newOrder = generateKeyBetween(prevStage?.order, nextStage?.order);
+        updateStageOrder.mutate({
+          id: updatedArray[newIndex]._id,
+          prev: prevStage?._id,
+          next: nextStage?._id,
+        });
+
+        updatedArray[newIndex] = {
+          ...updatedArray[newIndex],
+          order: newOrder,
+        };
+        return updatedArray;
       });
     }
 
@@ -52,13 +93,20 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
       over.data.current?.type === "task"
     ) {
       setTasks((tasks) => {
-        const oldIndex = tasks.findIndex((t) => t.taskID === active.id);
-        const newIndex = tasks.findIndex((t) => t.taskID === over.id);
+        const oldIndex = tasks.findIndex((t) => t._id === active.id);
+        const newIndex = tasks.findIndex((t) => t._id === over.id);
+        const updatedArray = arrayMove(stages, oldIndex, newIndex);
+
+        const prevStage = updatedArray[newIndex - 1];
+        const nextStage = updatedArray[newIndex + 1];
+
+        const newOrder = generateKeyBetween(prevStage?.order, nextStage?.order);
+        console.log("me called");
         return arrayMove(tasks, oldIndex, newIndex);
       });
     }
 
-    setActiveContainer(null);
+    setActiveStage(null);
     setActiveTask(null);
   };
 
@@ -69,34 +117,36 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
 
     const isActiveATask = active.data.current?.type === "task";
     const isOverATask = over.data.current?.type === "task";
-    const isOverAContainer = over.data.current?.type === "container";
+    const isOverAStage = over.data.current?.type === "stage";
 
     if (!isActiveATask) return;
 
     setTasks((prev) => {
       const tasks = [...prev]; // copy array
 
-      const activeIndex = tasks.findIndex((t) => t.taskID === active.id);
+      const activeIndex = tasks.findIndex((t) => t._id === active.id);
 
       if (isOverATask) {
-        const overIndex = tasks.findIndex((t) => t.taskID === over.id);
+        const overIndex = tasks.findIndex((t) => t._id === over.id);
 
-        // only update if containerID actually changes
-        if (tasks[activeIndex].containerID !== tasks[overIndex].containerID) {
+        // only update if stageId actually changes
+        if (tasks[activeIndex].stage !== tasks[overIndex].stage) {
           tasks[activeIndex] = {
             ...tasks[activeIndex],
-            containerID: tasks[overIndex].containerID,
+            stage: tasks[overIndex].stage,
           };
+
+          return tasks;
         }
 
-        return arrayMove(tasks, activeIndex, overIndex);
+        // return arrayMove(tasks, activeIndex, overIndex);
       }
 
-      if (isOverAContainer) {
-        if (tasks[activeIndex].containerID !== over.id) {
+      if (isOverAStage) {
+        if (tasks[activeIndex].stage !== over.id) {
           tasks[activeIndex] = {
             ...tasks[activeIndex],
-            containerID: over.id,
+            stage: over.id,
           };
         }
 
@@ -121,38 +171,45 @@ function KanbanBoard({ containers, setContainers, role = "member" }) {
         sensors={sensors}
       >
         <div className="grid grid-cols-[repeat(auto-fill,minmax(290px,1fr))] gap-2">
-          <SortableContext items={containerId}>
-            {containers?.map((container) => (
-              <TaskCard
-                key={container._id}
-                id={container._id}
-                cardTitle={container.title}
-                color={container.color}
-                tasks={tasks.filter(
-                  (task) => task.containerID === container._id
-                )}
-                onAddTask={({ containerID, taskTitle }) => {
-                  const newTask = {
-                    containerID,
-                    taskTitle,
-                  };
-                  setTasks([...tasks, newTask]);
-                }}
-                role={role}
-              />
-            ))}
+          <SortableContext items={stageId}>
+            {stages?.map((stage, idx) => {
+              const selectedTasks = tasks.filter(
+                (task) => task.stage === stage._id
+              );
+              return (
+                <TaskCard
+                  key={idx}
+                  id={stage._id}
+                  cardTitle={stage.title}
+                  color={stage.color}
+                  tasks={selectedTasks}
+                  onAddTask={({ title }) => {
+                    const lastOrder =
+                      selectedTasks.length > 0
+                        ? selectedTasks[selectedTasks.length - 1].order
+                        : null;
+                    const newTask = {
+                      project: id,
+                      stage: stage._id,
+                      order: generateKeyBetween(lastOrder),
+                      title,
+                    };
+                    createTask.mutate(newTask);
+                  }}
+                  role={role}
+                />
+              );
+            })}
           </SortableContext>
         </div>
         {createPortal(
           <DragOverlay>
-            {activeContainer && (
+            {activeStage && (
               <TaskCard
-                id={activeContainer.id}
-                cardTitle={activeContainer.title}
-                color={activeContainer.color}
-                tasks={tasks.filter(
-                  (task) => task.containerID === activeContainer.id
-                )}
+                id={activeStage.id}
+                cardTitle={activeStage.title}
+                color={activeStage.color}
+                tasks={tasks.filter((task) => task.stage === activeStage.id)}
               />
             )}
             {activeTask && <SingleTask task={activeTask} />}

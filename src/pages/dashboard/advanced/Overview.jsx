@@ -512,7 +512,7 @@ function Overview() {
                   <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
                     Project
                   </th>
-                  <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm hidden sm:table-cell">
+                  <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
                     Team Member
                   </th>
                   <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
@@ -534,26 +534,26 @@ function Overview() {
                           alt="client"
                           className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover"
                         />
-                        <span className="typo-b2 text-text text-xs md:text-sm truncate max-w-[100px]">
+                        <span className="typo-b2 text-text text-xs md:text-sm truncate max-w-[300px]">
                           {project.client}
                         </span>
                       </div>
                     </td>
                     {/* Project */}
                     <td className="typo-b2 text-text py-2 px-2 md:px-4 bg-divider text-xs md:text-sm">
-                      <span className="truncate block max-w-[150px]">
+                      <span className="truncate block max-w-[250px]">
                         {project.project}
                       </span>
                     </td>
                     {/* Team Member - Hidden on mobile */}
-                    <td className="py-2 px-2 md:px-4 bg-divider hidden sm:table-cell">
+                    <td className="py-2 px-2 md:px-4 bg-divider">
                       <div className="flex items-center gap-2">
                         <img
                           src="/images/profile.png"
                           alt="assigned"
                           className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover"
                         />
-                        <span className="typo-b2 text-text text-xs md:text-sm truncate max-w-[100px]">
+                        <span className="typo-b2 text-text text-xs md:text-sm truncate max-w-[200px]">
                           {project.teamMembers}
                         </span>
                       </div>

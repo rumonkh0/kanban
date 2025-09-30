@@ -14,22 +14,27 @@ function AddCardModal({ onCreate }) {
   };
 
   return (
-    <div className="w-200 p-2 bg-surface2 border-2 border-divider rounded-lg flex flex-col gap-2 typo-b3 text-text2">
+    <div className="w-full  p-2 bg-surface2 border-2 border-divider rounded-lg flex flex-col gap-2 typo-b3 text-text2">
       <div>Add Another Card</div>
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="h-10 border-2 border-divider rounded-sm flex items-center px-4 typo-b2 text-text"
+        className="h-10 border-2 border-divider rounded-sm flex items-center px-4 typo-b2 text-text w-full"
         placeholder="Card Title"
       />
       <div>Add card identity color</div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {colors.map((c) => (
-          <ColorBox key={c} color={c} selected={color === c} onClick={() => setColor(c)} />
+          <ColorBox
+            key={c}
+            color={c}
+            selected={color === c}
+            onClick={() => setColor(c)}
+          />
         ))}
       </div>
-      <RedButton className="w-fit mt-2" onClick={handleCreate}>
+      <RedButton className="w-full sm:w-fit mt-2 px-2" onClick={handleCreate}>
         Create
       </RedButton>
     </div>

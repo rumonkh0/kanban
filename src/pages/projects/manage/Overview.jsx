@@ -123,14 +123,14 @@ function Overview() {
         </div>
       </BorderDiv>
       {/* Chart 1 - Project Task (Pie Chart) */}
-      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
+      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-3 md:gap-4">
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader primaryLabel="Project Task" keyValue="4" />
         </div>
 
         {/* Chart */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -141,9 +141,8 @@ function Overview() {
                 cy="50%"
                 innerRadius={0}
                 stroke="none"
-                outerRadius={150}
+                outerRadius="75%"
                 paddingAngle={0}
-                // labelLine={false}
               >
                 {tasks.map((entry, index) => (
                   <Cell key={index} fill={entry.color} />
@@ -158,10 +157,10 @@ function Overview() {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
           {tasks.map((item) => {
             return (
-              <div key={item.name} className="flex items-center gap-2">
+              <div key={item.name} className="flex items-center gap-1 md:gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
@@ -174,25 +173,26 @@ function Overview() {
           })}
         </div>
       </div>
+
       {/* Chart 2 - Project Budget (Bar Chart) */}
-      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader primaryLabel="Project Budget" keyValue="$5,400" />
         </div>
 
         {/* Chart */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}
-              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+              margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
             >
               <XAxis
                 dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+                tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
               />
               <YAxis
                 axisLine={false}
@@ -206,7 +206,7 @@ function Overview() {
               />
 
               {/* Bars with individual colors */}
-              <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
+              <Bar dataKey="sales" barSize={60} radius={[4, 4, 4, 4]}>
                 {data.map((entry, index) => (
                   <Cell key={index} fill={entry.color} cursor="none" />
                 ))}
@@ -216,15 +216,13 @@ function Overview() {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
           {data.map((item) => {
             return (
-              <div key={item.name} className="flex items-center gap-2">
+              <div key={item.name} className="flex items-center gap-1 md:gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  style={{ backgroundColor: item.color }}
                 ></div>
                 <span className="typo-b3">{item.name}</span>
               </div>
@@ -232,25 +230,26 @@ function Overview() {
           })}
         </div>
       </div>
+
       {/* Chart 3 - Revenue (Bar Chart) */}
-      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader primaryLabel="Revenue" keyValue="$5,400" />
         </div>
 
         {/* Chart */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={revenue}
-              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+              margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
             >
               <XAxis
                 dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+                tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
               />
               <YAxis
                 axisLine={false}
@@ -264,7 +263,7 @@ function Overview() {
               />
 
               {/* Bars with individual colors */}
-              <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
+              <Bar dataKey="sales" barSize={60} radius={[4, 4, 4, 4]}>
                 {revenue.map((entry, index) => (
                   <Cell key={index} fill={entry.color} cursor="none" />
                 ))}
@@ -274,20 +273,16 @@ function Overview() {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
           {revenue.map((item) => {
-            // NOTE: The calculation for 'total' and 'percentage' here is likely incorrect
-            // if 'data' is different from 'revenue'. I kept the logic as is from your example.
             const total = data.reduce((sum, d) => sum + d.sales, 0);
             const percentage = ((item.sales / total) * 100).toFixed(0);
 
             return (
-              <div key={item.name} className="flex items-center gap-2">
+              <div key={item.name} className="flex items-center gap-1 md:gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  style={{ backgroundColor: item.color }}
                 ></div>
                 <span className="typo-b3">
                   {percentage}% {item.name}
@@ -297,10 +292,11 @@ function Overview() {
           })}
         </div>
       </div>
+
       {/* Chart 4 - Project Track (Bar Chart) */}
-      <div className="w-full h-[468px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
         {/* Header */}
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
           <ChartHeader
             primaryLabel="Project Track"
             keyValue="$5,400"
@@ -309,22 +305,22 @@ function Overview() {
           <FilterDropdown
             label="Select Client"
             options={["project one", "project two", "project three"]}
-            className="h-7.5 border border-text2 "
+            className="h-7.5 border border-text2"
           />
         </div>
 
         {/* Chart */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={budget}
-              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+              margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
             >
               <XAxis
                 dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+                tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
               />
               <YAxis
                 axisLine={false}
@@ -338,7 +334,7 @@ function Overview() {
               />
 
               {/* Bars with individual colors */}
-              <Bar dataKey="sales" barSize={80} radius={[4, 4, 4, 4]}>
+              <Bar dataKey="sales" barSize={60} radius={[4, 4, 4, 4]}>
                 {budget.map((entry, index) => (
                   <Cell key={index} fill={entry.color} cursor="none" />
                 ))}
@@ -348,15 +344,13 @@ function Overview() {
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
           {budget.map((item) => {
             return (
-              <div key={item.name} className="flex items-center gap-2">
+              <div key={item.name} className="flex items-center gap-1 md:gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  style={{ backgroundColor: item.color }}
                 ></div>
                 <span className="typo-b3">{item.name}</span>
               </div>

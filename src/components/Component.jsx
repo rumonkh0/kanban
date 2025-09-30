@@ -21,11 +21,13 @@ export const RedButton = ({ children, onClick, className }) => {
   );
 };
 
-export const RedBorderButton = ({ children, onClick }) => {
+export const RedBorderButton = ({ children, onClick, className }) => {
   return (
     <button
       onClick={onClick}
-      className="px-4 py-2 border border-brand text-brand rounded-sm hover:bg-brand/10 transition-colors duration-200 flex items-center justify-center cursor-pointer"
+      className={`px-4 py-2 border border-brand text-brand rounded-sm hover:bg-brand/10 transition-colors duration-200 flex items-center justify-center cursor-pointer ${
+        className || "px-4"
+      }`}
     >
       {children}
     </button>
