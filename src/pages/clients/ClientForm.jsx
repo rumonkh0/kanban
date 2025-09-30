@@ -10,7 +10,7 @@ import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
 import { Back } from "../../components/Component";
 import { Navigate, useNavigate, useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import PageTitle from "@/components/PageTitle";
 import {
   useClient,
@@ -709,18 +709,6 @@ function ClientForm({ edit, title = "Add Client" }) {
           )}
         </div>
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </>
   );
 }

@@ -57,7 +57,7 @@ function Reports() {
             to="/services/add-tracker"
             className="flex-1 lg:flex-none min-w-[150px] lg:min-w-0"
           >
-            <RedButton className="w-full lg:w-auto">Download PDF</RedButton>
+            <RedButton className="w-full lg:w-auto px-4">Download PDF</RedButton>
           </Link>
           <Link
             to="/services/add-tracker"

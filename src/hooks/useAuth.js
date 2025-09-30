@@ -9,7 +9,9 @@ export const useLogin = () => {
     mutationFn: (credentials) => authApi.login(credentials),
     onSuccess: (res) => {
       localStorage.setItem("token", res.token);
-      navigate("/dashboard/private");
+      if (res.data?.role === "Admin") navigate("/dashboard/private");
+      if (res.data?.role === "Client") navigate("/client");
+      if (res.data?.role === "Freelancer") navigate("/member");
     },
   });
 };

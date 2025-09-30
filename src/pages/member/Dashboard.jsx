@@ -59,11 +59,11 @@ function Dashboard() {
           desc="Month"
         />
       </div>
-      <div className="grid grid-cols-2 grid-rows-2 gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* Total task */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] lg:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
           {/* Header */}
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Amount Owed"
               keyValue="$5,400"
@@ -78,7 +78,7 @@ function Dashboard() {
           </div>
 
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -89,10 +89,9 @@ function Dashboard() {
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
-                  outerRadius={200}
+                  outerRadius="90%"
                   paddingAngle={0}
                   label={({ name, value }) => `${name} ${value}`}
-                  // labelLine={false}
                 >
                   {task.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -107,15 +106,20 @@ function Dashboard() {
           </div>
 
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             {task.map((item) => {
               return (
-                <div key={item.name} className="flex items-center gap-2">
+                <div
+                  key={item.name}
+                  className="flex items-center gap-1 md:gap-2"
+                >
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="typo-b3">{item.name}</span>
+                  <span className="typo-b3 text-xs md:text-sm">
+                    {item.name}
+                  </span>
                 </div>
               );
             })}
@@ -123,16 +127,16 @@ function Dashboard() {
         </div>
 
         {/* earnings */}
-        <div className="w-full h-[594px] border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-8">
+        <div className="w-full h-[494px] md:h-[594px] lg:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
           {/* Header */}
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="This Month’s Revenue"
               keyValue="$5,400"
               secondaryLabel="+12% vs last month"
             />
 
-            <div className="flex gap-4">
+            <div className="flex gap-2 flex-wrap">
               <FilterDropdown
                 label="Select Project"
                 options={["project one", "project two", "project three"]}
@@ -147,7 +151,7 @@ function Dashboard() {
           </div>
 
           {/* Chart */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={earning}
@@ -157,7 +161,7 @@ function Dashboard() {
                   dataKey="name"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
+                  tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
                 />
                 <YAxis
                   axisLine={false}
@@ -170,8 +174,7 @@ function Dashboard() {
                   contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
                 />
 
-                {/* Bars with individual colors */}
-                <Bar dataKey="value" barSize={80} radius={[4, 4, 4, 4]}>
+                <Bar dataKey="value" barSize={60} radius={[4, 4, 4, 4]}>
                   {earning.map((entry, index) => (
                     <Cell key={index} fill={entry.color} cursor="none" />
                   ))}
@@ -181,17 +184,22 @@ function Dashboard() {
           </div>
 
           {/* Legend */}
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             {earning.map((item) => {
               return (
-                <div key={item.name} className="flex items-center gap-2">
+                <div
+                  key={item.name}
+                  className="flex items-center gap-1 md:gap-2"
+                >
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{
                       backgroundColor: item.color,
                     }}
                   ></div>
-                  <span className="typo-b3">{item.name}</span>
+                  <span className="typo-b3 text-xs md:text-sm">
+                    {item.name}
+                  </span>
                 </div>
               );
             })}

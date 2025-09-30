@@ -12,9 +12,9 @@ export const authApi = {
   forgotPassword: async (email) => {
     const response = await apiClient.post("/auth/forgotpassword", { email });
     if (response.data?.success) return response.data.data;
-    throw new Error(
-      response.data?.message || "Failed to send forgot password email"
-    );
+    // throw new Error(
+    //   "Failed to send forgot password email"
+    // );
   },
 
   // Reset password

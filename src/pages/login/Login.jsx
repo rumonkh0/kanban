@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormField, Icon, Input, RedButton } from "../../components/Component";
 import { Link } from "react-router";
 import { useLogin } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 function Login() {
   // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [, setError] = useState(null);
+  const [error, setError] = useState(null);
   const loginMutation = useLogin();
 
   const togglePassword = () => setShowPassword(!showPassword);
@@ -21,16 +22,25 @@ function Login() {
     setError(null);
 
     if (!formData.email || !formData.password) {
-      setError("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
     loginMutation.mutate(formData, {
       onError: (err) => {
-        setError(err.message || "Login failed");
+        setError(err.response?.data?.error || err.message || "Login failed");
+      },
+      onSuccess: () => {
+        toast.success("Login Success!", { autoClose: 1300 });
       },
     });
   };
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -81,9 +91,9 @@ function Login() {
         <RedButton
           type="submit"
           className="typo-cta py-3 w-full mt-4"
-          disabled={loginMutation.isLoading}
+          disabled={loginMutation.isPending}
         >
-          {loginMutation.isLoading ? "Logging In..." : "Log In"}
+          {loginMutation.isPending ? "Logging In..." : "Log In"}
         </RedButton>
       </form>
     </>

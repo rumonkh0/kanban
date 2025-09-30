@@ -78,17 +78,17 @@ const member = [
   {
     label: "Dashboard",
     icon: Home,
-    to: "/members/dashboard",
+    to: "/member/dashboard",
   },
   {
     label: "Tasks",
     icon: Task,
-    to: "/members/tasks",
+    to: "/member/tasks",
   },
   {
     label: "Settings",
     icon: Settings,
-    to: "/members/settings",
+    to: "/member/settings",
   },
 ];
 const client = [
