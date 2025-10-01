@@ -102,7 +102,7 @@ function PaidTo({ from }) {
             </RedButton>
           </Link>
         </div>
-        <div className="flex flex-wrap gap-2 lg:gap-4 py-1 justify-center lg:justify-end">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 lg:gap-4">
           {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
@@ -110,7 +110,7 @@ function PaidTo({ from }) {
               options={options}
               value={filters[key]}
               onSelect={(value) => handleFilterChange(key, value)}
-              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
+              className="h-8 w-full sm:w-auto"
             />
           ))}
         </div>
@@ -144,7 +144,7 @@ function PaidTo({ from }) {
                   className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
                 >
                   {/* Project Name */}
-                  <Td className="first:rounded-l-[4px]">
+                  <Td className="first:rounded-l-[4px] min-w-50">
                     {payment.project?.projectName || "N/A"}
                   </Td>
                   {/* Paid To (Person/Vendor) */}

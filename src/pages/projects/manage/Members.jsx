@@ -7,19 +7,20 @@ import AddProjectMemberModal from "@/components/AddProjectMemberModal";
 import {
   useProjectMembers,
   useRemoveProjectMember,
-  useUpdateProjectMember,
 } from "../../../hooks/useProjects";
-import { ImageName, Td } from "../../../components/Component";
+import { ImageName, Td, Th } from "../../../components/Component";
 import { Bin } from "../../../components/Icon";
+import { useUpdateProjectMember } from "../../../hooks/useProjectMembers";
+import { toast } from "react-toastify";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Members() {
   const { id } = useParams();
   const [projectMemberModal, setProjectMemberModal] = useState(false);
-  const { data: projectMembers, isLoading, isError } = useProjectMembers(id);
+  const { data: projectMembers, isPending, isError } = useProjectMembers(id);
   const { mutate: removeProjectMember } = useRemoveProjectMember(id);
 
-  if (isLoading) {
+  if (isPending) {
     return <div>Loading...</div>;
   }
 
@@ -45,16 +46,18 @@ function Members() {
           <thead className="table-header-group after:content-[''] after:block after:h-1">
             <tr className="text-left">
               {/* <th className="typo-b3 text-text2 py-3 px-4">#</th> */}
-              <th className="typo-b3 text-text2 py-3 px-4">Name</th>
-              <th className="typo-b3 text-text2 py-3 px-4">Have to pay</th>
-              <th className="typo-b3 text-text2 py-3 px-4">
-                Amount to pay members
-              </th>
-              <th className="typo-b3 text-text2 py-3 px-4">
-                Amount owed To member
-              </th>
-              <th className="typo-b3 text-text2 py-3 px-4">Use Role</th>
-              <th className="typo-b3 text-text2 py-3 px-4">action</th>
+              <Th title="Name" />
+              <Th title="Have to pay" />
+              <Th
+                title="
+                Amount to pay members"
+              />
+              <Th
+                title="
+                Amount owed To member"
+              />
+              <Th title="Use Role" />
+              <Th title="action" />
             </tr>
           </thead>
           <tbody>
@@ -62,6 +65,7 @@ function Members() {
               const memberImage = member.freelancer?.profilePicture?.filePath
                 ? `${baseURL}/${member.freelancer.profilePicture?.filePath}`
                 : "/images/profile.png";
+              console.log(member);
               return (
                 <tr
                   key={member._id}
@@ -80,7 +84,7 @@ function Members() {
                   {/* Have to pay */}
                   <Td className="py-2 px-4 bg-divider">
                     <EditableCell
-                      memberId={member.id}
+                      memberId={member._id}
                       field="haveToPay"
                       value={member.haveToPay}
                     />
@@ -91,7 +95,8 @@ function Members() {
                     <EditableCell
                       memberId={member.id}
                       field="amountToMembers"
-                      value={member.amountToMembers}
+                      value={member.amountPaid}
+                      disabled
                     />
                   </Td>
 
@@ -101,6 +106,7 @@ function Members() {
                       memberId={member.id}
                       field="amountOwed"
                       value={member.amountOwed}
+                      disabled
                     />
                   </Td>
 
@@ -110,7 +116,7 @@ function Members() {
                   {/* Delete button */}
                   <Td className="py-2 px-4 text-left last:rounded-r-[4px] bg-divider">
                     <button
-                      onClick={() => removeProjectMember(member.id)}
+                      onClick={() => removeProjectMember(member.freelancer._id)}
                       className="p-2 border border-text2 rounded-sm cursor-pointer hover:bg-brand/20 hover:text-brand group"
                     >
                       <Bin className="text-text2 group-hover:text-brand" />
@@ -132,7 +138,7 @@ function Members() {
   );
 }
 
-const EditableCell = ({ memberId, field, value }) => {
+const EditableCell = ({ memberId, field, value, disabled = false }) => {
   const [editing, setEditing] = useState(false);
   const [val, setVal] = useState(value);
 
@@ -141,7 +147,20 @@ const EditableCell = ({ memberId, field, value }) => {
   const submit = () => {
     setEditing(false);
     if (val !== value) {
-      mutation.mutate({ [field]: val });
+      toast.promise(mutation.mutateAsync({ [field]: val }), {
+        pending: "Updating Member Data",
+        success: "Member Updatet",
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to post comment.";
+            return errorMessage;
+          },
+        },
+      },{autoClose: 5000});
     }
   };
 
@@ -162,7 +181,7 @@ const EditableCell = ({ memberId, field, value }) => {
   ) : (
     <div
       className="flex items-center w-[155px] h-10 border border-text2 pl-2 rounded-sm typo-b3 cursor-pointer"
-      onClick={() => setEditing(true)}
+      onClick={disabled ? undefined : () => setEditing(true)}
     >
       <span className="mr-1">$</span>
       {val}

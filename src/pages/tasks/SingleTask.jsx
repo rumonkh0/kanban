@@ -4,14 +4,15 @@ import { useState } from "react";
 import Modal from "@/components/Modal";
 import TaskModal from "@/components/TaskModal";
 import Icon from "@/components/Icon";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 const SingleCard = ({ task, role }) => {
   const {
     _id,
     title: taskTitle = "Task",
-    image = "/images/demo.png",
-    deadline = 2,
-    comment = 0,
-    attachment = 0,
+    images = [],
+    dueDate,
+    comments = 0,
+    files = 0,
   } = task;
   const [taskModal, setTaskModal] = useState(false);
 
@@ -30,6 +31,9 @@ const SingleCard = ({ task, role }) => {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+  // const image = images[0]
+  //   ? `${baseURL}/${images[0].filePath}`
+  //   : "/images/profile.png";
 
   return (
     <>
@@ -42,9 +46,14 @@ const SingleCard = ({ task, role }) => {
           isDragging && "opacity-20"
         }`}
       >
-        <div>
-          <img src={image} className="rounded-lg" />
-        </div>
+        {images.length > 0 && (
+          <div>
+            <img
+              src={`${baseURL}/${images[0].filePath}`}
+              className="rounded-lg"
+            />
+          </div>
+        )}
         <div className="w-full flex justify-between items-center">
           <div>{taskTitle}</div>
           <Icon
@@ -57,11 +66,17 @@ const SingleCard = ({ task, role }) => {
         <div className="w-full flex justify-between items-end">
           <div className="flex gap-1">
             <Icon name="subject" size={20} />
-            <Icon name="chat" size={20} /> {comment}
-            <Icon name="attachment" size={20} /> {attachment}
-            <div className="h-7 p-1 flex items-center gap-1 bg-brand/20 text-brand rounded-xs">
-              <Icon name="calendar-red" /> {deadline} Days
-            </div>
+            <Icon name="chat" size={20} /> {comments.length}
+            <Icon name="attachment" size={20} /> {files.length}
+            {dueDate && (
+              <div className="h-7 p-1 flex items-center gap-1 bg-brand/20 text-brand rounded-xs">
+                <Icon name="calendar-red" /> {console.log(dueDate)}
+                {Math.ceil(
+                  (new Date(dueDate) - Date.now()) / (1000 * 60 * 60 * 24)
+                )}{" "}
+                Days
+              </div>
+            )}
           </div>
           <div className="flex -space-x-3">
             <img
@@ -78,7 +93,7 @@ const SingleCard = ({ task, role }) => {
         </div>
       </div>
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
-        <TaskModal role={role} />
+        <TaskModal role={role} id={_id} />
       </Modal>
     </>
   );

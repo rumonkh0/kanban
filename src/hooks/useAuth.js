@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "../services/auth";
 import { useNavigate } from "react-router";
+import { useAuthStore } from "../stores/authStore";
 
 // Login hook
 export const useLogin = () => {
@@ -8,10 +9,25 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials) => authApi.login(credentials),
     onSuccess: (res) => {
-      localStorage.setItem("token", res.token);
-      if (res.data?.role === "Admin") navigate("/dashboard/private");
-      if (res.data?.role === "Client") navigate("/client");
-      if (res.data?.role === "Freelancer") navigate("/member");
+      const { token, data } = res;
+      const login = useAuthStore.getState().login;
+      login(token);
+
+      const userRole = data?.role;
+      switch (userRole) {
+        case "Admin":
+          navigate("/dashboard/private");
+          break;
+        case "Client":
+          navigate("/client");
+          break;
+        case "Freelancer":
+          navigate("/member");
+          break;
+        default:
+          navigate("/login"); // Default route for unlisted roles
+          break;
+      }
     },
   });
 };

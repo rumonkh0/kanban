@@ -21,11 +21,8 @@ export const projectMembersApi = {
   },
 
   // Update a member in a project
-  update: async (projectId, memberId, data) => {
-    const response = await apiClient.put(
-      `/projects/${projectId}/projectmembers/${memberId}`,
-      data
-    );
+  update: async (id, data) => {
+    const response = await apiClient.put(`/projectmembers/${id}`, data);
     if (response.data?.success) return response.data.data;
     throw new Error(
       response.data?.message || "Failed to update project member"

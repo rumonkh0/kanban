@@ -4,7 +4,7 @@ import Modal from "@/components/Modal";
 import PaymentDetailsModal from "@/components/PaymentDetailsModal";
 import { Td, Th } from "@/components/Component";
 import DropdownMenu from "@/components/DropdownMenu";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import {
   Dropdown,
   FilterDropdown,
@@ -16,10 +16,12 @@ import { useDeletePaidFrom, usePaidFroms } from "../../hooks/useFinance";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Payment({ from }) {
+  const { id } = useParams();
   const [PaymentsModal, setPaymentModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
+    project: id,
     status: "",
     match: "",
     client: "",
@@ -86,7 +88,7 @@ function Payment({ from }) {
             </RedButton>
           </Link>
         </div>
-        <div className="flex flex-wrap gap-2 lg:gap-4 py-1 justify-center lg:justify-end">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 lg:gap-4">
           {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
@@ -94,7 +96,7 @@ function Payment({ from }) {
               options={options}
               value={filters[key]}
               onSelect={(value) => handleFilterChange(key, value)}
-              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
+              className="h-8 w-full sm:w-auto"
             />
           ))}
         </div>
@@ -126,7 +128,7 @@ function Payment({ from }) {
                   className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
                 >
                   {/* Project Name */}
-                  <Td className="first:rounded-l-[4px]">
+                  <Td className="first:rounded-l-[4px] min-w-50">
                     {payment.project?.projectName}
                   </Td>
 

@@ -24,13 +24,13 @@ export const useAddProjectMember = (projectId) => {
 };
 
 // 🔹 Update a member
-export const useUpdateProjectMember = (projectId, memberId) => {
+export const useUpdateProjectMember = (id) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data) => projectMembersApi.update(projectId, memberId, data),
+    mutationFn: (data) => projectMembersApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projectMembers", projectId],
+        queryKey: ["projectMember", id],
       });
     },
   });

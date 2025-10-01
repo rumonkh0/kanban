@@ -44,7 +44,7 @@ export const useUpdateProject = (id) => {
 
 export const useProjectMembers = (id) => {
   return useQuery({
-    queryKey: ["projects", id, "members"],
+    queryKey: ["projectMembers", id, "members"],
     queryFn: () => projectsApi.getMembers(id),
     enabled: !!id,
   });

@@ -48,21 +48,6 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("--------------------");
-  //   if (tasks.length > 0)
-  //     for (let i = 0; i < tasks.length; i++) {
-  //       console.log(tasks[i].title, tasks[i].order);
-  //     }
-  // }, [tasks]);
-  // useEffect(() => {
-  //   console.log("--------------------");
-  //   if (stages.length > 0)
-  //     for (let i = 0; i < stages.length; i++) {
-  //       console.log(stages[i].title, stages[i].order);
-  //     }
-  // }, [stages]);
-
   const handleUpdateTask = (updatedArray, newIndex) => {
     const tasksInTargetStage = updatedArray.filter(
       (t) => t.stage === updatedArray[newIndex].stage
@@ -74,7 +59,7 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
 
     const prevTask = tasksInTargetStage[filteredIndex - 1];
     const nextTask = tasksInTargetStage[filteredIndex + 1];
-    console.log(updatedArray)
+    // console.log(updatedArray)
 
     const newOrder = generateKeyBetween(prevTask?.order, nextTask?.order);
 
@@ -155,8 +140,6 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
       });
     }
 
-    // console.log(active, over)
-
     if (active.data.current?.type === "task" && over === null) {
       setTasks((tasks) => {
         const updatedArray = [...tasks];
@@ -189,7 +172,7 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
     if (!isActiveATask) return;
 
     setTasks((prev) => {
-      const tasks = [...prev]; // copy array
+      const tasks = [...prev]; 
 
       const activeIndex = tasks.findIndex((t) => t._id === active.id);
 
@@ -205,8 +188,6 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
 
           return tasks;
         }
-
-        // return arrayMove(tasks, activeIndex, overIndex);
       }
 
       if (isOverAStage) {
@@ -216,40 +197,9 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
             stage: over.id,
           };
         }
-
         return tasks;
       }
-
       return tasks;
-
-      // if (isOverAStage) {
-      //   const activeTask = tasks[activeIndex];
-      //   const targetStageId = over.id;
-
-      //   if (activeTask.stage !== targetStageId) {
-      //     // Update stage
-      //     activeTask.stage = targetStageId;
-
-      //     // Find all tasks in target stage
-      //     const tasksInTargetStage = tasks.filter(
-      //       (t) => t.stage === targetStageId
-      //     );
-
-      //     if (tasksInTargetStage.length > 0) {
-      //       // Get the last task in that stage
-      //       const lastTask = tasksInTargetStage[tasksInTargetStage.length - 1];
-      //       const lastIndex = tasks.findIndex((t) => t._id === lastTask._id);
-
-      //       // Move active task to the last position
-      //       return arrayMove(tasks, activeIndex, lastIndex + 1);
-      //       // setTasks(updatedTasks);
-      //     } else {
-      //       // If stage empty, move to first position
-      //       return arrayMove(tasks, activeIndex, 0);
-      //       // setTasks(updatedTasks);
-      //     }
-      //   }
-      // }
     });
   };
 
