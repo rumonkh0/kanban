@@ -526,3 +526,4 @@ export const MultiSelect = ({
     </div>
   );
 };
+

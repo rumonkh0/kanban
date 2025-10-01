@@ -7,7 +7,7 @@ import {
   MultiSelect,
 } from "@/components/Component";
 import Icon from "@/components/Icon";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Back } from "../../components/Component";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
@@ -18,6 +18,11 @@ import {
   useDeleteClient,
   useUpdateClient,
 } from "../../hooks/useClients";
+import PhoneNumberInput from "../../components/PhoneNumberInput";
+import {
+  generateCountryOptions,
+  generateLanguageOptions,
+} from "../../components/Constants"; // The new utility
 
 function ClientForm({ edit, title = "Add Client" }) {
   const navigate = useNavigate();
@@ -31,6 +36,8 @@ function ClientForm({ edit, title = "Add Client" }) {
   const [companyLogoFile, setCompanyLogoFile] = useState(null);
   const [language, setLanguage] = useState("English");
   const [more, setMore] = useState(false);
+  const countryOptions = useMemo(() => generateCountryOptions(), []);
+  const languageOptions = useMemo(() => generateLanguageOptions(), []);
 
   const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
@@ -306,29 +313,18 @@ function ClientForm({ edit, title = "Add Client" }) {
               </FormField>
 
               <FormField label="Country">
-                <div className="relative">
-                  <select
-                    value={formData.country}
-                    onChange={(e) => handleChange("country", e.target.value)}
-                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4  appearance-none focus:outline-none focus:ring-2 focus:ring-brand pl-12 typo-b3"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="USA">USA</option>
-                    <option value="Canada">Canada</option>
-                    <option value="UK">UK</option>
-                  </select>
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <Icon name="flag" />
-                  </div>
-                  <Icon
-                    name="arrow"
-                    size={24}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
-                  />
-                </div>
+                <Dropdown
+                  options={countryOptions} // Pass the structured options array
+                  value={formData.country}
+                  onChange={(newISO) => {
+                    setFormData((prev) => ({ ...prev, country: newISO }));
+                  }}
+                />
               </FormField>
 
-              <FormField label="Mobile">
+              <PhoneNumberInput formData={formData} setFormData={setFormData} />
+
+              {/* <FormField label="Mobile">
                 <div className="relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 border-r border-text2">
                     <Icon name="flag" />
@@ -351,7 +347,7 @@ function ClientForm({ edit, title = "Add Client" }) {
                     className="pl-23"
                   />
                 </div>
-              </FormField>
+              </FormField> */}
 
               <FormField label="Gender">
                 <Dropdown
@@ -362,25 +358,14 @@ function ClientForm({ edit, title = "Add Client" }) {
               </FormField>
 
               <FormField label="Change Language">
-                <div className="relative">
-                  <select
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
-                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-brand pl-12 typo-b3"
-                  >
-                    <option value="English">English</option>
-                    <option value="Spanish">Spanish</option>
-                    <option value="French">French</option>
-                  </select>
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <Icon name="flag" />
-                  </div>
-                  <Icon
-                    name="arrow"
-                    size={24}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
-                  />
-                </div>
+                <Dropdown
+                  options={languageOptions} // Pass the structured options array
+                  value={formData.language} // The current ISO code
+                  onChange={(lan) => {
+                    setFormData((prev) => ({ ...prev, language: lan }));
+                  }} // Receives the new ISO code
+                  placeholder="Choose Language"
+                />
               </FormField>
 
               {/* <FormField label="Client Category">
@@ -523,7 +508,10 @@ function ClientForm({ edit, title = "Add Client" }) {
           <div className="typo-b1 mb-4">Company Details</div>
           <div className="bg-surface1 rounded-xl">
             <form className="grid grid-cols-1 md:grid-cols-6 gap-4">
-              <FormField label="Company Name" className="md:col-span-3 lg:col-span-2">
+              <FormField
+                label="Company Name"
+                className="md:col-span-3 lg:col-span-2"
+              >
                 <Input
                   value={formData.companyName}
                   onChange={(val) => handleChange("companyName", val)}
@@ -532,7 +520,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Official Website" className="md:col-span-3 lg:col-span-2">
+              <FormField
+                label="Official Website"
+                className="md:col-span-3 lg:col-span-2"
+              >
                 <Input
                   value={formData.website}
                   onChange={(val) => handleChange("website", val)}
@@ -541,7 +532,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Tax Name" className="md:col-span-3 lg:col-span-2">
+              <FormField
+                label="Tax Name"
+                className="md:col-span-3 lg:col-span-2"
+              >
                 <Input
                   value={formData.taxName}
                   onChange={(val) => handleChange("taxName", val)}
@@ -550,7 +544,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="GST/VAT Number" className="md:col-span-3 lg:col-span-2">
+              <FormField
+                label="GST/VAT Number"
+                className="md:col-span-3 lg:col-span-2"
+              >
                 <Input
                   value={formData.gstNumber}
                   onChange={(val) => handleChange("gstNumber", val)}
@@ -559,7 +556,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Office Phone Number" className="md:col-span-3 lg:col-span-2">
+              <FormField
+                label="Office Phone Number"
+                className="md:col-span-3 lg:col-span-2"
+              >
                 <Input
                   value={formData.officePhone}
                   onChange={(val) => handleChange("officePhone", val)}
@@ -586,7 +586,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Postal code" className="md:col-span-3 lg:col-span-2">
+              <FormField
+                label="Postal code"
+                className="md:col-span-3 lg:col-span-2"
+              >
                 <Input
                   value={formData.postalCode}
                   onChange={(val) => handleChange("postalCode", val)}
@@ -595,7 +598,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Company Address" className="md:col-span-6 lg:col-span-3">
+              <FormField
+                label="Company Address"
+                className="md:col-span-6 lg:col-span-3"
+              >
                 <Input
                   value={formData.address}
                   onChange={(val) => handleChange("address", val)}
@@ -605,7 +611,10 @@ function ClientForm({ edit, title = "Add Client" }) {
                 />
               </FormField>
 
-              <FormField label="Shipping Address" className="md:col-span-6 lg:col-span-3">
+              <FormField
+                label="Shipping Address"
+                className="md:col-span-6 lg:col-span-3"
+              >
                 <Input
                   value={formData.shippingAddress}
                   onChange={(val) => handleChange("shippingAddress", val)}
