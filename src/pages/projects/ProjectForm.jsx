@@ -79,7 +79,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
     if (
       !formData.projectName ||
       !formData.startDate ||
-      !(formData.noDeadline && !formData.dueDate)
+      (!formData.noDeadline && !formData.dueDate)
     ) {
       alert("Please fill in all required fields.");
       return;

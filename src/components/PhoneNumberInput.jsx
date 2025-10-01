@@ -15,7 +15,7 @@ function PhoneNumberInput({ formData, setFormData }) {
   // Find the currently selected country data based on the state code
   // Use a sensible default like the US or the first item if no match
   const selectedCountry =
-    COUNTRY_DROPDOWN_DATA.find((c) => c.code === formData.mobile.code) ||
+    COUNTRY_DROPDOWN_DATA.find((c) => c.code === formData.mobile.countryCode) ||
     COUNTRY_DROPDOWN_DATA.find((c) => c.iso === "US") ||
     COUNTRY_DROPDOWN_DATA[0];
 
@@ -39,7 +39,7 @@ function PhoneNumberInput({ formData, setFormData }) {
       ...prev,
       mobile: {
         ...prev.mobile,
-        code: country.code,
+        countryCode: country.code,
       },
     }));
     setIsDropdownOpen(false);
@@ -87,15 +87,17 @@ function PhoneNumberInput({ formData, setFormData }) {
             {COUNTRY_DROPDOWN_DATA.map((country, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 p-2 cursor-pointer hover:bg-surface2"
+                className="flex items-center gap-2 p-2 cursor-pointer hover:bg-brand/80 group"
                 onClick={() => handleCountrySelect(country)}
               >
                 <span
                   className={`fi fi-${country.iso.toLowerCase()} fi-sq`}
                   style={{ width: "18px", height: "18px", borderRadius: "4px" }}
                 ></span>
-                <span className="typo-b3">{country.name}</span>
-                <span className="text-text2 typo-b3 ml-auto">
+                <span className="typo-b3 group-hover:text-text">
+                  {country.name}
+                </span>
+                <span className="text-text2 typo-b3 ml-auto group-hover:text-text">
                   {country.code}
                 </span>
               </div>

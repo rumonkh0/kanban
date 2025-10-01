@@ -45,7 +45,7 @@ export const useUpdateClient = (id) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients", id] });
       queryClient.invalidateQueries({ queryKey: ["clients"] });
-      navigate("/clients");
+      navigate(-1);
     },
   });
 };

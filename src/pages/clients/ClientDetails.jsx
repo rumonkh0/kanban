@@ -11,7 +11,7 @@ const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function ClientDetails() {
   const { id } = useParams();
 
-  const { data: client, isLoading, isError } = useClientDetails(id);
+  const { data: client, isLoading } = useClientDetails(id);
   const statusColors = {
     Completed: "#8FC951",
     Active: "#5EB7E0",
@@ -23,10 +23,10 @@ function ClientDetails() {
     { key: "Active", value: 1 },
     { key: "On Hold", value: 1 },
   ];
-  const paymentColor = [
-    { "Total Paid": "#8FC951" },
-    { "Total Due": "#FE4E4D" },
-  ];
+  const paymentColor = {
+    "Total Paid": "#8FC951",
+    "Total Due": "#FE4E4D",
+  };
   // console.log(client.statusCounts, data);
 
   const imageUrl = client?.profilePicture?.filePath
@@ -42,7 +42,8 @@ function ClientDetails() {
           image={imageUrl}
           name={client.name}
           designation={client.role}
-          active={true}
+          // active={true}
+          lastLogin={client.user.lastLogin}
           className="relative"
         >
           <Link to={`/clients/${id}/edit`} className="absolute right-4 top-4 ">
@@ -102,7 +103,9 @@ function ClientDetails() {
             />
           </div>
           <div className="flex justify-between">
-            <RedBorderButton>Edit</RedBorderButton>
+            <Link to={`/clients/${client._id}/edit`}>
+              <RedBorderButton>Edit</RedBorderButton>
+            </Link>
             <RedButton>Share</RedButton>
           </div>
         </div>
@@ -177,8 +180,8 @@ function ClientDetails() {
               <PieChart>
                 <Pie
                   data={client?.paymentStatus}
-                  dataKey="key"
-                  nameKey="value"
+                  dataKey="value"
+                  nameKey="key"
                   cx="50%"
                   cy="50%"
                   innerRadius={0}
@@ -188,6 +191,7 @@ function ClientDetails() {
                   label={({ key, value }) => `${key} : $${value}`}
                   // labelLine={false}
                 >
+                  {console.log(paymentColor[client.paymentStatus[0].key])}
                   {client?.paymentStatus.map((entry, index) => (
                     <Cell key={index} fill={paymentColor[entry.key]} />
                   ))}

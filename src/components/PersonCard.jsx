@@ -9,7 +9,7 @@ export default function PersonCard({
   returning,
   joining,
   award,
-  active,
+  active = false,
   lastLogin,
   className,
   children,

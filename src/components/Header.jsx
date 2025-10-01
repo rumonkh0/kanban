@@ -15,7 +15,7 @@ function Header({ onMenuClick }) {
       </button>
 
       {/* Title */}
-      <div className="ml-2 md:ml-4 md:typo-h4 md:typo-h4 text-text truncate flex-shrink">
+      <div className="ml-2 md:ml-4 md:text-xl font-bold text-text truncate flex-shrink">
         {title}
       </div>
 
@@ -23,7 +23,7 @@ function Header({ onMenuClick }) {
       <div className="flex items-center space-x-1 md:space-x-4 mr-2 md:mr-4">
         {/* Search bar - hidden on mobile, visible on medium+ screens */}
         <div className="hidden xl:flex w-60 md:w-100 h-10 md:h-12 border-1 border-divider rounded-lg items-center px-2 md:px-3 gap-2">
-          <Icon name="search" size={18} className="md:size-20" />
+          <Icon name="search" size={18} className="" />
           <input
             type="text"
             placeholder="Search by project details"
@@ -43,7 +43,7 @@ function Header({ onMenuClick }) {
 
         {/* Notification */}
         <div className="w-8 h-8 md:w-12 md:h-12 border-1 border-divider rounded-lg flex justify-center items-center">
-          <Icon name="notification" size={20} className="md:size-32" />
+          <Icon name="notification" className="w-5 h-5 md:w-7 md:h-7" />
         </div>
 
         {/* Profile section */}

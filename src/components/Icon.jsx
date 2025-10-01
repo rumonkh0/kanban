@@ -1,6 +1,6 @@
 export default function Icon({
   name,
-  size = 20,
+  size,
   onClick,
   children,
   className = "",

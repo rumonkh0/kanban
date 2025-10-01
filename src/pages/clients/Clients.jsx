@@ -7,8 +7,8 @@ import { RedButton } from "../../components/Component";
 
 function Clients() {
   const [filters, setFilters] = useState({
-    status: "",
-    match: "",
+    status: null,
+    match: null,
   });
 
   const handleFilterChange = (key, value) => {

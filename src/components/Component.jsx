@@ -265,7 +265,7 @@ export const Dropdown = ({
         type="button"
         disabled={disabled}
         onClick={() => !disabled && setOpen((prev) => !prev)}
-        className={`flex-1 px-4 border flex justify-between items-center typo-b3 focus:outline-none focus:ring-2 focus:ring-brand ${
+        className={`flex-1 px-4 border flex justify-between items-center typo-b3 focus:outline-none focus:ring-2 focus:ring-brand cursor-pointer ${
           className || "w-full h-12 bg-surface2 rounded-lg border-divider"
         }`}
       >
@@ -309,12 +309,13 @@ export const Dropdown = ({
 
 export const FilterDropdown = ({
   label,
-  options = [],
+  options = [], // array of strings or { value, label }
+  value = null,
   onSelect,
   className,
+  allowClear = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(label);
   const ref = useRef(null);
 
   // Close dropdown on outside click
@@ -328,10 +329,22 @@ export const FilterDropdown = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Normalize options: strings → { value, label }
+  const normalizedOptions = options.map((opt) =>
+    typeof opt === "string" ? { value: opt, label: opt } : opt
+  );
+
+  const selectedOption = normalizedOptions.find((opt) => opt.value === value);
+  const displayLabel = selectedOption ? selectedOption.label : label;
+
   const handleSelect = (option) => {
-    setSelected(option);
     setIsOpen(false);
-    if (onSelect) onSelect(option);
+    if (onSelect) onSelect(option.value);
+  };
+
+  const handleClear = () => {
+    setIsOpen(false);
+    if (onSelect) onSelect(null);
   };
 
   return (
@@ -342,7 +355,7 @@ export const FilterDropdown = ({
       onClick={() => setIsOpen(!isOpen)}
       ref={ref}
     >
-      <div className="flex-1 typo-b3 text-center">{selected}</div>
+      <div className="flex-1 typo-b3 text-center">{displayLabel}</div>
       <Icon
         name="arrow"
         className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
@@ -350,15 +363,30 @@ export const FilterDropdown = ({
 
       {isOpen && (
         <ul className="absolute top-full left-0 w-full mt-1 bg-surface2 border border-divider rounded-sm shadow-md z-50 overflow-hidden">
-          {options.map((option, idx) => (
+          {normalizedOptions.map((option, idx) => (
             <li
               key={idx}
               className="px-2 py-1 hover:bg-brand typo-b3 text-center"
-              onClick={() => handleSelect(option)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSelect(option);
+              }}
             >
-              {option}
+              {option.label}
             </li>
           ))}
+
+          {allowClear && value !== null && (
+            <li
+              className="px-2 py-1 hover:bg-red-100 typo-b3 text-center text-red-500 border-t border-divider"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClear();
+              }}
+            >
+              Clear Filter
+            </li>
+          )}
         </ul>
       )}
     </div>
@@ -419,6 +447,7 @@ export const MultiSelect = ({
   onChange = () => {},
   placeholder = "Select...",
   className,
+  height,
 }) => {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
@@ -463,7 +492,9 @@ export const MultiSelect = ({
 
       {/* Display selected chips */}
       <div
-        className="relative bg-surface2 h-12 border border-divider rounded-lg px-4 flex flex-wrap items-center gap-2 cursor-pointer"
+        className={`relative bg-surface2 border border-divider rounded-lg px-4 flex flex-wrap items-center gap-2 cursor-pointer ${
+          height || "h-12"
+        }`}
         onClick={() => setOpen((o) => !o)}
       >
         {value.length === 0 && (
@@ -526,4 +557,3 @@ export const MultiSelect = ({
     </div>
   );
 };
-

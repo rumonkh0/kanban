@@ -2,8 +2,8 @@ import apiClient from "../lib/axios";
 
 export const clientsApi = {
   // Get all clients
-  getAll: async () => {
-    const response = await apiClient.get("/clients");
+  getAll: async (params) => {
+    const response = await apiClient.get("/clients", { params });
 
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to fetch clients");

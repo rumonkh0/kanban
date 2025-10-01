@@ -65,7 +65,6 @@ function Members() {
               const memberImage = member.freelancer?.profilePicture?.filePath
                 ? `${baseURL}/${member.freelancer.profilePicture?.filePath}`
                 : "/images/profile.png";
-              console.log(member);
               return (
                 <tr
                   key={member._id}
@@ -147,20 +146,24 @@ const EditableCell = ({ memberId, field, value, disabled = false }) => {
   const submit = () => {
     setEditing(false);
     if (val !== value) {
-      toast.promise(mutation.mutateAsync({ [field]: val }), {
-        pending: "Updating Member Data",
-        success: "Member Updatet",
-        error: {
-          render({ data }) {
-            const errorMessage =
-              data.response?.data?.message ||
-              data.response?.data?.error ||
-              data.message ||
-              "Failed to post comment.";
-            return errorMessage;
+      toast.promise(
+        mutation.mutateAsync({ [field]: val }),
+        {
+          pending: "Updating Member Data",
+          success: "Member Updatet",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to post comment.";
+              return errorMessage;
+            },
           },
         },
-      },{autoClose: 5000});
+        { autoClose: 5000 }
+      );
     }
   };
 

@@ -12,16 +12,18 @@ import {
   Th,
 } from "../../components/Component";
 import { useDeleteProject, useProjects } from "../../hooks/useProjects";
+import { useClients } from "../../hooks/useClients";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function Projects() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [filters, setFilters] = useState({
-    status: "",
-    match: "",
-    client: "",
-    pinned: false,
+    status: null,
+    match: null,
+    client: null,
+    pin: false,
   });
+  const { data: clientsData } = useClients();
 
   const filterConfigs = [
     {
@@ -37,7 +39,10 @@ function Projects() {
     {
       key: "client",
       label: "Select Client",
-      options: ["Client 1", "Client 2", "Client 3"],
+      options: clientsData?.map((client) => ({
+        value: client._id,
+        label: client.name,
+      })),
     },
   ];
   const { data: projectsData, isLoading, isError } = useProjects(filters);
@@ -71,11 +76,11 @@ function Projects() {
   ];
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center typo-h1">Loading...</div>;
   }
 
   if (isError) {
-    return <div>Error loading projects</div>;
+    return <div className="text-center typo-h1">Error loading projects</div>;
   }
   return (
     <>
@@ -93,11 +98,11 @@ function Projects() {
             <Bin className="text-text2 " />
           </div>
           <div
-            onClick={() => handleFilterChange("pinned", !filters.pinned)}
+            onClick={() => handleFilterChange("pin", !filters.pin)}
             className={`w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer 
         ${filters.pinned ? "border-brand" : ""}`}
           >
-            <Pin className={filters.pinned ? "text-brand" : "text-text2"} />
+            <Pin className={filters.pin ? "text-brand" : "text-text2"} />
           </div>
         </div>
 
@@ -165,7 +170,13 @@ function Projects() {
                       {project.startDate && FormatDate(project.startDate)}
                     </Td>
                     <Td className="typo-b2 text-text  bg-divider">
-                      {project.deadline && FormatDate(project.deadline)}
+                      {project.noDeadline ? (
+                        "No Due Date"
+                      ) : (
+                        <p className="text-brand">
+                          {FormatDate(project.dueDate)}
+                        </p>
+                      )}
                     </Td>
 
                     <Td className=" bg-divider">
@@ -198,7 +209,7 @@ function Projects() {
           </table>
         </div>
       ) : (
-        <div className="text-center">No project found</div>
+        <div className="text-center typo-h1">No project found</div>
       )}
     </>
   );

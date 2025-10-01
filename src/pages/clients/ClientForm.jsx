@@ -34,7 +34,6 @@ function ClientForm({ edit, title = "Add Client" }) {
   const [companyLogo, setCompanyLogo] = useState(null);
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [companyLogoFile, setCompanyLogoFile] = useState(null);
-  const [language, setLanguage] = useState("English");
   const [more, setMore] = useState(false);
   const countryOptions = useMemo(() => generateCountryOptions(), []);
   const languageOptions = useMemo(() => generateLanguageOptions(), []);
@@ -118,7 +117,7 @@ function ClientForm({ edit, title = "Add Client" }) {
 
     // Append additional data
     methods.forEach((method) => submitData.append("paymentMethods[]", method));
-    submitData.append("language", language);
+    // submitData.append("language", language);
     submitData.append("mobile[number]", formData.mobile.number);
     submitData.append("mobile[countryCode]", formData.mobile.countryCode);
 
@@ -129,8 +128,8 @@ function ClientForm({ edit, title = "Add Client" }) {
     if (companyLogoFile) {
       submitData.append("companyLogo", companyLogoFile);
     }
-    console.log(formData);
-    console.log(submitData);
+    // console.log(formData);
+    // console.log(submitData);
     if (edit) {
       updateClientMutation.mutate(submitData);
     } else {
@@ -185,9 +184,10 @@ function ClientForm({ edit, title = "Add Client" }) {
         address: "",
         shippingAddress: "",
         note: "",
+        language: null,
       });
       setMethods([]);
-      setLanguage("English");
+      // setLanguage("English");
       setProfilePicture(null);
       setCompanyLogo(null);
       setProfilePictureFile(null);
@@ -224,10 +224,11 @@ function ClientForm({ edit, title = "Add Client" }) {
         address: clientData.address || "",
         shippingAddress: clientData.shippingAddress || "",
         note: clientData.note || "",
+        language: clientData.language || null,
       });
 
       setMethods(clientData.paymentMethods || []);
-      setLanguage(clientData.language || "English");
+      // setLanguage(clientData.language || "English");
       setProfilePicture(
         (clientData.profilePicture?.filePath &&
           `${baseURL}/${clientData.profilePicture.filePath}`) ||
@@ -362,7 +363,8 @@ function ClientForm({ edit, title = "Add Client" }) {
                   options={languageOptions} // Pass the structured options array
                   value={formData.language} // The current ISO code
                   onChange={(lan) => {
-                    setFormData((prev) => ({ ...prev, language: lan }));
+                    console.log(lan);
+                    handleChange("language", lan);
                   }} // Receives the new ISO code
                   placeholder="Choose Language"
                 />
@@ -641,7 +643,7 @@ function ClientForm({ edit, title = "Add Client" }) {
           options={["Zelle", "PayPal", "Bank Transfer", "Cash"]}
           value={methods}
           onChange={setMethods}
-          className="h-16"
+          height="h-16"
         />
 
         <FormField label="Company Logo">

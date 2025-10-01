@@ -11,7 +11,6 @@ export const generateCountryOptions = () => {
   // Get all supported ISO codes from libphonenumber-js
   return getCountries()
     .map((isoCode) => {
-      const uppercaseISO = isoCode.toUpperCase();
       const countryName = countries.getName(isoCode, "en");
 
       if (!countryName) return null; // Skip countries without a name
@@ -31,7 +30,7 @@ export const generateCountryOptions = () => {
 
       return {
         // The value you want stored in state (the ISO code is the best identifier)
-        value: uppercaseISO,
+        value: countryName,
         // The React component to display in the dropdown and button
         label: FlagLabel,
         // Optional: Include name/iso for sorting if needed
@@ -519,7 +518,7 @@ const LANGUAGE_OPTIONS = [
 export const generateLanguageOptions = () => {
   return LANGUAGE_OPTIONS.map((lang) => ({
     // The value that goes into your state
-    value: lang.value,
+    value: lang.label,
     // The label (React element) to display in the dropdown and button
     label: (
       <div className="flex items-center gap-2 w-full">

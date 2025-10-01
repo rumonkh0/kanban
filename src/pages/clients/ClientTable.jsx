@@ -5,6 +5,7 @@ import { ImageName, Table, Td, Th, Thead } from "../../components/Component";
 import { useState } from "react";
 import { useClients } from "@/hooks/useClients";
 import { useDeleteClient } from "../../hooks/useClients";
+import moment from "moment/moment";
 
 function ClientTable({ filters }) {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -126,8 +127,8 @@ function ClientTable({ filters }) {
   //     lastUpdate: "Aug 6, 2025",
   //   },
   // ];
-  if (clientsData.length <= 0)
-    return <div className="text-center">No entries</div>;
+  if (clientsData.length === 0)
+    return <div className="text-center typo-h1">No Client Found</div>;
   return (
     <Table>
       <Thead>
@@ -142,7 +143,7 @@ function ClientTable({ filters }) {
         </tr>
       </Thead>
       <tbody>
-        {clientsData.map((client, index) => {
+        {clientsData?.map((client, index) => {
           const imageUrl = client?.profilePicture?.filePath
             ? `${baseURL}/${client.profilePicture.filePath}`
             : "/images/profile.png";
@@ -173,7 +174,14 @@ function ClientTable({ filters }) {
               <Td>
                 <ImageName image={client.image} username={client.assignedTo} />
               </Td>
-              <Td data={client.lastUpdate} />
+
+              <Td
+                data={
+                  client.user.lastLogin
+                    ? moment(client.user?.lastLogin).fromNow()
+                    : "No Data"
+                }
+              />
               <Td className="text-left last:rounded-r-[4px]">
                 <button
                   onClick={(e) => handleMenuClick(index, e)}
