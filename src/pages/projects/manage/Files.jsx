@@ -7,14 +7,15 @@ import {
 } from "../../../hooks/useFiles";
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Files() {
   const { id } = useParams();
   // const [file, setFile] = useState(null);
-  const { mutate, isPending, isSuccess, isError, cancelUpload } =
-    useUploadFile();
+  const { mutate } = useUploadFile();
   const [uploads, setUploads] = useState([]);
 
+  const queryClient = useQueryClient();
   const { data: allFiles } = useGetAllFiles({ id });
 
   // const handleFileChange = (event) => {
@@ -63,6 +64,9 @@ function Files() {
           onSuccess: () => {
             // 3. SUCCESS: Ensure we filter based on the LATEST 'uploads' state
             setUploads((prev) => prev.filter((u) => u.id !== uploadId));
+            queryClient.invalidateQueries({
+              queryKey: ["files"],
+            });
           },
           onError: (error) => {
             console.log("File Upload Error:", error);
@@ -123,16 +127,17 @@ function Files() {
                     {u.file.name}
                   </span>
                   <span className="typo-b3 text-text2">{u.progress}%</span>
-                  {u.status === "uploading" && (
-                    <button
+                  {u.status === "uploading" &&
+                    {
+                      /* <button
                       onClick={() => {
                         u.controller.abort(); // 👈 cancel
                       }}
                       className="typo-b3 text-red-500 flex items-center gap-1 cursor-pointer"
                     >
                       <Icon name="cross-red" size={16} /> Cancel
-                    </button>
-                  )}
+                    </button> */
+                    }}
                 </div>
               </div>
             ))}
