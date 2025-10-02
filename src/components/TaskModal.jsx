@@ -1,24 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import Icon from "./Icon";
-import { RedButton, Dropdown, ImageName } from "./Component";
+import { RedButton, Dropdown, ImageName, Input } from "./Component";
 import DropdownMenu from "@/components/DropdownMenu";
 import ClientSelect from "./ClientSelect";
-import { useTask } from "../hooks/useTasks";
+import { useTask, useUpdateTask } from "../hooks/useTasks";
 import {
   useComments,
   useCreateComment,
   useDeleteComment,
 } from "../hooks/useComment";
+import { useTeamMembers } from "../hooks/useTeam";
+import { toast } from "react-toastify";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
-function TaskModal({ role = "member", id }) {
+function TaskModal({ role = "member", id, onClose }) {
   const [openImage, setOpenImage] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [comment, setComment] = useState("");
-  const [images, setImages] = useState([]); // uploaded images
-  const [files, setFiles] = useState([]); // uploaded files
+  const [images, setImages] = useState([]);
+  const [coverImage, setCoverImage] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [newFiles, setNewFiles] = useState([]);
   const { data: taskData, isPending } = useTask(id);
-
+  const { data: freelancers = [] } = useTeamMembers();
   const [formData, setFormData] = useState(null);
 
   const handleChange = (field, value) => {
@@ -40,10 +45,12 @@ function TaskModal({ role = "member", id }) {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    setCoverImage(file);
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImages((prev) => [...prev, reader.result]); // store base64
+      // setImages((prev) => [...prev, reader.result]); // store base64
+      setImages([reader.result]); // store base64
     };
     reader.readAsDataURL(file);
   };
@@ -58,7 +65,7 @@ function TaskModal({ role = "member", id }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    setFiles((prev) => [
+    setNewFiles((prev) => [
       ...prev,
       {
         name: file.name,
@@ -71,6 +78,66 @@ function TaskModal({ role = "member", id }) {
 
   const createComment = useCreateComment(id);
   const { data: taskComments, isPending: commentPending } = useComments(id);
+
+  const updatetask = useUpdateTask(id);
+  const handleSubmit = () => {
+    if (formData.title === "") {
+      alert("Please fill in all required fields.");
+      return;
+    }
+    const submitData = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      const value = formData[key];
+      if (
+        value !== undefined &&
+        value !== null &&
+        key !== "members" &&
+        key !== "project" &&
+        key !== "stage" &&
+        key !== "files" &&
+        key !== "images" &&
+        key !== "coverImage"
+      ) {
+        submitData.append(key, value);
+      }
+    });
+
+    formData.members.forEach((method) =>
+      submitData.append("members[]", method)
+    );
+    files.forEach((file) => submitData.append("files[]", file._id));
+    console.log(files);
+    if (newFiles.length > 0)
+      newFiles?.forEach((file) => {
+        submitData.append("files", file.file);
+      });
+    // images?.forEach((file) => {
+    //   submitData.append("images", file);
+    // });
+    if (coverImage) submitData.append("coverImage", coverImage);
+
+    console.log(submitData);
+    updatetask.mutate(submitData);
+    toast.promise(
+      updatetask.mutateAsync(submitData, { onSuccess: onClose }),
+      {
+        pending: "Updating Task Data",
+        success: "Task Updatet",
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to update task";
+            return errorMessage;
+          },
+        },
+      },
+      { autoClose: 5000 }
+    );
+  };
 
   const handleComment = (e) => {
     e.preventDefault();
@@ -96,7 +163,21 @@ function TaskModal({ role = "member", id }) {
   }, []);
 
   useEffect(() => {
-    if (taskData) setFormData(taskData);
+    if (taskData) {
+      setFormData(taskData);
+      setFiles(taskData.files);
+      // setImages(taskData.images);
+      setImages(
+        (taskData.coverImage?.filePath && [
+          `${baseURL}/${taskData.coverImage.filePath}`,
+        ]) ||
+          []
+      );
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   members: taskData.members.map((m) => m._ic),
+      // }));
+    }
   }, [taskData]);
 
   if (isPending) return <div>loading data</div>;
@@ -118,11 +199,14 @@ function TaskModal({ role = "member", id }) {
       >
         <div className="flex justify-between items-center typo-b2 text-black p-2">
           <div className="inline-block w-3 h-3 mr-2 rounded-full bg-red-400"></div>
-          {formData?.title}
+          {formData?.stage.title}
         </div>
 
         {role !== "client" && (
           <div className="flex gap-2 md:gap-4 p-2 md:p-4">
+            <RedButton onClick={handleSubmit} className="h-5 px-2 typo-b3">
+              Save
+            </RedButton>
             {/* Image Icon Dropdown */}
             <div className="relative" ref={imageRef}>
               <div onClick={() => setOpenImage(!openImage)}>
@@ -198,20 +282,43 @@ function TaskModal({ role = "member", id }) {
         <input
           className="w-full h-10 border-2 border-divider rounded-sm flex items-center px-2 md:px-4 typo-b2 text-text"
           placeholder="Task 2"
+          value={formData?.title}
+          onChange={(e) => handleChange("title", e.target.value)}
         />
 
         {/* Main Content Row - Stack on mobile */}
         <div className="mt-2 flex flex-col lg:flex-row items-stretch h-[450px] lg:h-[288px] overflow-y-scroll">
           {/* Left Column */}
           {role === "admin" ? (
-            <div className="flex-1 lg:pr-2 pb-2 lg:pb-0 lg:border-r-2 border-b-2 lg:border-b-0 border-divider flex flex-col gap-2">
+            <div className="flex-1 lg:pr-2 pb-2 lg:pb-0 lg:border-r-2 border-b-2 lg:border-b-0 border-divider flex flex-col gap-2 lg:overflow-y-scroll">
               <div className="flex flex-col sm:flex-row gap-2">
                 <Dropdown
                   options={[`${formData?.project.projectName}`]}
                   value={formData?.project.projectName}
                   onChange={(val) => handleChange("project", val)}
                 />
+
                 <ClientSelect
+                  value={formData?.members}
+                  clients={freelancers.map((f) => ({
+                    id: f._id,
+                    name: f.name,
+                    email: f.user.email,
+                    profilePicture: f.profilePicture,
+                  }))}
+                  onChange={(members) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      members,
+                    }))
+                  }
+                  mode="multi"
+                  addingTitle="Add new member"
+                  placeHolder="Select Members...."
+                  className="flex-1 typo-b3"
+                  // disabled={!!formData.service}
+                />
+                {/* <ClientSelect
                   clients={[
                     {
                       id: formData?.project.client._id,
@@ -223,14 +330,16 @@ function TaskModal({ role = "member", id }) {
                   onSelect={(member) => console.log("Member selected:", member)}
                   className="flex-1 typo-b3"
                   disabled
-                />
+                /> */}
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex-1 relative">
-                  <input
+                  <Input
                     type="date"
                     placeholder="Select Date"
-                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-2 md:px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
+                    onChange={(val) => handleChange("createdDate", val)}
+
+                    // className="w-full h-12 bg-surface2 border border-divider rounded-lg px-2 md:px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                   />
                   <Icon
                     name="calendar"
@@ -238,10 +347,11 @@ function TaskModal({ role = "member", id }) {
                   />
                 </div>
                 <div className="flex-1 relative">
-                  <input
+                  <Input
                     type="date"
                     placeholder="Select Date"
                     className="w-full h-12 bg-surface2 border border-divider rounded-lg px-2 md:px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
+                    onChange={(val) => handleChange("dueDate", val)}
                   />
                   <Icon
                     name="calendar"
@@ -253,19 +363,19 @@ function TaskModal({ role = "member", id }) {
                 <div className="relative flex-1">
                   <div
                     className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 z-50 ${
-                      formData?.impact === "High"
+                      formData?.priority === "High"
                         ? "bg-success"
-                        : formData?.impact === "Low"
+                        : formData?.priority === "Low"
                         ? "bg-brand"
-                        : formData?.impact === "Medium"
+                        : formData?.priority === "Medium"
                         ? "bg-[#A88AED]"
                         : ""
                     }`}
                   ></div>
                   <Dropdown
                     options={["High", "Low", "Medium"]}
-                    value={formData?.impact}
-                    onChange={(val) => handleChange("impact", val)}
+                    value={formData?.priority}
+                    onChange={(val) => handleChange("priority", val)}
                     className="pl-8 w-full h-12 bg-surface2 rounded-lg border-divider"
                   />
                 </div>
@@ -287,34 +397,58 @@ function TaskModal({ role = "member", id }) {
                 </div>
               </div>
               {/* Show uploaded files */}
-              {files.length > 0 && (
+              {
                 <div className="flex flex-wrap gap-2">
-                  {files.map((file, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-2 bg-surface2 border border-divider rounded-lg px-2 py-1"
-                    >
-                      <Icon name="file" size={20} />
-                      <span className="typo-b3 text-text">{file.name}</span>
-                      <button
-                        onClick={() =>
-                          setFiles(files.filter((_, i) => i !== idx))
-                        }
-                        className="text-brand"
+                  {files?.length > 0 &&
+                    files?.map((file, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 bg-surface2 border border-divider rounded-lg px-2 py-1"
                       >
-                        ×
-                      </button>
-                    </div>
-                  ))}
+                        <Icon name="file" size={20} />
+                        <span className="typo-b3 text-text">
+                          {file.originalName}
+                        </span>
+                        <button
+                          onClick={() => {
+                            console.log(files, file);
+                            setFiles(files.filter((f) => f._id !== file._id));
+                          }}
+                          className="text-brand"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  {newFiles?.length > 0 &&
+                    newFiles.map((file, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 bg-surface2 border border-divider rounded-lg px-2 py-1"
+                      >
+                        <Icon name="file" size={20} />
+                        <span className="typo-b3 text-text">{file.name}</span>
+                        <button
+                          onClick={() =>
+                            setNewFiles(newFiles.filter((_, i) => i !== idx))
+                          }
+                          className="text-brand"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                 </div>
-              )}
+              }
               <textarea
                 placeholder="Type desc here"
                 className="h-24 md:h-30 p-2 md:p-4 typo-b3 bg-surface2 border-2 border-divider rounded-sm"
+                value={formData?.description}
+                onChange={(e) => handleChange("description", e.target.value)}
               ></textarea>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col gap-2 md:gap-4 lg:pr-2 pb-2 lg:pb-0 pt-2 lg:border-r-2 border-b-2 lg:border-b-0 border-divider">
+            <div className="flex-1 flex flex-col gap-2 md:gap-4 lg:pr-2 pb-2 lg:pb-0 pt-2 lg:border-r-2 border-b-2 lg:border-b-0 border-divider lg:overflow-y-scroll">
               <InfoItem label="Project" value="Sample project one" />
               {role === "member" && (
                 <InfoItem label="Assigned Member">
@@ -383,7 +517,7 @@ function TaskModal({ role = "member", id }) {
           {/* Right Column - Comments */}
           <div className="flex-1 lg:pl-2 pt-2 lg:pt-0 flex flex-col min-h-[200px] lg:min-h-0">
             {/* Top: Comments */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 lg:overflow-y-scroll">
               <div className="flex items-center gap-2 mb-4">
                 <Icon name="chat" size={20} />
                 <span className="typo-b2">Comments and activity</span>
@@ -392,8 +526,8 @@ function TaskModal({ role = "member", id }) {
               {commentPending ? (
                 <div>Loading comments</div>
               ) : taskComments?.length > 0 ? (
-                taskComments.map((comment) => (
-                  <div className="typo-b3 text-text2">
+                taskComments.map((comment, idx) => (
+                  <div key={idx} className="typo-b3 text-text2">
                     <div className="flex items-center gap-1">
                       <img
                         src="/images/profile.png"
@@ -428,6 +562,7 @@ function TaskModal({ role = "member", id }) {
               ) : (
                 <div>No comments here</div>
               )}
+              <div className="h-5"></div>
             </div>
 
             {/* Bottom Input Bar */}

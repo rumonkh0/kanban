@@ -16,19 +16,27 @@ export const tasksApi = {
   },
 
   create: async (data) => {
-    const response = await apiClient.post("/tasks", data);
+    const response = await apiClient.post("/tasks", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to create task");
   },
 
   update: async (id, data) => {
-    const response = await apiClient.put(`/tasks/${id}`, data);
+    const response = await apiClient.put(`/tasks/${id}`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || `Failed to update task ${id}`);
   },
 
   updateOrder: async (id, prev, next, newStage) => {
-    const response = await apiClient.put(`/tasks/${id}/reorder`, { prev, next, newStage });
+    const response = await apiClient.put(`/tasks/${id}/reorder`, {
+      prev,
+      next,
+      newStage,
+    });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || `Failed to update task ${id}`);
   },

@@ -1,4 +1,8 @@
-import { SortableContext, useSortable } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useState, useRef, useEffect } from "react"; // ⬅️ added useRef + useEffect
 import DropdownMenu from "@/components/DropdownMenu";
@@ -142,7 +146,10 @@ const TaskCard = ({
 
       {/* Task list */}
       <div className="flex-1 overflow-y-auto flex flex-col gap-2">
-        <SortableContext items={tasks.map((task) => task._id)}>
+        <SortableContext
+          strategy={verticalListSortingStrategy}
+          items={tasks.map((task) => task._id)}
+        >
           {tasks.map((task) => (
             <SingleTask key={task._id} task={task} role={role} />
           ))}

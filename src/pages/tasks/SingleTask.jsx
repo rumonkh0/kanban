@@ -1,15 +1,16 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
+import React, { useState } from "react";
 import Modal from "@/components/Modal";
 import TaskModal from "@/components/TaskModal";
 import Icon from "@/components/Icon";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
-const SingleCard = ({ task, role }) => {
+const SingleCard = React.memo(({ task, role }) => {
   const {
     _id,
     title: taskTitle = "Task",
-    images = [],
+    coverImage,
+    members,
     dueDate,
     comments = 0,
     files = 0,
@@ -46,11 +47,11 @@ const SingleCard = ({ task, role }) => {
           isDragging && "opacity-20"
         }`}
       >
-        {images.length > 0 && (
-          <div>
+        {coverImage && (
+          <div className="aspect-square rounded-lg overflow-hidden">
             <img
-              src={`${baseURL}/${images[0].filePath}`}
-              className="rounded-lg"
+              src={`${baseURL}/${coverImage.filePath}`}
+              className="rounded-lg w-full object-cover"
             />
           </div>
         )}
@@ -70,7 +71,7 @@ const SingleCard = ({ task, role }) => {
             <Icon name="attachment" size={20} /> {files.length}
             {dueDate && (
               <div className="h-7 p-1 flex items-center gap-1 bg-brand/20 text-brand rounded-xs">
-                <Icon name="calendar-red" /> {console.log(dueDate)}
+                <Icon name="calendar-red" />
                 {Math.ceil(
                   (new Date(dueDate) - Date.now()) / (1000 * 60 * 60 * 24)
                 )}{" "}
@@ -78,25 +79,32 @@ const SingleCard = ({ task, role }) => {
               </div>
             )}
           </div>
-          <div className="flex -space-x-3">
-            <img
-              src="/images/profile.png"
-              alt="User 1"
-              className="h-8 w-8 rounded-full border-2 border-white"
-            />
-            <img
-              src="/images/profile.png"
-              alt="User 2"
-              className="h-8 w-8 rounded-full border-2 border-white"
-            />
-          </div>
+          {members && members.length > 0 ? (
+            <div className="flex -space-x-3">
+              {members.map((m, idx) => {
+                const image = m.profilePicture
+                  ? `${baseURL}/${m.profilePicture.filePath}`
+                  : "/images/profile.png";
+                return (
+                  <img
+                    key={m.id || idx}
+                    src={image || "/images/profile.png"}
+                    // alt={m.name || "User"}
+                    className="h-8 w-8 rounded-full border-2 border-white object-cover"
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <p className="typo-b3">No members</p>
+          )}
         </div>
       </div>
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
-        <TaskModal role={role} id={_id} />
+        <TaskModal role={role} id={_id} onClose={() => setTaskModal(false)} />
       </Modal>
     </>
   );
-};
+});
 
 export default SingleCard;

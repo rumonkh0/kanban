@@ -22,9 +22,9 @@ function Payment({ from }) {
   const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
     project: id,
-    status: "",
-    match: "",
-    client: "",
+    status: null,
+    match: null,
+    client: null,
   });
 
   const filterConfigs = [

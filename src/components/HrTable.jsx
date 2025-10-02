@@ -109,10 +109,7 @@ function TeamMembersTable({ filters }) {
               />
               <Td>
                 <Link to="/hr/team-members/member-details">
-                  <ImageName
-                    image={memberImage}
-                    username={teamMember.name}
-                  />
+                  <ImageName image={memberImage} username={teamMember.name} />
                 </Link>
               </Td>
               <Td data={teamMember.user.email} />
@@ -126,7 +123,7 @@ function TeamMembersTable({ filters }) {
               </Td>
 
               <Td data={formatDate(teamMember.joiningDate)} />
-              <Td data={teamMember.currentTask || 0} />
+              <Td data={teamMember.taskCount || 0} />
               <Td>
                 <div className="flex items-center gap-2">
                   <div

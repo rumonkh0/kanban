@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { generateKeyBetween } from "fractional-indexing";
 import SingleTask from "./SingleTask";
 import {
+  closestCorners,
   DndContext,
   DragOverlay,
   PointerSensor,
@@ -172,7 +173,7 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
     if (!isActiveATask) return;
 
     setTasks((prev) => {
-      const tasks = [...prev]; 
+      const tasks = [...prev];
 
       const activeIndex = tasks.findIndex((t) => t._id === active.id);
 
@@ -206,7 +207,13 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 0 } })
   );
+  const renderCount = useRef(0);
 
+  renderCount.current += 1; // increase on every render
+
+  useEffect(() => {
+    console.log("Rendered:", renderCount.current);
+  });
   if (isLoading) return <div className="text-center">Loading tasks</div>;
   return (
     <>
@@ -215,16 +222,17 @@ function KanbanBoard({ stages, setStages, role = "member" }) {
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
         sensors={sensors}
+        collisionDetection={closestCorners}
       >
         <div className="grid grid-cols-[repeat(auto-fill,minmax(290px,1fr))] gap-2">
           <SortableContext items={stageId}>
-            {stages?.map((stage, idx) => {
+            {stages?.map((stage) => {
               const selectedTasks = tasks.filter(
                 (task) => task.stage === stage._id
               );
               return (
                 <TaskCard
-                  key={idx}
+                  key={stage._id}
                   id={stage._id}
                   cardTitle={stage.title}
                   color={stage.color}

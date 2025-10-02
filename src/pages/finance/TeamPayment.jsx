@@ -24,9 +24,9 @@ function PaidTo({ from }) {
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
-    status: "",
-    project: "", // Added project filter for consistency
-    client: "", // Added client filter for consistency
+    status: null,
+    project: null, 
+    client: null,
   });
 
   // Filter Configurations array, aligned with the Payment component structure
