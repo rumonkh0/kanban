@@ -217,7 +217,7 @@ function Overview() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
-                margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+                margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
               >
                 <XAxis
                   dataKey="name"

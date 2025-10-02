@@ -5,45 +5,36 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { uploadFileApi } from "../services/files";
-import axios from "axios";
-import { useRef, useState } from "react";
+// import axios from "axios";
+// import { useRef } from "react";
 
 export const useUploadFile = () => {
-  const queryClient = useQueryClient();
-  const [progress, setProgress] = useState(0);
-  const cancelToken = useRef(null);
+  // const queryClient = useQueryClient();
+  // const [progress, setProgress] = useState(0);
+  // const cancelToken = useRef(null);
 
   const mutation = useMutation({
-    mutationFn: (formData) => {
-      cancelToken.current = axios.CancelToken.source();
+    mutationFn: ({ formData, onProgress, controller }) => {
+      // cancelToken.current = axios.CancelToken.source();
       return uploadFileApi.upload({
         formData,
-        onProgress: setProgress,
-        cancelToken: cancelToken.current.token,
+        onProgress: onProgress,
+        controller,
+        // cancelToken: cancelToken.current.token,
       });
-    },
-    onSuccess: () => {
-      setProgress(100);
-      queryClient.invalidateQueries({ queryKey: ["files"] });
-    },
-    onError: (e) => {
-      console.log(e);
-      setProgress(0);
-    },
+    }
   });
 
-  const cancelUpload = () => {
-    if (cancelToken.current) {
-      cancelToken.current.cancel("User cancelled upload");
-    }
-    mutation.reset();
-    setProgress(0);
-  };
+  // const cancelUpload = () => {
+  //   if (cancelToken.current) {
+  //     cancelToken.current.cancel("User cancelled upload");
+  //   }
+  //   mutation.reset();
+  // };
 
   return {
     ...mutation,
-    progress,
-    cancelUpload,
+    // cancelUpload,
   };
 };
 // ✅ Hook for fetching all files (with optional filters)

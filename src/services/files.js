@@ -1,14 +1,15 @@
 import apiClient from "../lib/axios";
 
 export const uploadFileApi = {
-  upload: async ({ formData, onProgress, cancelToken }) => {
+  upload: async ({ formData, onProgress, controller }) => {
     return apiClient.post("/files/upload", formData, {
       headers: { "Content-Type": "multipart/form-data" },
+      signal: controller.signal,
       onUploadProgress: (e) => {
         const percent = Math.round((e.loaded * 100) / e.total);
         if (onProgress) onProgress(percent);
       },
-      cancelToken,
+      
     });
   },
 

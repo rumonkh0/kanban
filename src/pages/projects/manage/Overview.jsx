@@ -123,7 +123,7 @@ function Overview() {
         </div>
       </BorderDiv>
       {/* Chart 1 - Project Task (Pie Chart) */}
-      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-3 md:gap-4">
+      <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-3 md:gap-4">
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader primaryLabel="Project Task" keyValue="4" />
@@ -141,7 +141,7 @@ function Overview() {
                 cy="50%"
                 innerRadius={0}
                 stroke="none"
-                outerRadius="75%"
+                outerRadius="80%"
                 paddingAngle={0}
               >
                 {tasks.map((entry, index) => (
@@ -175,7 +175,7 @@ function Overview() {
       </div>
 
       {/* Chart 2 - Project Budget (Bar Chart) */}
-      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
+      <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader primaryLabel="Project Budget" keyValue="$5,400" />
@@ -186,7 +186,7 @@ function Overview() {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}
-              margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+              margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
             >
               <XAxis
                 dataKey="name"
@@ -232,7 +232,7 @@ function Overview() {
       </div>
 
       {/* Chart 3 - Revenue (Bar Chart) */}
-      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
+      <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
         {/* Header */}
         <div className="flex justify-between">
           <ChartHeader primaryLabel="Revenue" keyValue="$5,400" />
@@ -243,7 +243,7 @@ function Overview() {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={revenue}
-              margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+              margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
             >
               <XAxis
                 dataKey="name"
@@ -294,7 +294,7 @@ function Overview() {
       </div>
 
       {/* Chart 4 - Project Track (Bar Chart) */}
-      <div className="w-full h-[400px] md:h-[468px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
+      <div className="w-full h-[494px] md:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
           <ChartHeader
@@ -314,7 +314,7 @@ function Overview() {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={budget}
-              margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
+              margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
             >
               <XAxis
                 dataKey="name"
