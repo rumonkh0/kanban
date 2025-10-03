@@ -14,47 +14,52 @@ function AddProjectMemberModal({ onClose }) {
   const { data: freelancers = [] } = useTeamMembers();
   const { data: members } = useProjectMembers(id);
   const updateProject = useUpdateProject(id);
+
   useEffect(() => {
     if (members) setFormData(members.map((f) => f.freelancer._id));
   }, [members]);
 
   return (
-    <div className="w-[800px] p-4 bg-surface rounded-lg border typo-b2 border-divider">
-      <div className="pb-4 border-b-2 border-divider flex justify-between">
-        <h2>Add Project Member</h2>
+    <div className="w-full max-w-[800px] p-4 bg-surface rounded-lg border typo-b2 border-divider mx-auto mt-40 sm:my-8 md:my-12">
+      {/* Header */}
+      <div className="pb-4 border-b-2 border-divider flex justify-between items-center">
+        <h2 className="typo-h4">Add Project Member</h2>
         <div onClick={() => onClose()}>
           <Icon name="close" className="cursor-pointer" />
         </div>
       </div>
 
-      <ClientSelect
-        value={formData}
-        clients={freelancers.map((f) => ({
-          id: f._id,
-          name: f.name,
-          email: f.user.email,
-          profilePicture: f.profilePicture,
-        }))}
-        onChange={(members) => setFormData(members)}
-        mode="multi"
-        label="Add Project Members"
-        addingTitle="Add new member"
-        placeHolder="Select Members...."
-        // disabled={!!formData.service}
-      />
-      <div className="flex justify-between pt-4">
+      {/* Client Selector */}
+      <div className="mt-4">
+        <ClientSelect
+          value={formData}
+          clients={freelancers.map((f) => ({
+            id: f._id,
+            name: f.name,
+            email: f.user.email,
+            profilePicture: f.profilePicture,
+          }))}
+          onChange={(members) => setFormData(members)}
+          mode="multi"
+          label="Add Project Members"
+          addingTitle="Add new member"
+          placeHolder="Select Members...."
+        />
+      </div>
+
+      {/* Footer Buttons */}
+      <div className="flex flex-col sm:flex-row justify-between gap-3 pt-4">
         <RedButton
+          className="w-full px-4 sm:w-auto"
           onClick={() =>
             toast.promise(
               updateProject.mutateAsync(
                 { members: formData },
-                {
-                  onSuccess: () => onClose(),
-                }
+                { onSuccess: () => onClose() }
               ),
               {
-                pending: "Updating Membe List",
-                success: "Member List Updatet",
+                pending: "Updating Member List",
+                success: "Member List Updated",
                 error: {
                   render({ data }) {
                     const errorMessage =
@@ -72,7 +77,9 @@ function AddProjectMemberModal({ onClose }) {
         >
           Save
         </RedButton>
-        <RedBorderButton>Cancel</RedBorderButton>
+        <RedBorderButton className="w-full  sm:w-auto" onClick={onClose}>
+          Cancel
+        </RedBorderButton>
       </div>
     </div>
   );

@@ -9,7 +9,9 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { RedButton } from "@/components/Component";
 import Icon from "@/components/Icon";
 import SingleTask from "./SingleTask";
-import { useDeleteStage } from "../../hooks/useStages";
+import { useDeleteStage, useUpdateStage } from "../../hooks/useStages";
+import AddCardModal from "../../components/AddCardModal";
+import Modal from "../../components/Modal";
 
 const TaskCard = ({
   id,
@@ -23,7 +25,8 @@ const TaskCard = ({
   const [addTask, setAddTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const deleteStageMutation = useDeleteStage();
-
+  const [addCardModal, setaddCardModal] = useState(false);
+  const updateStage = useUpdateStage(id);
   // ⬅️ Ref for the input
   const inputRef = useRef(null);
 
@@ -100,7 +103,7 @@ const TaskCard = ({
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             menuItems={[
-              { label: "Edit", onClick: () => console.log("Edit clicked") },
+              { label: "Edit", onClick: () => setaddCardModal(true) },
               { label: "Delete", onClick: () => handleDelete(id) },
             ]}
             className="top-full right-0 mt-1"
@@ -155,6 +158,16 @@ const TaskCard = ({
           ))}
         </SortableContext>
       </div>
+      <Modal isOpen={addCardModal} onClose={() => setaddCardModal(false)}>
+        <AddCardModal
+          onEdit={(data) => {
+            updateStage.mutate(data, {
+              onSuccess: setaddCardModal(false),
+            });
+          }}
+          data={{ cardTitle, color }}
+        />
+      </Modal>
     </div>
   );
 };

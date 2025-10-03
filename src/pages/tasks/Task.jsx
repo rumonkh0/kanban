@@ -5,7 +5,10 @@ import KanbanBoard from "./KanbanBoard";
 import AddCardModal from "@/components/AddCardModal";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
-import { useCreateStage, useStages } from "../../hooks/useStages";
+import {
+  useCreateStage,
+  useStages,
+} from "../../hooks/useStages";
 import { useParams } from "react-router";
 import PageTitle from "../../components/PageTitle";
 
@@ -55,6 +58,7 @@ function Tasks() {
 
   const { data: stagesData, isLoading } = useStages();
   const createMutation = useCreateStage();
+
 
   useEffect(() => {
     if (stagesData) {
@@ -118,6 +122,7 @@ function Tasks() {
             createMutation.mutate(newStage);
             setaddCardModal(false); // close modal
           }}
+          
         />
       </Modal>
     </div>

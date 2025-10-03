@@ -9,6 +9,8 @@ function Activity() {
   if (isPending)
     return <div className="typo-h1 text-center">Loading Activities</div>;
 
+  if (activityLog.length === 0) return <div>No Activity Found.</div>;
+
   return (
     <div className="flex flex-col gap-3 text-text">
       {activityLog.map((log, index) => {

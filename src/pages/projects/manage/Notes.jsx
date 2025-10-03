@@ -8,6 +8,7 @@ import DropdownMenu from "@/components/DropdownMenu";
 import { FilterDropdown, Td, Th } from "../../../components/Component";
 import { useDeleteNote, useNotes } from "../../../hooks/useNotes";
 import { toast } from "react-toastify";
+import { World } from "../../../components/Icon";
 
 function Notes() {
   const { id } = useParams();
@@ -85,7 +86,7 @@ function Notes() {
                     <div className="flex items-center w-full h-10 border border-text2 pl-4 rounded-sm typo-b3 text-text">
                       {note.isPublic ? (
                         <>
-                          <Icon name="lock" className="mr-2" /> Public
+                          <World className={`w-5 h-5 text-text mr-2`}/> Public
                         </>
                       ) : (
                         <>
@@ -108,7 +109,10 @@ function Notes() {
                       onClose={() => setActiveMenu(null)}
                       menuItems={[
                         { label: "View", onClick: () => setPaymentModal(true) },
-                        { label: "Edit", href: `/projects/notes/${note._id}/edit` },
+                        {
+                          label: "Edit",
+                          href: `/projects/notes/${note._id}/edit`,
+                        },
                         {
                           label: "Delete",
                           onClick: () => handleDelete(note._id),

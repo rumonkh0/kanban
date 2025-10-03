@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { RedButton } from "./Component";
 
-function AddCardModal({ onCreate }) {
-  const [title, setTitle] = useState("");
-  const [color, setColor] = useState("#7B7B7B");
+function AddCardModal({ onCreate, onEdit, data }) {
+  const [title, setTitle] = useState(data.cardTitle || "");
+  const [color, setColor] = useState(data.color || "#7B7B7B");
 
   const colors = ["#7B7B7B", "#FE4E4D", "#8FC951", "#5EB7E0", "#A88AED"];
 
   const handleCreate = () => {
     if (!title) return;
-    onCreate({ title, color });
+    if (onEdit) onEdit({ title, color });
+    else onCreate({ title, color });
     setTitle("");
+    setColor("#7B7B7B");
   };
 
   return (
@@ -35,7 +37,7 @@ function AddCardModal({ onCreate }) {
         ))}
       </div>
       <RedButton className="w-full sm:w-fit mt-2 px-2" onClick={handleCreate}>
-        Create
+        {onEdit ? "Update" : "Create"}
       </RedButton>
     </div>
   );

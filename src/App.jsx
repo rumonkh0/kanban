@@ -131,7 +131,7 @@ function App() {
             <Route path="members" element={<ProjectMembers />} />
             <Route path="files" element={<ProjectFiles />} />
             <Route path="tasks" element={<ProjectTask />} />
-            <Route path="payment" element={<Payment from="projects"/>} />
+          <Route path="payment" element={<Payment from="projects"/>} />
             <Route
               path="team-payment"
               element={

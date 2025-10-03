@@ -41,16 +41,16 @@ export const useCreateStage = () => {
 
 // Update a stage
 export const useUpdateStage = (id) => {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   // const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data) => stagesApi.update(id, data),
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["stages", id] });
-    //   queryClient.invalidateQueries({ queryKey: ["stages"] });
-    //   navigate("/stages"); // adjust route if needed
-    // },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["stages", id] });
+      queryClient.invalidateQueries({ queryKey: ["stages"] });
+      // navigate("/stages"); // adjust route if needed
+    },
     onError: (error) => {
       console.error(`Error updating stage ${id}:`, error);
     },
