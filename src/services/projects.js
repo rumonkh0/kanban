@@ -75,4 +75,12 @@ export const projectsApi = {
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to remove member");
   },
+
+  getActivity: async (projectId) => {
+    const response = await apiClient.get(
+      `/projects/${projectId}/projectactivity`
+    );
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || "Failed to remove member");
+  },
 };

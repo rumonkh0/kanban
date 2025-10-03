@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/Icon";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import Modal from "@/components/Modal";
 import PaymentDetailsModal from "@/components/PaymentDetailsModal";
 import DropdownMenu from "@/components/DropdownMenu";
@@ -20,12 +20,13 @@ import { useDeletePaidTo, usePaidTos } from "../../hooks/useFinance";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function PaidTo({ from }) {
+  const { id } = useParams();
   const [PaymentsModal, setPaymentModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
     status: null,
-    project: null, 
+    project: id,
     client: null,
   });
 
@@ -93,6 +94,7 @@ function PaidTo({ from }) {
           <Link
             to={`/${from}/paid-to`}
             className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
+            state={{ projectId: id }}
           >
             <RedButton>
               <div className="w-6 h-6 flex justify-center items-center">

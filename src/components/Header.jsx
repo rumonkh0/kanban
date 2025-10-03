@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import Icon, { Hambrger, LogOut, People, Settings } from "./Icon";
+import Icon, { Hambrger, LogOut, Notification, People, Settings } from "./Icon";
 import { usePageTitleStore } from "@/stores/usePageTitleStore";
 import { Link } from "react-router";
 
@@ -250,10 +250,11 @@ function Header({ onMenuClick }) {
             onClick={() => setOpenNotification(!openNotification)}
             className="w-8 h-8 md:w-12 md:h-12 border-1 border-divider rounded-lg flex justify-center items-center cursor-pointer hover:bg-divider relative"
           >
-            <Icon name="notification" className="w-5 h-5 md:w-7 md:h-7" />
-            {/* Unread badge */}
+            <Notification
+              className={`text-text w-5 md:w-8 hover:text-brand relative`}
+            />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 md:w-5 md:h-5 bg-brand rounded-full flex items-center justify-center text-white text-[8px] md:text-[10px] font-bold">
+              <span className="absolute top-0.25 right-0.75 md:border-3 md:border-surface2 w-3 h-3 md:w-5 md:h-5 bg-brand rounded-full flex items-center justify-center text-white text-[8px] md:text-[10px] font-bold">
                 {unreadCount}
               </span>
             )}

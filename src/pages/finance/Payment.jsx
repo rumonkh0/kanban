@@ -78,6 +78,7 @@ function Payment({ from }) {
         <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
             to={`/${from}/paid-by`}
+            state={{ projectId: id }}
             className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
             <RedButton>
@@ -181,6 +182,7 @@ function Payment({ from }) {
                         {
                           label: "Edit",
                           href: `/${from}/paid-by/${payment._id}/edit`,
+                          state: { paymentId: payment._id },
                         },
                         {
                           label: "Delete",

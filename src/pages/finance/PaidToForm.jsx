@@ -10,7 +10,7 @@ import {
   RedBorderButton,
   RedButton,
 } from "@/components/Component";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import PageTitle from "@/components/PageTitle";
 // Assuming these hooks exist for PaidTo, similar to the PaidFrom example
 import {
@@ -26,13 +26,14 @@ import {
   useProjects,
 } from "../../hooks/useProjects";
 
-function PaidToForm({ edit = false, title = "Add Payment" }) {
+function PaidToForm({ edit = false, title = "Add Team Payment" }) {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [more, setMore] = useState(false);
   // const [selectedMember, setSelectedMember] = useState(null);
   const [formData, setFormData] = useState({
-    project: "",
+    project: location.state?.projectId || "",
     paidTo: null,
     toBePaid: "",
     paymentDate: "",
@@ -159,7 +160,7 @@ function PaidToForm({ edit = false, title = "Add Payment" }) {
         member: paidToData.freelancer._id || null,
         toBePaid: paidToData.toBePaid || "",
         discount: paidToData.discount || "",
-        paymentDate: paidToData.paymentDate || "",
+        paymentDate: paidToData.paymentDate?.split("T")[0] || "",
         amountPaid: paidToData.amountPaid || "",
         amountOwed: paidToData.amountOwed || "",
         paidMethod: paidToData.paidMethod || "",
@@ -228,11 +229,11 @@ function PaidToForm({ edit = false, title = "Add Payment" }) {
 
   return (
     <>
-      <PageTitle title={edit ? "Edit Payment" : title} />
+      <PageTitle title={edit ? "Edit Team Payment" : title} />
       <div className="flex flex-col gap-8">
         <div>
           <div className="mb-4 flex justify-between items-center">
-            <div className="typo-b1">Payment Details</div>
+            <div className="typo-b1">Team Payment Details</div>
             <Back>
               <Icon name="close" />
             </Back>

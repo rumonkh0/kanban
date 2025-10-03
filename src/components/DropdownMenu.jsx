@@ -35,6 +35,7 @@ export default function DropdownMenu({
                 to={item.href}
                 onClick={onClose}
                 className="block"
+                state={item.state}
               >
                 {content}
               </Link>

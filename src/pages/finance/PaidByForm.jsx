@@ -10,7 +10,7 @@ import {
   RedBorderButton,
   RedButton,
 } from "@/components/Component";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import PageTitle from "@/components/PageTitle";
 import { useProject, useProjects } from "../../hooks/useProjects";
 import {
@@ -22,11 +22,12 @@ import {
 
 function PaidByForm({ edit = false, title = "Add Payment" }) {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
-    project: "",
+    project: location.state?.projectId || "",
     client: null,
     toBePaid: "",
     teamPayment: "",
@@ -148,7 +149,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
         toBePaid: paidByData.toBePaid || "",
         teamPayment: paidByData.teamPayment || "",
         revenue: paidByData.revenue || "",
-        paymentDate: paidByData.paymentDate || "",
+        paymentDate: paidByData.paymentDate?.split("T")[0] || "",
         amountPaid: paidByData.amountPaid || "",
         amountOwed: paidByData.amountOwed || "",
         paidMethod: paidByData.paidMethod || "",
@@ -196,6 +197,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
                     }
                     value={formData.project || ""}
                     onChange={(val) => handleChange("project", val)}
+                    // disabled={location.state.projectId}
                   />
                 ) : (
                   <Input
