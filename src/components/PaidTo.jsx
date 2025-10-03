@@ -149,7 +149,7 @@ function PaidTo({ toHref }) {
                     onClick={(e) => handleMenuClick(index, e)}
                     className="relative p-2 rounded-sm border-2 border-text2 cursor-pointer hover:bg-surface2/60"
                   >
-                    <Icon name="menu" size={20} />{" "}
+                    <Icon name="menu" size={20} />
                     <DropdownMenu
                       isOpen={activeMenu === index}
                       onClose={() => setActiveMenu(null)}

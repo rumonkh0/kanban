@@ -87,7 +87,7 @@ function Setting() {
               <Icon name={showPassword ? "eye" : "eye"} className="w-5 h-5" />
             </button>
           </div>
-        </div>{" "}
+        </div>
         <FormField label="Receive email notifications?">
           <div className="flex typo-cta">
             <label className="flex-1 h-12 flex items-center justify-center bg-brand text-white rounded-l-lg cursor-pointer">
@@ -99,7 +99,7 @@ function Setting() {
               <span>No</span>
             </label>
           </div>
-        </FormField>{" "}
+        </FormField>
         <FormField label="Enable Google Calender">
           <div className="flex typo-cta">
             <label className="flex-1 h-12 flex items-center justify-center bg-brand text-white rounded-l-lg cursor-pointer">

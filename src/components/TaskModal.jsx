@@ -12,6 +12,7 @@ import {
 } from "../hooks/useComment";
 import { useTeamMembers } from "../hooks/useTeam";
 import { toast } from "react-toastify";
+import { useProjectMembers } from "../hooks/useProjects";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TaskModal({ role = "member", id, onClose }) {
@@ -22,8 +23,6 @@ function TaskModal({ role = "member", id, onClose }) {
   const [coverImage, setCoverImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
-  const { data: taskData, isPending } = useTask(id);
-  const { data: freelancers = [] } = useTeamMembers();
   const [formData, setFormData] = useState(null);
 
   const handleChange = (field, value) => {
@@ -40,6 +39,9 @@ function TaskModal({ role = "member", id, onClose }) {
     { label: "Share", onClick: () => console.log("Share clicked") },
     { label: "Delete", onClick: () => console.log("Delete clicked") },
   ];
+
+  const { data: taskData, isPending } = useTask(id);
+  const { data: freelancers = [] } = useProjectMembers(formData?.project?._id);
 
   // File upload handler for images
   const handleFileUpload = (e) => {
@@ -297,14 +299,14 @@ function TaskModal({ role = "member", id, onClose }) {
                   value={formData?.project.projectName}
                   onChange={(val) => handleChange("project", val)}
                 />
-
+                {console.log(freelancers)}
                 <ClientSelect
                   value={formData?.members}
                   clients={freelancers.map((f) => ({
-                    id: f._id,
-                    name: f.name,
-                    email: f.user.email,
-                    profilePicture: f.profilePicture,
+                    id: f.freelancer._id,
+                    name: f.freelancer.name,
+                    email: f.freelancer?.user?.email,
+                    profilePicture: f.freelancer.profilePicture,
                   }))}
                   onChange={(members) =>
                     setFormData((prev) => ({

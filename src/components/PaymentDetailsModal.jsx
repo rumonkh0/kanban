@@ -29,7 +29,7 @@ function PaymentDetailsModal({ onClose, id }) {
   return (
     <div className="w-[800px] p-4 bg-surface rounded-lg border typo-b2 border-divider">
       <div className="pb-4 border-b-2 border-divider flex justify-between">
-        <h2>Team Payment Details</h2>{" "}
+        <h2>Team Payment Details</h2>
         <div onClick={() => onClose()}>
           <Icon name="close" className="cursor-pointer" />
         </div>

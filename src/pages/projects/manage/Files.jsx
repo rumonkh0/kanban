@@ -127,17 +127,17 @@ function Files() {
                     {u.file.name}
                   </span>
                   <span className="typo-b3 text-text2">{u.progress}%</span>
-                  {u.status === "uploading" &&
+                  {/* {u.status === "uploading" &&
                     {
-                      /* <button
+                       <button
                       onClick={() => {
-                        u.controller.abort(); // 👈 cancel
+                        u.controller.abort();
                       }}
                       className="typo-b3 text-red-500 flex items-center gap-1 cursor-pointer"
                     >
                       <Icon name="cross-red" size={16} /> Cancel
-                    </button> */
-                    }}
+                    </button> 
+                    }} */}
                 </div>
               </div>
             ))}

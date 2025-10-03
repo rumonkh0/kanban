@@ -21,7 +21,7 @@ function AddProjectMemberModal({ onClose }) {
   return (
     <div className="w-[800px] p-4 bg-surface rounded-lg border typo-b2 border-divider">
       <div className="pb-4 border-b-2 border-divider flex justify-between">
-        <h2>Add Project Member</h2>{" "}
+        <h2>Add Project Member</h2>
         <div onClick={() => onClose()}>
           <Icon name="close" className="cursor-pointer" />
         </div>
@@ -71,7 +71,7 @@ function AddProjectMemberModal({ onClose }) {
           }
         >
           Save
-        </RedButton>{" "}
+        </RedButton>
         <RedBorderButton>Cancel</RedBorderButton>
       </div>
     </div>

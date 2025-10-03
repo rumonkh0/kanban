@@ -143,6 +143,7 @@ function App() {
           </Route>
           <Route path=":id/edit" element={<ProjectForm edit />} />
           <Route path="add-note" element={<AddNote />} />
+          <Route path="notes/:noteId/edit" element={<AddNote edit />} />
           <Route path="paid-by" element={<PaidByForm from="projects" />} />
           <Route path="paid-to" element={<PaidToForm from="projects" />} />
           <Route

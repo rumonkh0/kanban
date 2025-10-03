@@ -11,26 +11,21 @@ function ServiceDetailsModal({ onClose }) {
       name: "Akash",
       role: "Marketing Head",
     },
-    addons: "----"
+    addons: "----",
   };
-
   return (
-    <div className="w-[800px] max-h-[900px] overflow-auto p-4 bg-surface rounded-lg border typo-b2 border-divider">
-      {/* Header */}
+    <div className="w-full max-h-200 md:w-200 lg:max-h-[900px] p-4 bg-surface rounded-lg border typo-b2 border-divider flex flex-col">
       <div className="pb-4 border-b-2 border-divider flex justify-between">
-        <h2>Service Details</h2>
+        <h2>Company Details</h2>
         <div onClick={onClose}>
           <Icon name="close" className="cursor-pointer" />
         </div>
       </div>
-
-      {/* Content */}
-      <div className="flex mt-4 flex-col gap-4 border border-divider rounded-lg p-4 shadow-sm bg-surface2">
+      <div className="flex-1 mt-4 flex flex-col gap-4 border border-divider rounded-lg p-4 shadow-sm bg-surface2 overflow-y-scroll">
         <InfoItem label="Service" value={serviceDetails.service} />
         <InfoItem label="Description" value={serviceDetails.description} />
         <InfoItem label="Client's Pay" value={serviceDetails.clientsPay} />
         <InfoItem label="Team's Payment" value={serviceDetails.teamsPayment} />
-
         <InfoItem label="Team Member">
           <UserCard
             name={serviceDetails.teamMember.name}
@@ -43,11 +38,14 @@ function ServiceDetailsModal({ onClose }) {
   );
 }
 
-const InfoItem = ({ label, value, children }) => (
-  <div className="flex items-start gap-2">
-    <span className="typo-b2 text-text2 w-[200px]">{label}</span>
-    <span className={`flex-1 flex items-center  typo-b2`}>
-      : &nbsp; {value ?? children}
+const InfoItem = ({ label, value, text, children }) => (
+  <div className="flex flex-col sm:flex-row items-start gap-0 sm:gap-2">
+    <span className="typo-b2 text-text2 w-full sm:w-auto sm:min-w-[250px] font-semibold">
+      {label}
+    </span>
+    <span className={`flex-1 flex items-start typo-b2 sm:mt-0 ${text || ""}`}>
+      <span className="hidden sm:inline">: &nbsp;</span>
+      <span className="sm:ml-0 mt-0.5">{value ?? children}</span>
     </span>
   </div>
 );

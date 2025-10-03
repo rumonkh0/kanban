@@ -205,7 +205,7 @@ function Projects() {
             ))}
           </tbody>
         </table>
-      </div>{" "}
+      </div>
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
         <TaskModal role="client" />
       </Modal>

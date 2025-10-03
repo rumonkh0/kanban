@@ -440,6 +440,51 @@ export const ToggleTabs = ({
   );
 };
 
+export const BinaryToggle = ({
+  value,
+  onChange,
+  name = "binary-toggle",
+  trueLabel = "Yes",
+  falseLabel = "No",
+  className = "",
+}) => {
+  // Define the options for mapping
+  const options = [
+    { val: true, label: trueLabel },
+    { val: false, label: falseLabel },
+  ];
+
+  return (
+    <div className={`flex typo-cta ${className}`}>
+      {options.map((option, idx) => (
+        <label
+          key={option.val.toString()}
+          className={`flex-1 h-12 flex items-center justify-center cursor-pointer ${
+            value === option.val
+              ? "bg-brand text-text"
+              : "bg-surface2 text-text2"
+          } ${idx === 0 ? "rounded-l-lg" : "rounded-r-lg"}`}
+          // Ensure the click handler is on the label
+          onClick={() => onChange(option.val)}
+        >
+          {/* Hidden native radio input for form accessibility/semantics */}
+          <input
+            type="radio"
+            name={name}
+            value={option.val.toString()}
+            checked={value === option.val}
+            // We use the parent label's onClick for cleaner state handling
+            onChange={() => {}}
+            className="hidden"
+            readOnly
+          />
+          <span>{option.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+};
+
 export const MultiSelect = ({
   label = "Payment Method",
   options = [],

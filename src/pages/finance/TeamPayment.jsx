@@ -157,7 +157,7 @@ function PaidTo({ from }) {
                   </Td>
                   {/* Amounts and Date */}
                   <Td>${toTwoDecimal(payment.toBePaid)}</Td>
-                  <Td>{FormatDate(payment.paymentDate)}</Td>{" "}
+                  <Td>{FormatDate(payment.paymentDate)}</Td>
                   {/* Using FormatDate */}
                   <Td className="text-success">
                     ${toTwoDecimal(payment.amountPaid)}

@@ -29,10 +29,10 @@ export default function Modal({ isOpen, onClose, children }) {
   if (!mounted || !isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 bg-black/40 flex  justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-gray-900/80 flex justify-center items-center p-4 overflow-y-auto">
       <div
         ref={modalRef}
-        className="shadow-xl z-50 w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto mt-20 md:mt-30 lg:mt-40"
+        className="shadow-xl z-50 max-w-max"
       >
         {children}
       </div>
