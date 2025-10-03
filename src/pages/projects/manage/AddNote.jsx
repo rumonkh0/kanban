@@ -115,7 +115,7 @@ function AddNote({ edit = false }) {
           </Back>
         </div>
         <div className="bg-surface1 rounded-xl">
-          <form className="grid grid-cols-3 gap-4">
+          <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <FormField label="Note Title">
               <Input
                 type="text"
@@ -145,7 +145,7 @@ function AddNote({ edit = false }) {
               />
             </FormField>
 
-            <div className="col-span-3 flex flex-col gap-2">
+            <div className="md:col-span-2 lg:col-span-3 flex flex-col gap-2">
               <label className="typo-b2 text-text2">Note Details</label>
               <textarea
                 placeholder="Enter Note Details Here.."

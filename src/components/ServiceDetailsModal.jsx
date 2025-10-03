@@ -45,7 +45,7 @@ const InfoItem = ({ label, value, text, children }) => (
     </span>
     <span className={`flex-1 flex items-start typo-b2 sm:mt-0 ${text || ""}`}>
       <span className="hidden sm:inline">: &nbsp;</span>
-      <span className="sm:ml-0 mt-0.5">{value ?? children}</span>
+      <span className="sm:ml-0 mt-0.5">{value ?? children ?? "--------"}</span>
     </span>
   </div>
 );

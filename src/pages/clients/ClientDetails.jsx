@@ -66,7 +66,7 @@ function ClientDetails() {
           value={`$${client.totalDue}`}
         />
       </div>
-      <div className="grid grid-cols-2 grid-rows-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4">
         <div className="row-span-2 border-2 border-divider bg-surface2 rounded-lg p-4 flex flex-col gap-4">
           <h2 className="typo-b1">Profile Info</h2>
           <div className="flex flex-col gap-4">
@@ -226,10 +226,15 @@ function ClientDetails() {
   );
 }
 
-const InfoItem = ({ label, value }) => (
-  <div className="flex items-center gap-2">
-    <span className="typo-b2 text-text2 w-[200px]">{label}</span>
-    <span className="typo-b2">: &nbsp; {value}</span>
+const InfoItem = ({ label, value, text, children }) => (
+  <div className="flex flex-col sm:flex-row items-start gap-0 sm:gap-2">
+    <span className="typo-b2 text-text2 w-full sm:w-auto sm:min-w-[250px] font-semibold">
+      {label}
+    </span>
+    <span className={`flex-1 flex items-start typo-b2 sm:mt-0 ${text || ""}`}>
+      <span className="hidden sm:inline">: &nbsp;</span>
+      <span className="sm:ml-0 mt-0.5">{value ?? children ?? "--------"}</span>
+    </span>
   </div>
 );
 

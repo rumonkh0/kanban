@@ -259,8 +259,6 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
                   />
                 )}
               </FormField>
-              {/* ClientSelect for the PaidTo entity (Vendor/Employee/etc) */}
-              {console.log(formData, paidToEntity)}
               <ClientSelect
                 value={edit ? formData.member : formData.paidTo}
                 clients={edit && paidToEntity?.id ? paidToEntity : paidToEntity}

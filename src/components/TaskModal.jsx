@@ -10,7 +10,6 @@ import {
   useCreateComment,
   useDeleteComment,
 } from "../hooks/useComment";
-import { useTeamMembers } from "../hooks/useTeam";
 import { toast } from "react-toastify";
 import { useProjectMembers } from "../hooks/useProjects";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
@@ -591,7 +590,7 @@ const InfoItem = ({ label, value, children }) => (
     <span className="typo-b2 text-text2 sm:w-32 md:w-40">{label}</span>
     <span className="flex-1 flex items-center typo-b2">
       <span className="hidden sm:inline">: &nbsp;</span>
-      {value ?? children}
+      {value ?? children ?? "--------"}
     </span>
   </div>
 );
