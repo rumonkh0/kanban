@@ -17,7 +17,7 @@ function SettingLayout() {
       <PageTitle title="Setting" />
 
       {/* Navigation Tabs - Horizontal scroll on mobile, grid on desktop */}
-      <div className="overflow-x-auto scrollbar-hide -mt-4 mb-4 z-10">
+      <div className="overflow-x-auto scrollbar-hide -mt-2 md:-mt-4 mb-4 z-10">
         <div className="grid grid-cols-5 min-w-[900px] lg:min-w-0 h-12 typo-cta text-text2">
           {menuItems.map((item) => (
             <Link

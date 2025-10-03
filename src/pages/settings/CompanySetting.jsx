@@ -1,34 +1,13 @@
+import { FormField, Input, RedButton } from "../../components/Component";
+import { useState, useEffect } from "react";
+
 import {
-  Back,
-  FormField,
-  Icon,
-  Input,
-  RedButton,
-} from "../../components/Component";
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-// import { useNavigate } from "react-router";
-
-// API Functions
-const companyAPI = {
-  // Get company settings
-  get: async () => {
-    const response = await axios.get("/api/settings/company");
-    return response.data;
-  },
-
-  // Update company settings
-  update: async (data) => {
-    const response = await axios.put("/api/settings/company", data);
-    return response.data;
-  },
-};
+  useCompanySetting,
+  useEditCompanySetting,
+} from "../../hooks/useSettings";
+import { toast } from "react-toastify";
 
 function CompanySetting() {
-  // const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
   const [formData, setFormData] = useState({
     companyName: "",
     companyEmail: "",
@@ -40,33 +19,21 @@ function CompanySetting() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Fetch company settings
-  // eslint-disable-next-line no-unused-vars
-  const { data: companyData, isLoading: isLoadingCompany } = useQuery({
-    queryKey: ["companySettings"],
-    queryFn: companyAPI.get,
-    onSuccess: (data) => {
-      setFormData({
-        companyName: data.companyName || "",
-        companyEmail: data.companyEmail || "",
-        companyPhone: data.companyPhone || "",
-        companyWebsite: data.companyWebsite || "",
-      });
-    },
-  });
+  const { data: companyData, isLoading: isLoadingCompany } =
+    useCompanySetting();
 
-  // Update company settings mutation
-  const updateMutation = useMutation({
-    mutationFn: companyAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["companySettings"] });
-      alert("Company settings updated successfully!");
-    },
-    onError: (error) => {
-      console.error("Error updating company settings:", error);
-      alert("Failed to update company settings. Please try again.");
-    },
-  });
+  useEffect(() => {
+    if (companyData) {
+      setFormData({
+        companyName: companyData.companyName || "",
+        companyEmail: companyData.companyEmail || "",
+        companyPhone: companyData.companyPhone || "",
+        companyWebsite: companyData.companyWebsite || "",
+      });
+    }
+  }, [companyData]);
+
+  const updateMutation = useEditCompanySetting();
 
   const isLoading = updateMutation.isPending;
 
@@ -79,11 +46,23 @@ function CompanySetting() {
       !formData.companyEmail ||
       !formData.companyPhone
     ) {
-      alert("Please fill in all required fields.");
+      toast.warn("Please fill in all required fields.");
       return;
     }
 
-    updateMutation.mutate(formData);
+    updateMutation.mutate(formData, {
+      onSuccess: () => {
+        toast.success("Company settings updated successfully!");
+      },
+      onError: (error) => {
+        toast.error(
+          "Error updating company settings:",
+          error.message ||
+            error.response?.data?.error ||
+            error.response?.data?.error
+        );
+      },
+    });
   };
 
   if (isLoadingCompany) {
@@ -119,7 +98,10 @@ function CompanySetting() {
                 onChange={(val) => handleChange("companyPhone", val)}
               />
             </FormField>
-            <FormField label="Company Website" className="md:col-span-2 lg:col-span-3">
+            <FormField
+              label="Company Website"
+              className="md:col-span-2 lg:col-span-3"
+            >
               <Input
                 placeholder="Enter website"
                 value={formData.companyWebsite}

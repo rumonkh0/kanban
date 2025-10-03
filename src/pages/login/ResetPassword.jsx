@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { FormField, Icon, Input, RedButton } from "../../components/Component";
 import { Link } from "react-router";
 
-function Login() {
+function ResetPassword({ otp }) {
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
   return (
     <>
       <div className="flex justify-between items-center">
-        <h4 className="typo-h4">Log In</h4>
-        <Link to="/forgot-password" className="typo-cta">
+        <h4 className="typo-h4">Reset Password</h4>
+        {/* <Link to="/forgot-password" className="typo-cta">
           Forgot Password
-        </Link>
+        </Link> */}
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 mt-2">
@@ -60,20 +60,10 @@ function Login() {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="noDeadline"
-            className="form-checkbox h-5 w-5 rounded border-divider bg-surface focus:ring-brand focus:ring-offset-0"
-          />
-          <label htmlFor="noDeadline" className="typo-b3 text-text">
-            Remember Me
-          </label>
-        </div>
       </div>
-      <RedButton className="typo-cta py-3">Log In</RedButton>
+      <RedButton className="typo-cta py-3">Reset Password</RedButton>
     </>
   );
 }
 
-export default Login;
+export default ResetPassword;

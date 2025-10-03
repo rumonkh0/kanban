@@ -1,34 +1,18 @@
+import { useState, useEffect } from "react";
 import {
   FormField,
   Input,
   RedBorderButton,
   RedButton,
 } from "../../components/Component";
-import { useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
-// API Functions
-const themeAPI = {
-  get: async () => {
-    const response = await axios.get("/api/settings/theme");
-    return response.data;
-  },
-  update: async (data) => {
-    const response = await axios.put("/api/settings/theme", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  },
-  resetDefault: async () => {
-    const response = await axios.post("/api/settings/theme/reset");
-    return response.data;
-  },
-};
+import {
+  useThemeSetting,
+  useEditThemeSetting,
+  // useResetThemeSetting
+} from "../../hooks/useSettings";
 
 function ThemeSetting() {
-  const queryClient = useQueryClient();
-
   const [formData, setFormData] = useState({
     appName: "",
     brandingStyle: "style1",
@@ -68,69 +52,39 @@ function ThemeSetting() {
         [field]: file,
         [`${field}Preview`]: previewUrl,
       }));
-      setFormData((prev) => ({ ...prev, [field]: file }));
     }
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const { data: themeData, isLoading: isLoadingTheme } = useQuery({
-    queryKey: ["themeSettings"],
-    queryFn: themeAPI.get,
-    onSuccess: (data) => {
+  // 2. FETCH THEME SETTINGS using custom hook
+  const { data: themeData, isLoading: isLoadingTheme } = useThemeSetting();
+
+  useEffect(() => {
+    if (themeData)
       setFormData({
-        appName: data.appName || "",
-        brandingStyle: data.brandingStyle || "style1",
+        appName: themeData.appName || "",
+        brandingStyle: themeData.brandingStyle || "style1",
         lightModeLogo: null,
         darkModeLogo: null,
         loginBackgroundImage: null,
         faviconImage: null,
-        loginLogoBgColor: data.loginLogoBgColor || "",
-        defaultTheme: data.defaultTheme || "Dark",
-        publicPrimaryColor: data.publicPrimaryColor || "#000000",
-        publicTheme: data.publicTheme || "Dark",
-        adminPrimaryColor: data.adminPrimaryColor || "#000000",
-        adminTheme: data.adminTheme || "Dark",
-        employeePrimaryColor: data.employeePrimaryColor || "#000000",
-        employeeTheme: data.employeeTheme || "Dark",
-        clientPrimaryColor: data.clientPrimaryColor || "#000000",
-        clientTheme: data.clientTheme || "Dark",
+        loginLogoBgColor: themeData.loginLogoBgColor || "",
+        loginLogoTxtColor: themeData.loginLogoTxtColor || "Dark",
+        defaultTheme: themeData.defaultTheme || "Dark",
+        publicPrimaryColor: themeData.publicPrimaryColor || "#000000",
+        publicTheme: themeData.publicTheme || "Dark",
+        adminPrimaryColor: themeData.adminPrimaryColor || "#000000",
+        adminTheme: themeData.adminTheme || "Dark",
+        employeePrimaryColor: themeData.employeePrimaryColor || "#000000",
+        employeeTheme: themeData.employeeTheme || "Dark",
+        clientPrimaryColor: themeData.clientPrimaryColor || "#000000",
+        clientTheme: themeData.clientTheme || "Dark",
       });
+  }, [themeData]);
 
-      setLogoFiles((prev) => ({
-        ...prev,
-        lightModeLogoPreview: data.lightModeLogo || null,
-        darkModeLogoPreview: data.darkModeLogo || null,
-        loginBackgroundImagePreview: data.loginBackgroundImage || null,
-        faviconImagePreview: data.faviconImage || null,
-      }));
-    },
-  });
+  const updateMutation = useEditThemeSetting();
+  // const resetMutation = useResetThemeSetting();
 
-  const updateMutation = useMutation({
-    mutationFn: themeAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["themeSettings"] });
-      alert("Theme settings updated successfully!");
-    },
-    onError: (error) => {
-      console.error("Error updating theme settings:", error);
-      alert("Failed to update theme settings. Please try again.");
-    },
-  });
-
-  const resetMutation = useMutation({
-    mutationFn: themeAPI.resetDefault,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["themeSettings"] });
-      alert("Theme reset to default successfully!");
-    },
-    onError: (error) => {
-      console.error("Error resetting theme:", error);
-      alert("Failed to reset theme. Please try again.");
-    },
-  });
-
-  const isLoading = updateMutation.isPending || resetMutation.isPending;
+  const isLoading = updateMutation.isPending;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -141,32 +95,58 @@ function ThemeSetting() {
 
     const submitData = new FormData();
 
+    // Append non-file data
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && !(formData[key] instanceof File)) {
+      if (
+        key !== "lightModeLogo" &&
+        key !== "darkModeLogo" &&
+        key !== "loginBackgroundImage" &&
+        key !== "faviconImage" &&
+        formData[key] !== null &&
+        formData[key] !== undefined
+      ) {
         submitData.append(key, formData[key]);
       }
     });
 
+    // Append file data from logoFiles
     Object.keys(logoFiles).forEach((key) => {
       if (logoFiles[key] instanceof File) {
         submitData.append(key, logoFiles[key]);
       }
     });
-    console.log(submitData);
-    updateMutation.mutate(submitData);
+
+
+    // Execute mutation
+    updateMutation.mutate(submitData, {
+      onSuccess: () => {
+        alert("Theme settings updated successfully!");
+      },
+      onError: (error) => {
+        console.error("Error updating theme settings:", error);
+        alert("Failed to update theme settings. Please try again.");
+      },
+    });
   };
 
-  const handleResetDefault = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to reset to default theme? This will override all current settings."
-      )
-    ) {
-      resetMutation.mutate();
-    }
-  };
+  // const handleResetDefault = () => {
+  //   // IMPORTANT: Since window.confirm is restricted, we simulate the action flow.
+  //   // In a final application, this should be replaced by a custom modal dialog.
+  //   if (confirm("Are you sure you want to reset to default theme? This will override all current settings.")) {
+  //       resetMutation.mutate(null, {
+  //           onSuccess: () => {
+  //               alert("Theme reset to default successfully!");
+  //           },
+  //           onError: (error) => {
+  //               console.error("Error resetting theme:", error);
+  //               alert("Failed to reset theme. Please try again.");
+  //           },
+  //       });
+  //   }
+  // };
 
   useEffect(() => {
+    // Cleanup function for blob URLs
     return () => {
       Object.keys(logoFiles).forEach((key) => {
         if (
@@ -264,6 +244,7 @@ function ThemeSetting() {
 
         <FormField label="Login Screen Logo's background Color" required>
           <Input
+            type="color" // Changed to type color for better UX
             placeholder="Enter Color"
             value={formData.loginLogoBgColor}
             onChange={(val) => handleChange("loginLogoBgColor", val)}
@@ -354,7 +335,7 @@ function ThemeSetting() {
         </RedButton>
         <RedBorderButton
           type="button"
-          onClick={handleResetDefault}
+          // onClick={handleResetDefault}
           disabled={isLoading}
         >
           {isLoading ? "Resetting..." : "Use Default Theme"}

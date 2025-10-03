@@ -1,26 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormField, Input, RedButton } from "../../components/Component";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
-// API Functions
-const securityAPI = {
-  // Get security settings
-  get: async () => {
-    const response = await axios.get("/api/settings/security");
-    return response.data;
-  },
-
-  // Update security settings
-  update: async (data) => {
-    const response = await axios.put("/api/settings/security", data);
-    return response.data;
-  },
-};
+import {
+  useSecuritySetting,
+  useEditSecuritySetting,
+} from "../../hooks/useSettings";
+import { toast } from "react-toastify";
 
 function SecuritySetting() {
-  const queryClient = useQueryClient();
-
   const [formData, setFormData] = useState({
     emailAuthEnabled: false,
     smsAuthEnabled: false,
@@ -34,36 +21,23 @@ function SecuritySetting() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Fetch security settings
-  // eslint-disable-next-line no-unused-vars
-  const { data: securityData, isLoading: isLoadingSecurity } = useQuery({
-    queryKey: ["securitySettings"],
-    queryFn: securityAPI.get,
-    onSuccess: (data) => {
+  const { data: securityData, isLoading: isLoadingSecurity } =
+    useSecuritySetting();
+
+  useEffect(() => {
+    if (securityData) {
       setFormData({
-        emailAuthEnabled: data.emailAuthEnabled || false,
-        smsAuthEnabled: data.smsAuthEnabled || false,
-        googleRecaptchaEnabled: data.googleRecaptchaEnabled || false,
-        recaptchaVersion: data.recaptchaVersion || "V2",
-        recaptchaV2Key: data.recaptchaV2Key || "",
-        recaptchaV2Secret: data.recaptchaV2Secret || "",
+        emailAuthEnabled: securityData.emailAuthEnabled || false,
+        smsAuthEnabled: securityData.smsAuthEnabled || false,
+        googleRecaptchaEnabled: securityData.googleRecaptchaEnabled || false,
+        recaptchaVersion: securityData.recaptchaVersion || "V2",
+        recaptchaV2Key: securityData.recaptchaV2Key || "",
+        recaptchaV2Secret: securityData.recaptchaV2Secret || "",
       });
-    },
-  });
+    }
+  }, [securityData]);
 
-  // Update security settings mutation
-  const updateMutation = useMutation({
-    mutationFn: securityAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["securitySettings"] });
-      alert("Security settings updated successfully!");
-    },
-    onError: (error) => {
-      console.error("Error updating security settings:", error);
-      alert("Failed to update security settings. Please try again.");
-    },
-  });
-
+  const updateMutation = useEditSecuritySetting();
   const isLoading = updateMutation.isPending;
 
   const handleSubmit = (e) => {
@@ -74,11 +48,20 @@ function SecuritySetting() {
       formData.googleRecaptchaEnabled &&
       (!formData.recaptchaV2Key || !formData.recaptchaV2Secret)
     ) {
-      alert("Please fill in the Google Recaptcha keys.");
+      toast.warn("Please fill in the Google Recaptcha keys.");
       return;
     }
-    console.log(formData);
-    updateMutation.mutate(formData);
+
+    // Call the mutation hook's mutate function
+    updateMutation.mutate(formData, {
+      onSuccess: () => {
+        toast.success("Security settings updated successfully!");
+      },
+      onError: (error) => {
+        console.error("Error updating security settings:", error);
+        toast.error("Failed to update security settings. Please try again.");
+      },
+    });
   };
 
   const handleEnableEmail = () => {
@@ -92,6 +75,7 @@ function SecuritySetting() {
   if (isLoadingSecurity) {
     return <div>Loading security settings...</div>;
   }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">

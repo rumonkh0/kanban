@@ -2,19 +2,36 @@ import BusinessAdressModal from "../../components/BusinessAddressModal";
 import Modal from "../../components/Modal";
 import { Icon, Table, Td, Th, Thead } from "../../components/Component";
 import { useState } from "react";
+import { useBusinessAddress } from "../../hooks/useSettings"; // Import the fetch hook
 
 function BusinessAdress() {
+  // State to control the modal visibility
   const [BusinessModal, SetBusinessModal] = useState(false);
-  const adresses = [
-    {
-      country: "USA",
-      address: "2715 Ash Dr. San Jose, South Dakota 83475",
-      taxName: "VAT",
-      latitude: 38.895,
-      location: "San Jose",
-      longitude: -77.80548,
-    },
-  ];
+
+  // 1. Fetch the single Business Address data
+  const { data: addressData, isLoading } = useBusinessAddress();
+
+  // 2. Prepare the data for the table (as an array with 0 or 1 item)
+  const adresses = addressData ? [addressData] : [];
+
+  if (isLoading) {
+    return <div className="p-4 text-text2">Loading business address...</div>;
+  }
+
+  if (adresses.length === 0) {
+    return (
+      <div className="p-4 text-text2">
+        No business address found.
+        <button
+          onClick={() => SetBusinessModal(true)}
+          className="text-brand underline ml-1"
+        >
+          Click here to add one.
+        </button>
+      </div>
+    );
+  }
+  const address = adresses[0];
   return (
     <>
       <Table>
@@ -30,35 +47,35 @@ function BusinessAdress() {
           </tr>
         </Thead>
         <tbody>
-          {adresses.map((address, index) => (
-            <tr
-              key={index}
-              className="h-16 hover:[&_td]:bg-divider/80 text-text2 transition-colors"
-            >
-              {/* Client Name with Avatar */}
-              <Td className="first:rounded-l-[4px]">{address.country}</Td>
-              <Td className="text-left">{address.address}</Td>
-              <Td className="text-left">{address.taxName}</Td>
-              <Td className="text-left">{address.latitude}</Td>
-              <Td className="text-left">{address.location}</Td>
-              <Td className="text-left">{address.longitude}</Td>
-              {/* Action Button */}
-              <Td className="text-left last:rounded-r-[4px]">
-                <button
-                  onClick={() => SetBusinessModal(true)}
-                  className="p-2 rounded-full cursor-pointer hover:bg-surface2/60"
-                >
-                  <Icon name="menu" size={20} />
-                </button>
-              </Td>
-            </tr>
-          ))}
+          {/* Map over the single entry */}
+          <tr
+            key={address._id} // Use the unique ID from the API
+            className="h-16 hover:[&_td]:bg-divider/80 text-text2 transition-colors"
+          >
+            {/* Client Name with Avatar */}
+            <Td className="first:rounded-l-[4px]">{address.country}</Td>
+            <Td className="text-left">{address.address}</Td>
+            <Td className="text-left">{address.taxName}</Td>
+            {/* Safely display latitude and longitude */}
+            <Td className="text-left">{address.latitude ?? "N/A"}</Td>
+            <Td className="text-left">{address.location}</Td>
+            <Td className="text-left">{address.longitude ?? "N/A"}</Td>
+
+            {/* Action Button: opens the modal to edit this single entry */}
+            <Td className="text-left last:rounded-r-[4px]">
+              <button
+                onClick={() => SetBusinessModal(true)}
+                className="p-2 rounded-full cursor-pointer hover:bg-surface2/60"
+              >
+                <Icon name="menu" size={20} />
+              </button>
+            </Td>
+          </tr>
         </tbody>
       </Table>
-      <Modal
-        isOpen={BusinessModal}
-        onClose={() => SetBusinessModal(false)}
-      >
+
+      {/* Modal is still controlled by the state */}
+      <Modal isOpen={BusinessModal} onClose={() => SetBusinessModal(false)}>
         <BusinessAdressModal onClose={() => SetBusinessModal(false)} />
       </Modal>
     </>
