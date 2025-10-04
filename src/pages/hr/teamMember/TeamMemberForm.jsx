@@ -19,6 +19,7 @@ import {
   useUpdateTeamMember,
 } from "../../../hooks/useTeam";
 import { useDepartments } from "../../../hooks/hr/useDepartments";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TeamMemberForm({ edit, title = "Add Team Member" }) {
   const navigate = useNavigate();
@@ -207,7 +208,11 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
         accountStatus: teamMember.accountStatus ?? "Active",
       });
       if (teamMember.profilePicture) {
-        setProfilePreview(teamMember.profilePicture);
+        setProfilePreview(
+          (teamMember.profilePicture?.filePath &&
+            `${baseURL}/${teamMember.profilePicture.filePath}`) ||
+            null
+        );
       }
     }
   }, [teamMember]);
@@ -474,7 +479,10 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   placeholder="Enter Role"
                 />
               </FormField> */}
-              <FormField label="Address" className="md:col-span-2 lg:col-span-3">
+              <FormField
+                label="Address"
+                className="md:col-span-2 lg:col-span-3"
+              >
                 <Input
                   value={formData.address}
                   onChange={(val) => handleChange("address", val)}

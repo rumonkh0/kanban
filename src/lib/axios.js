@@ -28,10 +28,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      //  useAuthStore.getState().logout()
-      // localStorage.removeItem("token");
-      // if (window.location.pathname !== "/login")
-      //  window.location.href= "/login";
+       useAuthStore.getState().logout()
     }
     return Promise.reject(error);
   }

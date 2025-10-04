@@ -11,7 +11,7 @@ export const useLogin = () => {
     onSuccess: (res) => {
       const { token, data } = res;
       const login = useAuthStore.getState().login;
-      login(token);
+      login(token, data);
 
       const userRole = data?.role;
       switch (userRole) {

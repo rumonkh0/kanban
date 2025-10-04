@@ -163,7 +163,7 @@ export default function Sidebar({ sidebar, isMobileOpen, onClose }) {
 
         {/* Logo */}
         <Link
-          to="/"
+          // to="/"
           className="pb-6 flex items-center justify-center"
           onClick={handleLinkClick}
         >

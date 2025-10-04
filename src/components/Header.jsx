@@ -1,11 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Icon, { Hambrger, LogOut, Notification, People, Settings } from "./Icon";
 import { usePageTitleStore } from "@/stores/usePageTitleStore";
-import { Link } from "react-router";
-
-function Header({ onMenuClick }) {
+import { Link, useNavigate } from "react-router";
+import { useAuthStore } from "../stores/authStore";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
+const Header = React.memo(({ onMenuClick }) => {
   const title = usePageTitleStore((state) => state.title);
-
+  const navigate = useNavigate();
   const [openProfile, setOpenProfile] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [openPlus, setOpenPlus] = useState(false);
@@ -18,6 +19,17 @@ function Header({ onMenuClick }) {
   const plusRef = useRef(null);
   const searchRef = useRef(null);
   const mobileSearchRef = useRef(null);
+
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+
+  const role = user?.role;
+  const userName = user?.user?.name;
+  const profilePicture = user?.user?.profilePicture;
+
+  const photo =
+    (profilePicture?.filePath && `${baseURL}/${profilePicture.filePath}`) ||
+    "/images/profile.png";
 
   // Mock notifications
   const [notifications, setNotifications] = useState([
@@ -45,6 +57,16 @@ function Header({ onMenuClick }) {
 
   const markAllAsRead = () => {
     setNotifications(notifications.map((n) => ({ ...n, read: true })));
+  };
+
+  const handleLogout = () => {
+    console.log("zero");
+    logout();
+    console.log("one");
+    setOpenProfile(false);
+    console.log("two");
+    navigate("/login", { replace: true });
+    console.log("three");
   };
 
   // Close dropdowns when clicking outside
@@ -297,22 +319,22 @@ function Header({ onMenuClick }) {
         </div>
 
         {/* Profile with dropdown */}
-        <div className="relative" ref={profileRef}>
+        <div className="relative md:min-w-40" ref={profileRef}>
           <div
             onClick={() => setOpenProfile(!openProfile)}
             className="flex items-center gap-1 md:gap-2 cursor-pointer"
           >
-            <div className="w-8 h-8 md:w-12 md:h-12 overflow-hidden rounded-full">
+            <div className="w-8 h-8 md:w-12 md:h-12 overflow-hidden aspect-square rounded-full">
               <img
-                src="/images/profile.png"
+                src={photo}
                 alt="profile"
                 className="w-full h-full object-cover"
               />
             </div>
             {/* Profile text - Desktop only */}
             <div className="hidden md:flex flex-col gap-0.5 md:gap-1">
-              <div className="typo-cta">creativezethdesigns</div>
-              <div className="typo-b3 text-text2">admin</div>
+              <div className="typo-cta">{userName}</div>
+              <div className="typo-b3 text-text2">{role}</div>
             </div>
           </div>
 
@@ -321,7 +343,7 @@ function Header({ onMenuClick }) {
             <div className="absolute top-full right-0 mt-1 w-48 bg-surface2 border border-divider rounded-lg shadow-lg z-50 overflow-hidden">
               <Link
                 to="/settings/profile"
-                onClick={() => setOpenProfile(false)}
+                // onClick={handleLogout}
                 className="px-4 py-3 hover:bg-divider cursor-pointer text-text2 typo-b2 flex items-center gap-2 border-b border-divider group"
               >
                 {/* <Icon name="settings" size={16} /> */}
@@ -329,11 +351,7 @@ function Header({ onMenuClick }) {
                 Settings
               </Link>
               <button
-                onClick={() => {
-                  setOpenProfile(false);
-                  // Add your logout logic here
-                  console.log("Logout clicked");
-                }}
+                onClick={handleLogout}
                 className="w-full px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2 text-brand group"
               >
                 <LogOut className={`w-5`} />
@@ -345,6 +363,6 @@ function Header({ onMenuClick }) {
       </div>
     </div>
   );
-}
+});
 
 export default Header;

@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { freelancersApi } from "../services/team";
-import { useNavigate } from "react-router";
 
 // Get all team members
 export const useTeamMembers = (params) => {
@@ -34,14 +33,12 @@ export const useCreateTeamMember = () => {
 // Update team member
 export const useUpdateTeamMember = (id) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data) => freelancersApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teamMembers", id] });
       queryClient.invalidateQueries({ queryKey: ["teamMembers"] });
-      navigate("/hr/team-members");
     },
   });
 };

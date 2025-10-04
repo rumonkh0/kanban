@@ -71,6 +71,8 @@ import MemberTask from "./pages/member/Task";
 
 import ClientDashboard from "./pages/client/Dashboard";
 import ClientProjects from "./pages/client/Projects";
+import Setting from "./pages/client/Settings";
+import MemberSettings from "./pages/member/Settings";
 
 function App() {
   return (
@@ -87,7 +89,7 @@ function App() {
         <Route index element={<Navigate to="/member/dashboard" replace />} />
         <Route path="dashboard" element={<MembersDashboard />} />
         <Route path="tasks" element={<ProjectTask role="member" />} />
-        <Route path="settings" element={<ProfileSetting role="member" />} />
+        <Route path="settings" element={<MemberSettings role="member" />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
@@ -95,7 +97,7 @@ function App() {
         <Route index element={<Navigate to="/client/dashboard" replace />} />
         <Route path="dashboard" element={<ClientDashboard />} />
         <Route path="projects" element={<ClientProjects />} />
-        <Route path="settings" element={<ProfileSetting role="client" />} />
+        <Route path="settings" element={<Setting role="client" />} />
         <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/" element={<RootLayout />}>
