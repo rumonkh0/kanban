@@ -238,7 +238,7 @@ const Header = React.memo(({ onMenuClick }) => {
           {openPlus && (
             <div className="absolute top-full right-0 mt-1 w-48 bg-surface2 border border-divider rounded-lg shadow-lg z-50 overflow-hidden">
               <Link
-                to="/clients/add"
+                to="/clients/add-client"
                 onClick={() => setOpenPlus(false)}
                 className="px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2 border-b border-divider"
               >
@@ -246,7 +246,7 @@ const Header = React.memo(({ onMenuClick }) => {
                 Add Client
               </Link>
               <Link
-                to="/hr/team-members/add"
+                to="/hr/add-team-member"
                 onClick={() => setOpenPlus(false)}
                 className="px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2 border-b border-divider"
               >
@@ -255,7 +255,7 @@ const Header = React.memo(({ onMenuClick }) => {
                 Add Member
               </Link>
               <Link
-                to="/projects/add"
+                to="/projects/add-project"
                 onClick={() => setOpenPlus(false)}
                 className="px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2"
               >
