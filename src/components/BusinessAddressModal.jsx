@@ -81,7 +81,7 @@ function ServiceDetailsModal({ onClose }) {
   // Show a loading state while fetching initial data
 
   return (
-    <div className="w-full max-w-[800px] max-h-[90vh]  bg-surface rounded-lg border typo-b2 border-divider flex flex-col">
+    <div className="w-full min-w-80 md:w-200 lg:max-h-[900px] max-h-[90vh]  bg-surface rounded-lg border typo-b2 border-divider flex flex-col">
       {/* Header */}
       <div className="pb-4 p-4 flex justify-between items-center flex-shrink-0">
         <h2 className="text-lg md:text-xl">Business Address</h2>

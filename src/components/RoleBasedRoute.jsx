@@ -1,12 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useAuthStore } from '../stores/authStore';
-
-const Unauthorized = () => (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>403 Forbidden</h2>
-        <p>You do not have permission to view this page.</p>
-    </div>
-);
+import NotFound from '../pages/NotFound';
 
 const RoleBasedRoute = ({ roles }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -18,7 +12,7 @@ const RoleBasedRoute = ({ roles }) => {
   }
   
   if (roles && !hasRole(roles)) {
-    return <Unauthorized />;
+    return <NotFound />;
   }
   return <Outlet />;
 };

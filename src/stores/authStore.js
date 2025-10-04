@@ -3,7 +3,7 @@ import { create } from "zustand";
 const TOKEN_KEY = "token";
 const USER_KEY = "user_data";
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   token: localStorage.getItem(TOKEN_KEY) || null,
   isAuthenticated: !!localStorage.getItem(TOKEN_KEY),
   user: localStorage.getItem(USER_KEY)
@@ -33,6 +33,19 @@ export const useAuthStore = create((set) => ({
       isAuthenticated: false,
       user: null,
     });
+  },
+
+  hasRole: (roles) => {
+    const user = get().user;
+    if (!user) return false;
+
+    const userRoles = Array.isArray(user.role) ? user.role : [user.role];
+
+    if (Array.isArray(roles)) {
+      return roles.some((r) => userRoles.includes(r)); // ✅ match any role
+    }
+
+    return userRoles.includes(roles); // single role string
   },
 
   getToken: () => localStorage.getItem(TOKEN_KEY),

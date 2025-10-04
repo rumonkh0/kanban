@@ -40,6 +40,7 @@ const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function ProfileSetting({ role }) {
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -70,6 +71,11 @@ function ProfileSetting({ role }) {
 
   const handleFileChange = (file) => {
     setProfilePictureFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfilePicture(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   // ---------------- React Query ----------------
@@ -99,6 +105,11 @@ function ProfileSetting({ role }) {
         // Map emergency phone object to string
         emergencyPhone: profileData.emergencyPhone,
       });
+      setProfilePicture(
+        profileData?.profilePicture?.filePath
+          ? `${baseURL}/${profileData.profilePicture.filePath}`
+          : "/images/profile.png"
+      );
     }
   }, [profileData]);
 
@@ -160,11 +171,7 @@ function ProfileSetting({ role }) {
         <div className="flex-shrink-0">
           <img
             // Assuming your server provides a path for the profile picture
-            src={
-              profileData?.profilePicture?.filePath
-                ? `${baseURL}/${profileData.profilePicture.filePath}`
-                : "/images/profile.png"
-            }
+            src={profilePicture}
             alt="Profile"
             className="w-40 h-43 rounded-sm mx-auto lg:mx-0 object-cover"
           />
@@ -208,7 +215,7 @@ function ProfileSetting({ role }) {
                   />
                 </label>
               </div>
-
+{/* 
               {(profilePictureFile || profileData?.profilePicture) && (
                 <div className="w-full lg:w-[184px] h-12 bg-divider flex justify-between items-center gap-1 p-1.5 rounded-sm">
                   <Icon name="file" size={35} />
@@ -227,7 +234,7 @@ function ProfileSetting({ role }) {
                     <Icon name="cross-red" size={16} />
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         )}
