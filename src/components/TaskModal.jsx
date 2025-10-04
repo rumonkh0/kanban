@@ -4,17 +4,22 @@ import Icon from "./Icon";
 import { RedButton, Dropdown, ImageName, Input } from "./Component";
 import DropdownMenu from "@/components/DropdownMenu";
 import ClientSelect from "./ClientSelect";
-import { useTask, useUpdateTask } from "../hooks/useTasks";
+import {
+  useCreateTask,
+  useDeleteTask,
+  useTask,
+  useUpdateTask,
+} from "../hooks/useTasks";
 import {
   useComments,
   useCreateComment,
   useDeleteComment,
 } from "../hooks/useComment";
 import { toast } from "react-toastify";
-import { useProjectMembers } from "../hooks/useProjects";
+import { useProjectMembers, useProjects } from "../hooks/useProjects";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
-function TaskModal({ role = "member", id, onClose }) {
+function TaskModal({ stage, role = "member", id, onClose }) {
   const [openImage, setOpenImage] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [comment, setComment] = useState("");
@@ -22,7 +27,9 @@ function TaskModal({ role = "member", id, onClose }) {
   const [coverImage, setCoverImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
-  const [formData, setFormData] = useState(null);
+  const [formData, setFormData] = useState({
+    stage: stage || {},
+  });
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -33,14 +40,23 @@ function TaskModal({ role = "member", id, onClose }) {
   const documentInputRef = useRef(null);
 
   const menuItems = [
-    { label: "Copy", onClick: () => console.log("Copy clicked") },
-    { label: "Edit", onClick: () => console.log("Edit clicked") },
-    { label: "Share", onClick: () => console.log("Share clicked") },
-    { label: "Delete", onClick: () => console.log("Delete clicked") },
+    // { label: "Copy", onClick: () => console.log("Copy clicked") },
+    // { label: "Edit", onClick: () => console.log("Edit clicked") },
+    // { label: "Share", onClick: () => console.log("Share clicked") },
+    { label: "Delete", onClick: () => handleDeleteTask(id) },
   ];
 
   const { data: taskData, isPending } = useTask(id);
-  const { data: freelancers = [] } = useProjectMembers(formData?.project?._id);
+  const deleteTask = useDeleteTask();
+  const { data: freelancers = [], isPending: isFreelancerPending } =
+    useProjectMembers(formData?.project?._id || formData.project);
+  const { data: projectsData, isProjectDataPending } = useProjects(
+    {},
+    {
+      enabled: !id,
+    }
+  );
+  const creataeTask = useCreateTask();
 
   // File upload handler for images
   const handleFileUpload = (e) => {
@@ -104,6 +120,12 @@ function TaskModal({ role = "member", id, onClose }) {
       }
     });
 
+
+    if (!id) {
+      submitData.append("project", formData.project);
+      submitData.append("stage", formData.stage.id);
+    }
+
     formData.members.forEach((method) =>
       submitData.append("members[]", method)
     );
@@ -119,25 +141,45 @@ function TaskModal({ role = "member", id, onClose }) {
     if (coverImage) submitData.append("coverImage", coverImage);
 
     console.log(submitData);
-    updatetask.mutate(submitData);
-    toast.promise(
-      updatetask.mutateAsync(submitData, { onSuccess: onClose }),
-      {
-        pending: "Updating Task Data",
-        success: "Task Updatet",
-        error: {
-          render({ data }) {
-            const errorMessage =
-              data.response?.data?.message ||
-              data.response?.data?.error ||
-              data.message ||
-              "Failed to update task";
-            return errorMessage;
+    // updatetask.mutate(submitData);
+    if (id)
+      toast.promise(
+        updatetask.mutateAsync(submitData, { onSuccess: onClose }),
+        {
+          pending: "Updating Task Data",
+          success: "Task Updatet",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to update task";
+              return errorMessage;
+            },
           },
         },
-      },
-      { autoClose: 5000 }
-    );
+        { autoClose: 5000 }
+      );
+    else
+      toast.promise(
+        creataeTask.mutateAsync(submitData, { onSuccess: onClose }),
+        {
+          pending: "Please wait to add task",
+          success: "Task add succesfully",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to add task";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
   };
 
   const handleComment = (e) => {
@@ -150,6 +192,27 @@ function TaskModal({ role = "member", id, onClose }) {
   const deleteComment = useDeleteComment();
   const handleDeleteComment = (id) => {
     deleteComment.mutate(id);
+  };
+
+  const handleDeleteTask = (id) => {
+    toast.promise(
+      deleteTask.mutateAsync(id, { onSuccess: () => onClose() }),
+      {
+        pending: "Deleting Task",
+        success: "Task successfully deleted",
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to delete task";
+            return errorMessage;
+          },
+        },
+      },
+      { autoClose: 5000 }
+    );
   };
 
   // Close on outside click for image dropdown
@@ -181,7 +244,7 @@ function TaskModal({ role = "member", id, onClose }) {
     }
   }, [taskData]);
 
-  if (isPending) return <div>loading data</div>;
+  if (isPending && id) return <div>loading data</div>;
 
   return (
     <div className="w-full lg:w-200 bg-surface border-2 border-divider rounded-lg">
@@ -293,11 +356,27 @@ function TaskModal({ role = "member", id, onClose }) {
           {role === "admin" ? (
             <div className="flex-1 lg:pr-2 pb-2 lg:pb-0 lg:border-r-2 border-b-2 lg:border-b-0 border-divider flex flex-col gap-2 lg:overflow-y-scroll">
               <div className="flex flex-col sm:flex-row gap-2">
-                <Dropdown
-                  options={[`${formData?.project.projectName}`]}
-                  value={formData?.project.projectName}
-                  onChange={(val) => handleChange("project", val)}
-                />
+                {id ? (
+                  <Dropdown
+                    options={[`${formData?.project?.projectName}`]}
+                    value={formData?.project?.projectName}
+                    onChange={(val) => handleChange("project", val)}
+                  />
+                ) : (
+                  <Dropdown
+                    options={
+                      Array.isArray(projectsData) && projectsData.length > 0
+                        ? projectsData.map((service) => ({
+                            value: service._id,
+                            label: service.projectName,
+                          }))
+                        : []
+                    }
+                    value={formData?.project || ""}
+                    onChange={(val) => handleChange("project", val)}
+                    disabled={isProjectDataPending}
+                  />
+                )}
                 {console.log(freelancers)}
                 <ClientSelect
                   value={formData?.members}
@@ -317,7 +396,7 @@ function TaskModal({ role = "member", id, onClose }) {
                   addingTitle="Add new member"
                   placeHolder="Select Members...."
                   className="flex-1 typo-b3"
-                  // disabled={!!formData.service}
+                  disabled={!freelancers.length || isFreelancerPending}
                 />
                 {/* <ClientSelect
                   clients={[
@@ -516,69 +595,71 @@ function TaskModal({ role = "member", id, onClose }) {
           )}
 
           {/* Right Column - Comments */}
-          <div className="flex-1 lg:pl-2 pt-2 lg:pt-0 flex flex-col min-h-[200px] lg:min-h-0">
-            {/* Top: Comments */}
-            <div className="flex-1 lg:overflow-y-scroll">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="chat" size={20} />
-                <span className="typo-b2">Comments and activity</span>
-              </div>
+          {id && (
+            <div className="flex-1 lg:pl-2 pt-2 lg:pt-0 flex flex-col min-h-[200px] lg:min-h-0">
+              {/* Top: Comments */}
+              <div className="flex-1 lg:overflow-y-scroll">
+                <div className="flex items-center gap-2 mb-4">
+                  <Icon name="chat" size={20} />
+                  <span className="typo-b2">Comments and activity</span>
+                </div>
 
-              {commentPending ? (
-                <div>Loading comments</div>
-              ) : taskComments?.length > 0 ? (
-                taskComments.map((comment, idx) => (
-                  <div key={idx} className="typo-b3 text-text2">
-                    <div className="flex items-center gap-1">
-                      <img
-                        src="/images/profile.png"
-                        alt="profile"
-                        className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover inline-block"
-                      />
-                      <div className="text-text typo-b2">
-                        {comment.author.profile.name}
+                {commentPending ? (
+                  <div>Loading comments</div>
+                ) : taskComments?.length > 0 ? (
+                  taskComments.map((comment, idx) => (
+                    <div key={idx} className="typo-b3 text-text2">
+                      <div className="flex items-center gap-1">
+                        <img
+                          src="/images/profile.png"
+                          alt="profile"
+                          className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover inline-block"
+                        />
+                        <div className="text-text typo-b2">
+                          {comment.author.profile.name}
+                        </div>
                       </div>
-                    </div>
-                    <div className="ml-7 md:ml-9">
-                      <div className="bg-divider rounded-sm p-2 md:p-3 pl-1 mb-1 flex items-center">
-                        {comment.content}
-                      </div>
-                      <div className="flex justify-between text-xs md:text-sm">
-                        <div>{moment(comment.createdAt).fromNow()}</div>
-                        <div className="flex gap-2">
-                          {/* <div className="border-b border-text2 cursor-pointer">
+                      <div className="ml-7 md:ml-9">
+                        <div className="bg-divider rounded-sm p-2 md:p-3 pl-1 mb-1 flex items-center">
+                          {comment.content}
+                        </div>
+                        <div className="flex justify-between text-xs md:text-sm">
+                          <div>{moment(comment.createdAt).fromNow()}</div>
+                          <div className="flex gap-2">
+                            {/* <div className="border-b border-text2 cursor-pointer">
                             Edit
                           </div> */}
-                          <div
-                            onClick={() => handleDeleteComment(comment._id)}
-                            className="border-b border-text2 cursor-pointer"
-                          >
-                            Delete
+                            <div
+                              onClick={() => handleDeleteComment(comment._id)}
+                              className="border-b border-text2 cursor-pointer"
+                            >
+                              Delete
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div>No comments here</div>
-              )}
-              <div className="h-5"></div>
-            </div>
+                  ))
+                ) : (
+                  <div>No comments here</div>
+                )}
+                <div className="h-5"></div>
+              </div>
 
-            {/* Bottom Input Bar */}
-            <form onSubmit={handleComment} className="mt-auto h-10 flex">
-              <input
-                placeholder="Write a comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                className="flex-1 typo-b3 flex items-center pl-2 md:pl-4 bg-divider rounded-l-sm outline-none"
-              ></input>
-              <RedButton type="submit" className="px-2 rounded-l-none">
-                <Icon name="send" size={16} />
-              </RedButton>
-            </form>
-          </div>
+              {/* Bottom Input Bar */}
+              <form onSubmit={handleComment} className="mt-auto h-10 flex">
+                <input
+                  placeholder="Write a comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="flex-1 typo-b3 flex items-center pl-2 md:pl-4 bg-divider rounded-l-sm outline-none"
+                ></input>
+                <RedButton type="submit" className="px-2 rounded-l-none">
+                  <Icon name="send" size={16} />
+                </RedButton>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

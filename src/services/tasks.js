@@ -1,9 +1,18 @@
 import apiClient from "../lib/axios";
 
 export const tasksApi = {
+  // getAll: async (params, projectId) => {
+  //   const response = await apiClient.get(`/projects/${projectId}/tasks`, {
+  //     params,
+  //   });
+  //   if (response.data?.success) return response.data.data;
+  //   throw new Error(response.data?.message || "Failed to fetch tasks");
+  // },
+
   getAll: async (params, projectId) => {
-    const response = await apiClient.get(`/projects/${projectId}/tasks`, {
+    const response = await apiClient.get(`/tasks`, {
       params,
+      project: projectId,
     });
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to fetch tasks");

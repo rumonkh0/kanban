@@ -20,10 +20,10 @@ import {
 import { useParams } from "react-router";
 import { useUpdateStageOrder } from "../../hooks/useStages";
 
-function KanbanBoard({ stages, setStages, role = "member" }) {
+function KanbanBoard({ stages, setStages, role = "member", filters = {} }) {
   const { id } = useParams();
   const [tasks, setTasks] = useState([]);
-  const { data: tasksData, isLoading } = useTasks({}, id);
+  const { data: tasksData, isLoading } = useTasks(filters);
   const createTask = useCreateTask();
 
   const [activeStage, setActiveStage] = useState(null);

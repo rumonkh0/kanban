@@ -2,11 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { tasksApi } from "../services/tasks";
 
 // Get all tasks
-export const useTasks = (params, projectId) => {
+export const useTasks = (params) => {
   return useQuery({
     queryKey: ["tasks", params],
-    queryFn: () => tasksApi.getAll(params, projectId),
-    enabled: !!projectId,
+    queryFn: () => tasksApi.getAll(params),
+    // enabled: !!projectId,
     onError: (error) => {
       console.error("Error fetching tasks:", error.message);
     },
@@ -100,6 +100,20 @@ export const useAssignTaskMember = (id) => {
     },
     onError: (error) => {
       console.error(`Error assigning member to task ${id}:`, error.message);
+    },
+  });
+};
+
+export const useDeleteTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => tasksApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+    onError: (error) => {
+      console.error("Error deleting task:", error);
     },
   });
 };

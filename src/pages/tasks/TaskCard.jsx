@@ -12,6 +12,8 @@ import SingleTask from "./SingleTask";
 import { useDeleteStage, useUpdateStage } from "../../hooks/useStages";
 import AddCardModal from "../../components/AddCardModal";
 import Modal from "../../components/Modal";
+import { useParams } from "react-router";
+import TaskModal from "../../components/TaskModal";
 
 const TaskCard = ({
   id,
@@ -26,10 +28,11 @@ const TaskCard = ({
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const deleteStageMutation = useDeleteStage();
   const [addCardModal, setaddCardModal] = useState(false);
+  const [taskModal, setTaskModal] = useState(false);
   const updateStage = useUpdateStage(id);
   // ⬅️ Ref for the input
   const inputRef = useRef(null);
-
+  const { id: projectId } = useParams();
   // ⬅️ Focus when addTask is toggled on
   useEffect(() => {
     if (addTask && inputRef.current) {
@@ -114,7 +117,9 @@ const TaskCard = ({
       {/* Add Task button (only admin) */}
       {role === "admin" && (
         <div
-          onClick={() => setAddTask(!addTask)}
+          onClick={() => {
+            projectId ? setAddTask(!addTask) : setTaskModal(true);
+          }}
           className="h-12 shrink-0 bg-divider rounded-sm flex justify-center items-center gap-2 cursor-pointer"
         >
           <Icon name="plus" size={16} /> Add Task
@@ -166,6 +171,13 @@ const TaskCard = ({
             });
           }}
           data={{ cardTitle, color }}
+        />
+      </Modal>
+      <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
+        <TaskModal
+          stage={{ id, title: cardTitle, color }}
+          role={role}
+          onClose={() => setTaskModal(false)}
         />
       </Modal>
     </div>

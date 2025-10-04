@@ -5,12 +5,11 @@ import KanbanBoard from "./KanbanBoard";
 import AddCardModal from "@/components/AddCardModal";
 import Icon from "@/components/Icon";
 import Modal from "@/components/Modal";
-import {
-  useCreateStage,
-  useStages,
-} from "../../hooks/useStages";
+import { useCreateStage, useStages } from "../../hooks/useStages";
 import { useParams } from "react-router";
 import PageTitle from "../../components/PageTitle";
+import { useProjects } from "../../hooks/useProjects";
+import { useTeamMembers } from "../../hooks/useTeam";
 
 // const taka = [
 //   {
@@ -57,8 +56,37 @@ function Tasks() {
   const [stages, setStages] = useState([]);
 
   const { data: stagesData, isLoading } = useStages();
+  const { data: projectsData } = useProjects();
+  const { data: memberData } = useTeamMembers();
   const createMutation = useCreateStage();
 
+  const [filters, setFilters] = useState({
+    project: id || null,
+    members: null,
+  });
+
+  const filterConfigs = [
+    {
+      key: "members",
+      label: "Select Member",
+      options: memberData?.map((project) => ({
+        value: project._id,
+        label: project.name,
+      })),
+    },
+    {
+      key: "client",
+      label: "Select Project",
+      options: projectsData?.map((project) => ({
+        value: project._id,
+        label: project.projectName,
+      })),
+    },
+  ];
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   useEffect(() => {
     if (stagesData) {
@@ -89,26 +117,26 @@ function Tasks() {
         </div>
         {!id && (
           <div className="flex flex-wrap gap-2 lg:gap-4 py-1">
-            <FilterDropdown
-              label="Select Project"
-              options={["project one", "project two", "project three"]}
-              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
-            />
-            <FilterDropdown
-              label="Select Project"
-              options={["project one", "project two", "project three"]}
-              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
-            />
-            <FilterDropdown
-              label="Select Project"
-              options={["project one", "project two", "project three"]}
-              className="h-8 flex-1 min-w-[150px] lg:min-w-0"
-            />
+            {filterConfigs.map(({ key, label, options }) => (
+              <FilterDropdown
+                key={key}
+                label={label}
+                options={options}
+                value={filters[key]}
+                onSelect={(value) => handleFilterChange(key, value)}
+                className="h-8 w-full sm:w-auto"
+              />
+            ))}
           </div>
         )}
       </div>
 
-      <KanbanBoard stages={stages} setStages={setStages} role="admin" />
+      <KanbanBoard
+        stages={stages}
+        setStages={setStages}
+        role="admin"
+        filters={filters}
+      />
       <Modal isOpen={addCardModal} onClose={() => setaddCardModal(false)}>
         <AddCardModal
           onCreate={({ title, color }) => {
@@ -122,7 +150,6 @@ function Tasks() {
             createMutation.mutate(newStage);
             setaddCardModal(false); // close modal
           }}
-          
         />
       </Modal>
     </div>

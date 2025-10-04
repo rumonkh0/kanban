@@ -48,10 +48,10 @@ const SingleCard = React.memo(({ task, role }) => {
         }`}
       >
         {coverImage && (
-          <div className="aspect-square rounded-lg overflow-hidden">
+          <div className="aspect-[4/3] rounded-lg overflow-hidden">
             <img
               src={`${baseURL}/${coverImage.filePath}`}
-              className="rounded-lg w-full object-cover"
+              className="rounded-lg object-cover"
             />
           </div>
         )}
