@@ -10,7 +10,7 @@ import {
 } from "@/components/Component";
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   useCreateTeamMember,
@@ -19,6 +19,11 @@ import {
   useUpdateTeamMember,
 } from "../../../hooks/useTeam";
 import { useDepartments } from "../../../hooks/hr/useDepartments";
+import {
+  generateCountryOptions,
+  generateLanguageOptions,
+} from "../../../components/Constants";
+import PhoneNumberInput from "../../../components/PhoneNumberInput";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TeamMemberForm({ edit, title = "Add Team Member" }) {
@@ -30,6 +35,8 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
   const [profilePreview, setProfilePreview] = useState(null);
   const [more, setMore] = useState(false);
 
+  const countryOptions = useMemo(() => generateCountryOptions(), []);
+  const languageOptions = useMemo(() => generateLanguageOptions(), []);
   const togglePassword = () => setShowPassword(!showPassword);
 
   const [formData, setFormData] = useState({
@@ -183,7 +190,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
         designation: teamMember.designation ?? "",
         department: teamMember.department?._id ?? null,
         country: teamMember.country ?? "USA",
-        mobile: teamMember.mobile ?? "",
+        mobile: teamMember.mobile ?? { countryCode: "", number: "" },
         gender: teamMember.gender ?? null,
         joiningDate: teamMember.joiningDate?.split("T")[0] ?? "",
         dob: teamMember.dob?.split("T")[0] ?? "",
@@ -369,51 +376,15 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
               </FormField>
 
               <FormField label="Country">
-                <div className="relative">
-                  <select
-                    value={formData.country}
-                    onChange={(e) => handleChange("country", e.target.value)}
-                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4  appearance-none focus:outline-none focus:ring-2 focus:ring-brand pl-12 typo-b3"
-                  >
-                    <option value="USA">USA</option>
-                    <option value="Canada">Canada</option>
-                    <option value="UK">UK</option>
-                  </select>
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <Icon name="flag" />
-                  </div>
-                  <Icon
-                    name="arrow"
-                    size={24}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
-                  />
-                </div>
+                <Dropdown
+                  options={countryOptions} // Pass the structured options array
+                  value={formData.country}
+                  onChange={(newISO) => {
+                    setFormData((prev) => ({ ...prev, country: newISO }));
+                  }}
+                />
               </FormField>
-
-              <FormField label="Mobile">
-                <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1 border-r border-text2">
-                    <Icon name="flag" />
-                    <span className="text-text2 typo-b3">+1</span>
-                    <Icon name="arrow" size={24} className="mr-1" />
-                  </div>
-                  <Input
-                    value={formData.mobile.number}
-                    onChange={(val) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        mobile: {
-                          ...prev.mobile,
-                          number: val,
-                        },
-                      }))
-                    }
-                    type="tel"
-                    placeholder="Enter Mobile Number"
-                    className="pl-23"
-                  />
-                </div>
-              </FormField>
+              <PhoneNumberInput formData={formData} setFormData={setFormData} />
               <FormField label="Gender">
                 <Dropdown
                   options={["Male", "Female", "Others"]}
@@ -451,25 +422,15 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
               </FormField>
 
               <FormField label="Change Language">
-                <div className="relative">
-                  <select
-                    value={formData.language}
-                    onChange={(e) => handleChange("language", e.target.value)}
-                    className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-brand pl-12 typo-b3"
-                  >
-                    <option value="English">English</option>
-                    <option value="Spanish">Spanish</option>
-                    <option value="French">French</option>
-                  </select>
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                    <Icon name="flag" />
-                  </div>
-                  <Icon
-                    name="arrow"
-                    size={24}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
-                  />
-                </div>
+                <Dropdown
+                  options={languageOptions} // Pass the structured options array
+                  value={formData.language} // The current ISO code
+                  onChange={(lan) => {
+                    console.log(lan);
+                    handleChange("language", lan);
+                  }} // Receives the new ISO code
+                  placeholder="Choose Language"
+                />
               </FormField>
               {/* <FormField label="User Role">
                 <Input
@@ -634,10 +595,10 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   onChange={(val) => handleChange("employmentType", val)}
                 />
               </FormField>
-              <ClientSelect
+              {/* <ClientSelect
                 onSelect={(client) => handleChange("addedBy", client.id)}
                 label="Added By"
-              />
+              /> */}
               <FormField label="Marital Status">
                 <Dropdown
                   options={["Single", "Married", "Divorced", "Widowed"]}
@@ -646,11 +607,15 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                 />
               </FormField>
               <FormField label="Business Address" required>
-                <Dropdown
-                  options={["Main Office", "Branch Office", "Remote"]}
+                <Input
                   value={formData.businessAddress}
                   onChange={(val) => handleChange("businessAddress", val)}
                 />
+                {/* <Dropdown
+                  options={["Main Office", "Branch Office", "Remote"]}
+                  value={formData.businessAddress}
+                  onChange={(val) => handleChange("businessAddress", val)}
+                /> */}
               </FormField>
               <FormField label="Account Status">
                 <div className="relative">

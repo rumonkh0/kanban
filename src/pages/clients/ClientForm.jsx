@@ -208,7 +208,7 @@ function ClientForm({ edit, title = "Add Client" }) {
         name: clientData.name || "",
         email: clientData.email || "",
         country: clientData.country || "",
-        mobile: clientData.mobile || "",
+        mobile: clientData.mobile || { countryCode: "", number: "" },
         dob: clientData.dob?.split("T")[0] || "",
         status: clientData.status || "Active",
         loginAllowed: clientData.loginAllowed,
