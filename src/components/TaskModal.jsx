@@ -120,7 +120,6 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       }
     });
 
-
     if (!id) {
       submitData.append("project", formData.project);
       submitData.append("stage", formData.stage.id);
@@ -262,11 +261,15 @@ function TaskModal({ stage, role = "member", id, onClose }) {
         }
       >
         <div className="flex justify-between items-center typo-b2 text-black p-2">
-          <div className="inline-block w-3 h-3 mr-2 rounded-full bg-red-400"></div>
+          <div
+            className={`inline-block w-3 h-3 mr-2 rounded-full bg-[${
+              formData.stage.color || stage?.color
+            }]`}
+          ></div>
           {formData?.stage.title}
         </div>
 
-        {role !== "client" && (
+        {role === "admin" && (
           <div className="flex gap-2 md:gap-4 p-2 md:p-4">
             <RedButton onClick={handleSubmit} className="h-5 px-2 typo-b3">
               Save
@@ -348,6 +351,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
           placeholder="Task 2"
           value={formData?.title}
           onChange={(e) => handleChange("title", e.target.value)}
+          disabled={role === "member"}
         />
 
         {/* Main Content Row - Stack on mobile */}
@@ -417,7 +421,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
                   <Input
                     type="date"
                     placeholder="Select Date"
-                    onChange={(val) => handleChange("createdDate", val)}
+                    onChange={(val) => handleChange("startDate", val)}
 
                     // className="w-full h-12 bg-surface2 border border-divider rounded-lg px-2 md:px-4 focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                   />

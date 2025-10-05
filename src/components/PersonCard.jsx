@@ -14,6 +14,7 @@ export default function PersonCard({
   className,
   children,
 }) {
+  const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
   // format date helper
   const formatDate = (date) => {
     if (!date) return "";
@@ -25,6 +26,10 @@ export default function PersonCard({
     });
   };
 
+  const photo = image?.filePath
+    ? `${baseURL}/${image.filePath}`
+    : "/images/profile.png";
+
   return (
     <div
       className={`min-w-[227px] h-[116px] p-4 rounded-lg bg-surface2 border-2 border-divider flex items-center gap-2 ${
@@ -32,7 +37,7 @@ export default function PersonCard({
       }`}
     >
       <img
-        src={image || "/images/profile.png"}
+        src={photo}
         alt="profile"
         className="h-full aspect-square object-cover rounded-sm"
       />

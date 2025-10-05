@@ -1,6 +1,7 @@
 import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
 import PageTitle from "../../components/PageTitle";
+import { usePrivate } from "../../hooks/dashboard";
 
 function Private() {
   const days = [
@@ -13,6 +14,9 @@ function Private() {
     "Saturday",
   ];
 
+  const { data: dashboard, isPending } = usePrivate();
+
+  if (isPending) return <div>Loading Dashboard</div>;
   return (
     <div className="flex flex-col gap-4">
       <PageTitle title="Dashboard" />
@@ -24,13 +28,22 @@ function Private() {
           id={34556}
           active={true}
         />
-        <MetricCard title="Pending Task:" value={0} />
-        <MetricCard title="Overdue Task:" value={0} color="red" />
-        <MetricCard title="In Progress Projects:" growth={22} value={0} />
+        <MetricCard
+          title="Pending Task:"
+          value={dashboard.tasks.pendingTasks}
+        />
+        <MetricCard
+          title="Overdue Task:"
+          value={dashboard.tasks.overdueTasks}
+          color="red"
+        />
+        <MetricCard
+          title="In Progress Projects:"
+          value={dashboard.projects.activeProjects}
+        />
         <MetricCard
           title="Overdue Projects:"
-          value={0}
-          growth={-23}
+          value={dashboard.projects.overdueProjects}
           color="red"
         />
       </div>
@@ -93,88 +106,78 @@ function Private() {
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(310px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(510px,1fr))] gap-2">
-        <DuelCardHolder title="Upcoming Birthdays">
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            id={34556}
-            active={true}
-          />
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            id={34556}
-            active={true}
-          />
-        </DuelCardHolder>
-        <DuelCardHolder title="Team Appreciations">
-          <PersonCard
-            name="creativezethdesign"
-            date=" Jul 20, 2025"
-            award="Designer of the year"
-          />
-          <PersonCard
-            name="creativezethdesign"
-            date=" Jul 20, 2025"
-            award="Designer of the year"
-          />
-        </DuelCardHolder>
-        <DuelCardHolder title="On Leave Today">
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            id={34556}
-            returning=" Jul 20, 2025"
-          />
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            id={34556}
-            returning=" Jul 20, 2025"
-          />
-        </DuelCardHolder>
-        <DuelCardHolder title="Today's Joining & Work Anniversary">
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            id={34556}
-            joining=" Jul 20, 2025"
-          />
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            id={34556}
-            joining=" Jul 20, 2025"
-          />
-        </DuelCardHolder>
-        <DuelCardHolder title="Notice Period Duration">
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            start=" Jul 20, 2025"
-            end=" Jul 20, 2025"
-          />
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            start=" Jul 20, 2025"
-            end=" Jul 20, 2025"
-          />
-        </DuelCardHolder>
-        <DuelCardHolder title="Probation Date">
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            start=" Jul 20, 2025"
-            end=" Jul 20, 2025"
-          />
-          <PersonCard
-            name="creativezethdesign"
-            designation="Admin"
-            start=" Jul 20, 2025"
-            end=" Jul 20, 2025"
-          />
-        </DuelCardHolder>
+        {dashboard.birthdays.clients.length > 0 && (
+          <DuelCardHolder title="Upcoming Client's Birthdays">
+            {dashboard.birthdays.clients.map((per) => (
+              <PersonCard
+                name={per.name}
+                designation="Client"
+                id={34556}
+                active={true}
+              />
+            ))}
+          </DuelCardHolder>
+        )}
+        {dashboard.birthdays.freelancers.length > 0 && (
+          <DuelCardHolder title="Upcoming Memmber's Birthdays">
+            {dashboard.birthdays.freelancers.map((per) => (
+              <PersonCard
+                name={per.name}
+                designation="Member"
+                id={34556}
+                active={true}
+              />
+            ))}
+          </DuelCardHolder>
+        )}
+        {dashboard.lastAppreciations.length > 0 && (
+          <DuelCardHolder title="Team Appreciations">
+            {dashboard.lastAppreciations.map((per) => (
+              <PersonCard
+                name={per.name}
+                designation="Client"
+                id={34556}
+                active={true}
+              />
+            ))}
+          </DuelCardHolder>
+        )}
+        {dashboard.todaysJoining.length > 0 && (
+          <DuelCardHolder title="Today's Joining">
+            {dashboard.todaysJoining.map((per) => (
+              <PersonCard
+                name={per.name}
+                designation="Client"
+                id={34556}
+                active={true}
+              />
+            ))}
+          </DuelCardHolder>
+        )}
+        {dashboard.noticePeriodEnding.length > 0 && (
+          <DuelCardHolder title="Notice Period Duration">
+            {dashboard.noticePeriodEnding.map((per) => (
+              <PersonCard
+                name={per.name}
+                designation="Client"
+                id={34556}
+                active={true}
+              />
+            ))}
+          </DuelCardHolder>
+        )}
+        {dashboard.probationEnding.length > 0 && (
+          <DuelCardHolder title="Probation Date">
+            {dashboard.probationEnding.map((per) => (
+              <PersonCard
+                name={per.name}
+                designation="Client"
+                id={34556}
+                active={true}
+              />
+            ))}
+          </DuelCardHolder>
+        )}
       </div>
     </div>
   );

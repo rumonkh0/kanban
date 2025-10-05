@@ -23,6 +23,7 @@ const TaskCard = ({
   onAddTask,
   role = "member",
 }) => {
+  const stage = { id, title: cardTitle, color };
   const [isOpen, setIsOpen] = useState(false);
   const [addTask, setAddTask] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -87,7 +88,7 @@ const TaskCard = ({
       <div className="flex justify-between items-center">
         <div
           {...attributes}
-          {...listeners}
+          {...(role === "admin" ? listeners : {})}
           className="flex-1 cursor-grab active:cursor-grabbing hover:bg-surface2"
         >
           <div
@@ -96,22 +97,24 @@ const TaskCard = ({
           ></div>
           {cardTitle}
         </div>
-        <div className="relative">
-          <Icon
-            name="menu"
-            className="relative cursor-pointer"
-            onClick={() => setIsOpen(true)}
-          />
-          <DropdownMenu
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            menuItems={[
-              { label: "Edit", onClick: () => setaddCardModal(true) },
-              { label: "Delete", onClick: () => handleDelete(id) },
-            ]}
-            className="top-full right-0 mt-1"
-          />
-        </div>
+        {role === "admin" && (
+          <div className="relative">
+            <Icon
+              name="menu"
+              className="relative cursor-pointer"
+              onClick={() => setIsOpen(true)}
+            />
+            <DropdownMenu
+              isOpen={isOpen}
+              onClose={() => setIsOpen(false)}
+              menuItems={[
+                { label: "Edit", onClick: () => setaddCardModal(true) },
+                { label: "Delete", onClick: () => handleDelete(id) },
+              ]}
+              className="top-full right-0 mt-1"
+            />
+          </div>
+        )}
       </div>
 
       {/* Add Task button (only admin) */}
@@ -159,7 +162,7 @@ const TaskCard = ({
           items={tasks.map((task) => task._id)}
         >
           {tasks.map((task) => (
-            <SingleTask key={task._id} task={task} role={role} />
+            <SingleTask stage={stage} key={task._id} task={task} role={role} />
           ))}
         </SortableContext>
       </div>
@@ -175,7 +178,7 @@ const TaskCard = ({
       </Modal>
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
         <TaskModal
-          stage={{ id, title: cardTitle, color }}
+          stage={stage}
           role={role}
           onClose={() => setTaskModal(false)}
         />

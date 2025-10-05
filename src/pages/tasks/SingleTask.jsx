@@ -5,7 +5,7 @@ import Modal from "@/components/Modal";
 import TaskModal from "@/components/TaskModal";
 import Icon from "@/components/Icon";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
-const SingleCard = React.memo(({ task, role }) => {
+const SingleCard = React.memo(({ stage, task, role }) => {
   const {
     _id,
     title: taskTitle = "Task",
@@ -101,7 +101,12 @@ const SingleCard = React.memo(({ task, role }) => {
         </div>
       </div>
       <Modal isOpen={taskModal} onClose={() => setTaskModal(false)}>
-        <TaskModal role={role} id={_id} onClose={() => setTaskModal(false)} />
+        <TaskModal
+          stage={stage}
+          role={role}
+          id={_id}
+          onClose={() => setTaskModal(false)}
+        />
       </Modal>
     </>
   );

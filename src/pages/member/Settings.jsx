@@ -116,7 +116,7 @@ function Setting() {
       setProfilePicture(
         (teamMemberData.profilePicture?.filePath &&
           `${baseURL}/${teamMemberData.profilePicture.filePath}`) ||
-          null
+          "/images/profile.png"
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

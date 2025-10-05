@@ -75,6 +75,7 @@ import Setting from "./pages/client/Settings";
 import MemberSettings from "./pages/member/Settings";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import ProtectedRedirect from "./components/Redirect";
+import Task from "./pages/member/Task";
 
 function App() {
   return (
@@ -92,7 +93,7 @@ function App() {
         <Route path="/member" element={<RootLayout sidebar="member" />}>
           <Route index element={<Navigate to="/member/dashboard" replace />} />
           <Route path="dashboard" element={<MembersDashboard />} />
-          <Route path="tasks" element={<ProjectTask role="member" />} />
+          <Route path="tasks" element={<Task role="member" />} />
           <Route path="settings" element={<MemberSettings role="member" />} />
           <Route path="*" element={<NotFound />} />
         </Route>
