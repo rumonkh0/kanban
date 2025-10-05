@@ -112,8 +112,8 @@ function AdminClientDashboard() {
           </div>
           <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             {clientsPay.map((item) => {
-              const total = clientsPay.reduce((sum, d) => sum + d.value, 0);
-              const percentage = ((item.value / total) * 100).toFixed(0);
+              {/* const total = clientsPay.reduce((sum, d) => sum + d.value, 0);
+              const percentage = ((item.value / total) * 100).toFixed(0); */}
 
               return (
                 <div
@@ -125,7 +125,7 @@ function AdminClientDashboard() {
                     style={{ backgroundColor: paymentColor[item.key] }}
                   ></div>
                   <span className="typo-b3 text-xs md:text-sm">
-                    {item.key}: {percentage}%
+                    {item.key}
                   </span>
                 </div>
               );

@@ -156,7 +156,7 @@ function Dashboard() {
             axisLine={false}
             tickLine={false}
             tickFormatter={(tick) =>
-              tick >= 5 ? `${(tick / 1000).toFixed(1)}k` : ""
+              tick >= 5 ? `${(tick / 1000).toFixed(1)}k` : tick
             }
           />
           <Tooltip

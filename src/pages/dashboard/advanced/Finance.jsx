@@ -35,12 +35,12 @@ function Finance() {
   const earnings = financeByTime?.[earningPill] || [];
   const { data: payments } = useFinancePayment();
   const TeamPayment = [
-    { key: "Paid", value: payments.totalPaidToMembers },
-    { key: "Owed", value: payments.totalOwedToMembers },
+    { key: "Paid", value: payments?.totalPaidToMembers },
+    { key: "Owed", value: payments?.totalOwedToMembers },
   ];
   const payment = [
-    { key: "Paid", value: payments.totalPaidByClient },
-    { key: "Owed", value: payments.totalOwedByClient },
+    { key: "Paid", value: payments?.totalPaidByClient },
+    { key: "Owed", value: payments?.totalOwedByClient },
   ];
   const paymentColor = {
     Paid: "#8FC951",
@@ -58,45 +58,45 @@ function Finance() {
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
         <MetricCard
           title="Total Earnings:"
-          growth={23}
+          //growth={23}
           value={`$${totalEarnings}`}
-          // desc="Month"
+          desc="Month"
         />
         <MetricCard
           title="To Be Paid:"
-          growth={23}
+          //growth={23}
           value={`$${toBePaid}`}
-          // desc="to Team"
+          desc="to Team"
         />
         <MetricCard
           title="Revenue:"
-          growth={23}
+          //growth={23}
           value={`$${revenue}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Business Expenses:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (80 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Owner’s Pay:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (10 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Taxes:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (5 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Growth Fund:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (5 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
@@ -348,7 +348,7 @@ function Finance() {
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(tick) =>
-                    tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                    tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : tick
                   }
                 />
                 <Tooltip

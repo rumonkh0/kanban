@@ -42,11 +42,12 @@ function TaskModal({ stage, role = "member", id, onClose }) {
   const menuItems = [
     // { label: "Copy", onClick: () => console.log("Copy clicked") },
     // { label: "Edit", onClick: () => console.log("Edit clicked") },
-    // { label: "Share", onClick: () => console.log("Share clicked") },
+    { label: "Mark as complete", onClick: () => console.log("complete clicked") },
     { label: "Delete", onClick: () => handleDeleteTask(id) },
   ];
 
   const { data: taskData, isPending } = useTask(id);
+  // console.log(taskData);
   const deleteTask = useDeleteTask();
   const { data: freelancers = [], isPending: isFreelancerPending } =
     useProjectMembers(formData?.project?._id || formData.project);
@@ -129,7 +130,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       submitData.append("members[]", method)
     );
     files.forEach((file) => submitData.append("files[]", file._id));
-    console.log(files);
+    // console.log(files);
     if (newFiles.length > 0)
       newFiles?.forEach((file) => {
         submitData.append("files", file.file);
@@ -139,7 +140,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
     // });
     if (coverImage) submitData.append("coverImage", coverImage);
 
-    console.log(submitData);
+    // console.log(submitData);
     // updatetask.mutate(submitData);
     if (id)
       toast.promise(
@@ -381,7 +382,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
                     disabled={isProjectDataPending}
                   />
                 )}
-                {console.log(freelancers)}
+                {/* {console.log(freelancers)} */}
                 <ClientSelect
                   value={formData?.members}
                   clients={freelancers.map((f) => ({
@@ -495,7 +496,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
                         </span>
                         <button
                           onClick={() => {
-                            console.log(files, file);
+                            // console.log(files, file);
                             setFiles(files.filter((f) => f._id !== file._id));
                           }}
                           className="text-brand"

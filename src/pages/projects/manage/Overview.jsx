@@ -198,7 +198,7 @@ function Overview() {
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(tick) =>
-                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : tick
                 }
               />
               <Tooltip
@@ -255,7 +255,7 @@ function Overview() {
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(tick) =>
-                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : tick
                 }
               />
               <Tooltip
@@ -326,7 +326,7 @@ function Overview() {
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(tick) =>
-                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                  tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : tick
                 }
               />
               <Tooltip

@@ -46,7 +46,7 @@ function Overview() {
   };
 
   const { data: overfinance } = useOverviewFinance();
-  const TeamPayment = overfinance.team;
+  const TeamPayment = overfinance?.team || [];
 
   const paymentColor = {
     paid: "#8FC951",
@@ -161,49 +161,49 @@ function Overview() {
         {" "}
         <MetricCard
           title="Total Earnings:"
-          growth={23}
+          //growth={23}
           value={`$${totalEarnings}`}
-          // desc="Month"
+          desc="Month"
         />
         <MetricCard
           title="To Be Paid:"
-          growth={23}
+          //growth={23}
           value={`$${toBePaid}`}
-          // desc="to Team"
+          desc="to Team"
         />
         <MetricCard
           title="Revenue:"
-          growth={23}
+          //growth={23}
           value={`$${revenue}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Business Expenses:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (80 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Owner’s Pay:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (10 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Taxes:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (5 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Growth Fund:"
-          growth={23}
+          //growth={23}
           value={`$${revenue * (5 / 100)}`}
-          // desc="This Month"
+          desc="This Month"
         />
         <MetricCard
           title="Active Members:"
-          // growth={23}
+          // //growth={23}
           value={totalActiveFreelancers}
           desc="Engaged Members"
         />
@@ -244,7 +244,7 @@ function Overview() {
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(tick) =>
-                    tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : ""
+                    tick >= 500 ? `${(tick / 1000).toFixed(1)}k` : tick
                   }
                 />
                 <Tooltip
@@ -296,7 +296,7 @@ function Overview() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Team Payment:"
-              keyValue={`$${TeamPayment[0].value + TeamPayment[1].value}`}
+              keyValue={`$${TeamPayment[0]?.value + TeamPayment[1]?.value}`}
               secondaryLabel="To team"
             />
             {/* <div className="flex gap-2 flex-wrap">
@@ -329,7 +329,7 @@ function Overview() {
                   paddingAngle={0}
                   label={({ key, value }) => `${key} $${value}`}
                 >
-                  {TeamPayment.map((entry, index) => (
+                  {TeamPayment?.map((entry, index) => (
                     <Cell key={index} fill={paymentColor[entry.key]} />
                   ))}
                 </Pie>
