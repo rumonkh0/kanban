@@ -13,61 +13,78 @@ import {
 import { ChartHeader } from "@/components/Component";
 import Icon from "@/components/Icon";
 import { FilterDropdown, ToggleTabs } from "../../../components/Component";
+import {
+  useProjectActivity,
+  useProjectDeadline,
+  useProjectStat,
+} from "../../../hooks/dashboard";
+import { useState } from "react";
 
 function Projects() {
-  const data = [
-    { name: "Expenses", sales: 4000, color: "#FE4E4D" },
-    { name: "Owner's pay", sales: 500, color: "#8FC951" },
-    { name: "Taxes", sales: 250, color: "#A88AED" },
-    { name: "Growth Fund", sales: 250, color: "#5EB7E0" },
+  const [projectPill, setProjectPill] = useState("week");
+  const [deadlinePill, setDeadlinePill] = useState("week");
+  const { data: projectStat } = useProjectStat();
+  const {
+    totalProjects = 0,
+    activeProjects = 0,
+    onHoldProjects = 0,
+    completedProjects = 0,
+    avgActiveProjectProgress = 0,
+  } = projectStat || {};
+  const { data: projectActivity } = useProjectActivity();
+  const projects = projectActivity?.[projectPill] || [];
+  const projectProgress = [
+    {
+      Key: "Progress",
+      value: avgActiveProjectProgress,
+    },
+    {
+      Key: "Due",
+      value: 100 - avgActiveProjectProgress,
+    },
   ];
-  const weekdata = [
-    { Day: "Mon", Active: 5, Completed: 2, Due: 1 },
-    { Day: "Tue", Active: 3, Completed: 4, Due: 2 },
-    { Day: "Wed", Active: 4, Completed: 3, Due: 3 },
-    { Day: "Thu", Active: 6, Completed: 5, Due: 0 },
-    { Day: "Fri", Active: 2, Completed: 6, Due: 1 },
-    { Day: "Sat", Active: 1, Completed: 3, Due: 2 },
-    { Day: "Sun", Active: 0, Completed: 2, Due: 4 },
-  ];
-  const deadlineData = [
-    { Day: "Mon", Deadline: 5 },
-    { Day: "Tue", Deadline: 3 },
-    { Day: "Wed", Deadline: 4 },
-    { Day: "Thu", Deadline: 6 },
-    { Day: "Fri", Deadline: 2 },
-    { Day: "Sat", Deadline: 1 },
-    { Day: "Sun", Deadline: 0 },
-  ];
+
+  const progressColor = {
+    Progress: "#8FC951",
+    Due: "#FE4E4D",
+  };
+
+  const { data: projectDeadline } = useProjectDeadline();
+  const deadlines = projectDeadline?.[deadlinePill] || [];
+
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
         <MetricCard
           title="Total Projects:"
-          growth={23}
-          value="42"
+          // growth={23}
+          value={totalProjects}
           desc="Projects"
         />
         <MetricCard
           title="Active Projects:"
-          growth={23}
-          value="42"
+          // growth={23}
+          value={activeProjects}
           desc="Ongoing Projects"
         />
         <MetricCard
           title="Completed Projects:"
-          growth={23}
-          value="42"
+          // growth={23}
+          value={completedProjects}
           desc="Completed Projects"
         />
         <MetricCard
           title="On Hold Projects:"
-          growth={23}
-          value="42"
+          // growth={23}
+          value={onHoldProjects}
           desc="per Clients"
         />
-        <MetricCard title="Average Progress:" growth={23} value="75%" />
+        <MetricCard
+          title="Average Progress:"
+          growth={23}
+          value={`${avgActiveProjectProgress}%`}
+        />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* first */}
@@ -83,7 +100,7 @@ function Projects() {
               <ToggleTabs
                 options={["Week", "Month", "Year"]}
                 defaultValue="Week"
-                onChange={(val) => console.log("Selected:", val)}
+                onChange={(val) => setProjectPill(val.toLowerCase())}
               />
             </div>
           </div>
@@ -92,12 +109,12 @@ function Projects() {
           <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={weekdata}
+                data={projects}
                 barCategoryGap="20%"
                 margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
               >
                 <XAxis
-                  dataKey="Day"
+                  dataKey="Key"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
@@ -116,9 +133,9 @@ function Projects() {
                     border: "none",
                   }}
                 />
-                <Bar dataKey="Active" fill="#5EB7E0" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Completed" fill="#8FC951" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Due" fill="#FE4E4D" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="active" fill="#5EB7E0" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="completed" fill="#8FC951" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="due" fill="#FE4E4D" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -157,7 +174,10 @@ function Projects() {
         <div className="w-full h-[494px] md:h-[594px] lg:h-[594px] border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 flex flex-col gap-4 md:gap-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
-            <ChartHeader primaryLabel="Average Progress:" keyValue="72%" />
+            <ChartHeader
+              primaryLabel="Average Progress:"
+              keyValue={`${avgActiveProjectProgress}%`}
+            />
             <div className="flex gap-2 flex-wrap">
               <FilterDropdown
                 label="Select Project"
@@ -172,23 +192,23 @@ function Projects() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={data}
-                  dataKey="sales"
-                  nameKey="name"
+                  data={projectProgress}
+                  dataKey="value"
+                  nameKey="key"
                   cx="50%"
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
                   outerRadius="80%"
                   paddingAngle={0}
-                  label={({ name, sales }) => `${name} $${sales}`}
+                  label={({ Key, value }) => `${Key} ${value}%`}
                 >
-                  {data.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
+                  {projectProgress.map((entry, index) => (
+                    <Cell key={index} fill={progressColor[entry.Key]} />
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value) => `$${value}`}
+                  formatter={(value) => `${value}%`}
                   contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
                 />
               </PieChart>
@@ -197,20 +217,18 @@ function Projects() {
 
           {/* Legend */}
           <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-            {data.map((item) => {
-              const total = data.reduce((sum, d) => sum + d.sales, 0);
-              const percentage = ((item.sales / total) * 100).toFixed(0);
+            {projectProgress.map((item) => {
               return (
                 <div
-                  key={item.name}
+                  key={item.Key}
                   className="flex items-center gap-1 md:gap-2"
                 >
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: progressColor[item.Key] }}
                   ></div>
                   <span className="typo-b3 text-xs md:text-sm">
-                    {item.name}: {percentage}%
+                    {item.Key}: {item.value}%
                   </span>
                 </div>
               );
@@ -231,7 +249,7 @@ function Projects() {
               <ToggleTabs
                 options={["Week", "Month", "Year"]}
                 defaultValue="Week"
-                onChange={(val) => console.log("Selected:", val)}
+                onChange={(val) => setDeadlinePill(val.toLowerCase())}
               />
             </div>
           </div>
@@ -240,12 +258,12 @@ function Projects() {
           <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={deadlineData}
+                data={deadlines}
                 barCategoryGap="30%"
                 margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
               >
                 <XAxis
-                  dataKey="Day"
+                  dataKey="Key"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
@@ -265,7 +283,11 @@ function Projects() {
                     border: "none",
                   }}
                 />
-                <Bar dataKey="Deadline" fill="#A88AED" radius={[6, 6, 0, 0]} />
+                <Bar
+                  dataKey="DeadlineCount"
+                  fill="#A88AED"
+                  radius={[6, 6, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

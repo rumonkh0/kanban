@@ -5,6 +5,7 @@ const ProtectedRedirect = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
 
+  console.log("from redirect.jsx");
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

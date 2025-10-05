@@ -127,7 +127,7 @@ function ClientTable({ filters }) {
   //     lastUpdate: "Aug 6, 2025",
   //   },
   // ];
-  if (clientsData.length === 0)
+  if (!clientsData || clientsData.length === 0)
     return <div className="text-center typo-h1">No Client Found</div>;
   return (
     <Table>

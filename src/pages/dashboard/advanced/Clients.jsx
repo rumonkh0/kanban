@@ -35,16 +35,6 @@ function AdminClientDashboard() {
   const { data: clientProjectData } = useClientProject();
   const clientProject = clientProjectData && clientProjectData[projectPill];
 
-  const weekdata = [
-    { Day: "Mon", Active: 5, Completed: 2, Due: 1 },
-    { Day: "Tue", Active: 3, Completed: 4, Due: 2 },
-    { Day: "Wed", Active: 4, Completed: 3, Due: 3 },
-    { Day: "Thu", Active: 6, Completed: 5, Due: 0 },
-    { Day: "Fri", Active: 2, Completed: 6, Due: 1 },
-    { Day: "Sat", Active: 1, Completed: 3, Due: 2 },
-    { Day: "Sun", Active: 0, Completed: 2, Due: 4 },
-  ];
-
   console.log(clientProject);
 
   return (

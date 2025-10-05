@@ -14,47 +14,56 @@ import {
 import { ChartHeader } from "@/components/Component";
 import TaskTable from "@/components/TaskTable";
 import { ToggleTabs } from "../../../components/Component";
+import {
+  useTaskActivity,
+  useTaskDeadline,
+  useTaskStat,
+} from "../../../hooks/dashboard";
+import { useState } from "react";
 
 function Tasks() {
-  const weekdata = [
-    { Day: "Mon", Active: 5, Completed: 2, Due: 1 },
-    { Day: "Tue", Active: 3, Completed: 4, Due: 2 },
-    { Day: "Wed", Active: 4, Completed: 3, Due: 3 },
-    { Day: "Thu", Active: 6, Completed: 5, Due: 0 },
-    { Day: "Fri", Active: 2, Completed: 6, Due: 1 },
-    { Day: "Sat", Active: 1, Completed: 3, Due: 2 },
-    { Day: "Sun", Active: 0, Completed: 2, Due: 4 },
-  ];
-  const deadlineData = [
-    { Day: "Mon", Deadline: 5 },
-    { Day: "Tue", Deadline: 3 },
-    { Day: "Wed", Deadline: 4 },
-    { Day: "Thu", Deadline: 6 },
-    { Day: "Fri", Deadline: 2 },
-    { Day: "Sat", Deadline: 1 },
-    { Day: "Sun", Deadline: 0 },
-  ];
+  const [taskPill, setTaskPill] = useState("week");
+  const [deadlinePill, setDeadlinePill] = useState("week");
+  const { data: taskStat } = useTaskStat();
+  const {
+    completedTasks = 5,
+    dueTasks = 0,
+    overdueTasks = 0,
+    totalTasks = 5,
+  } = taskStat || {};
+
+  const { data: taskActivity } = useTaskActivity();
+  const tasks = taskActivity?.[taskPill] || [];
+
+  const { data: taskDeadline } = useTaskDeadline();
+  const deadlines = taskDeadline?.[deadlinePill] || [];
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
-        <MetricCard title="Total Tasks:" growth={23} value="20" desc="Tasks" />
+        <MetricCard
+          title="Total Tasks:"
+          // growth={23}
+          value={totalTasks}
+          desc="Tasks"
+        />
         <MetricCard
           title="Tasks Due:"
-          growth={23}
-          value="20"
+          // growth={23}
+          value={dueTasks}
           desc="Tasks Due Today"
         />
         <MetricCard
           title="Overdue Tasks:"
-          growth={23}
-          value="20"
+          // growth={23}
+          value={overdueTasks}
           desc="Clients"
+          color="red"
         />
         <MetricCard
           title="Completed Tasks:"
-          growth={23}
-          value="20"
+          // growth={23}
+          value={completedTasks}
           desc="This Month"
         />
       </div>
@@ -71,7 +80,7 @@ function Tasks() {
             <ToggleTabs
               options={["Week", "Month", "Year"]}
               defaultValue="Week"
-              onChange={(val) => console.log("Selected:", val)}
+              onChange={(val) => setTaskPill(val.toLowerCase())}
             />
           </div>
 
@@ -79,12 +88,12 @@ function Tasks() {
           <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={weekdata}
+                data={tasks}
                 barCategoryGap="20%"
                 margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
               >
                 <XAxis
-                  dataKey="Day"
+                  dataKey="Key"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
@@ -103,9 +112,9 @@ function Tasks() {
                     border: "none",
                   }}
                 />
-                <Bar dataKey="Active" fill="#5EB7E0" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Completed" fill="#8FC951" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Due" fill="#FE4E4D" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="active" fill="#5EB7E0" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="completed" fill="#8FC951" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="due" fill="#FE4E4D" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -152,7 +161,7 @@ function Tasks() {
             <ToggleTabs
               options={["Week", "Month", "Year"]}
               defaultValue="Week"
-              onChange={(val) => console.log("Selected:", val)}
+              onChange={(val) => setDeadlinePill(val.toLowerCase())}
             />
           </div>
 
@@ -160,12 +169,12 @@ function Tasks() {
           <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={deadlineData}
+                data={deadlines}
                 barCategoryGap="30%"
                 margin={{ top: 20, right: 10, left: -20, bottom: 20 }}
               >
                 <XAxis
-                  dataKey="Day"
+                  dataKey="Key"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 14, fill: "#7B7B7B", dy: 16 }}
@@ -185,7 +194,11 @@ function Tasks() {
                     border: "none",
                   }}
                 />
-                <Bar dataKey="Deadline" fill="#A88AED" radius={[6, 6, 0, 0]} />
+                <Bar
+                  dataKey="DeadlineCount"
+                  fill="#A88AED"
+                  radius={[6, 6, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

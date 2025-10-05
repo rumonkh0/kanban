@@ -107,7 +107,6 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
-
       <Route element={<RoleBasedRoute roles={["Admin"]} />}>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Navigate to="/dashboard/private" replace />} />

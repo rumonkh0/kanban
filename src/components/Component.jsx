@@ -8,13 +8,19 @@ export const Icon = ({ name, size = 20, children, className = "" }) => (
   </div>
 );
 
-export const RedButton = ({ children, onClick, className }) => {
+export const RedButton = ({
+  children,
+  onClick,
+  className,
+  disabled = false,
+}) => {
   return (
     <button
       onClick={onClick}
       className={` py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${
         className || "px-4"
       }`}
+      disabled={disabled}
     >
       {children}
     </button>
