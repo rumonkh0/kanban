@@ -42,7 +42,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
   const menuItems = [
     // { label: "Copy", onClick: () => console.log("Copy clicked") },
     // { label: "Edit", onClick: () => console.log("Edit clicked") },
-    { label: "Mark as complete", onClick: () => console.log("complete clicked") },
+    { label: "Mark as complete", onClick: () => markAsComplete() },
     { label: "Delete", onClick: () => handleDeleteTask(id) },
   ];
 
@@ -213,6 +213,9 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       },
       { autoClose: 5000 }
     );
+  };
+  const markAsComplete = () => {
+    updatetask.mutate({ status: "Complete" });
   };
 
   // Close on outside click for image dropdown

@@ -3,6 +3,11 @@ import Icon, { Hambrger, LogOut, Notification, People, Settings } from "./Icon";
 import { usePageTitleStore } from "@/stores/usePageTitleStore";
 import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "../stores/authStore";
+import {
+  useGetNotifications,
+  useMarkAllAsRead,
+} from "../hooks/useNotification";
+import moment from "moment";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 const Header = React.memo(({ onMenuClick }) => {
   const title = usePageTitleStore((state) => state.title);
@@ -32,31 +37,11 @@ const Header = React.memo(({ onMenuClick }) => {
     "/images/profile.png";
 
   // Mock notifications
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "New task assigned to you", time: "5 min ago", read: false },
-    {
-      id: 2,
-      text: "Project deadline approaching",
-      time: "1 hour ago",
-      read: false,
-    },
-    { id: 3, text: "Client message received", time: "2 hours ago", read: true },
-    {
-      id: 4,
-      text: "Payment received from client",
-      time: "Yesterday",
-      read: false,
-    },
-    {
-      id: 5,
-      text: "Team member completed task",
-      time: "2 days ago",
-      read: true,
-    },
-  ]);
+  const { data: notifications = [] } = useGetNotifications();
+  const markRead = useMarkAllAsRead();
 
   const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, read: true })));
+    markRead.mutate();
   };
 
   const handleLogout = () => {
@@ -98,7 +83,7 @@ const Header = React.memo(({ onMenuClick }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
     <div className="flex justify-between items-center h-12 md:h-16 py-1 md:py-2 mx-2 rounded-lg bg-surface2 border-2 border-divider">
@@ -297,18 +282,20 @@ const Header = React.memo(({ onMenuClick }) => {
               <div className="max-h-80 overflow-y-auto">
                 {notifications.map((notif) => (
                   <div
-                    key={notif.id}
+                    key={notif._id}
                     className={`p-3 border-b border-divider hover:bg-divider cursor-pointer ${
-                      !notif.read ? "bg-divider/30" : ""
+                      !notif.isRead ? "bg-divider/30" : ""
                     }`}
                   >
                     <div className="flex items-start gap-2">
-                      {!notif.read && (
+                      {!notif.isRead && (
                         <div className="w-2 h-2 rounded-full bg-brand mt-1.5 flex-shrink-0"></div>
                       )}
                       <div className="flex-1">
-                        <p className="typo-b2 text-text">{notif.text}</p>
-                        <p className="typo-b3 text-text2 mt-1">{notif.time}</p>
+                        <p className="typo-b2 text-text">{notif.message}</p>
+                        <p className="typo-b3 text-text2 mt-1">
+                          {moment(notif.createdAt).fromNow()}
+                        </p>
                       </div>
                     </div>
                   </div>
