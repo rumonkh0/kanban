@@ -18,7 +18,7 @@ import {
   useOverviewFinance,
   useOverviewStat,
   useOverviewTasks,
-} from "../../../hooks/dashboard";
+} from "../../../hooks/useDashboard";
 import { useState } from "react";
 import { upFirst } from "../../../utils/utils";
 

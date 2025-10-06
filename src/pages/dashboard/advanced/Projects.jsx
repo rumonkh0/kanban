@@ -17,7 +17,7 @@ import {
   useProjectActivity,
   useProjectDeadline,
   useProjectStat,
-} from "../../../hooks/dashboard";
+} from "../../../hooks/useDashboard";
 import { useState } from "react";
 
 function Projects() {

@@ -18,7 +18,7 @@ import {
   useHrAccountStat,
   useHrStat,
   useMemberProject,
-} from "../../../hooks/dashboard";
+} from "../../../hooks/useDashboard";
 import { useState } from "react";
 import { Polyfills } from "tailwindcss";
 function Hr() {

@@ -87,7 +87,7 @@ function App() {
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="reset-password" element={<ResetPassword />} />
         <Route path="otp" element={<Otp />} />
-        <Route path="*" element={<NotFound />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Route>
       <Route element={<RoleBasedRoute roles={["Freelancer"]} />}>
         <Route path="/member" element={<RootLayout sidebar="member" />}>

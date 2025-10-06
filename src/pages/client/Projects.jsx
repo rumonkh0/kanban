@@ -71,9 +71,9 @@ function Projects() {
                         className="w-2 h-2  rounded-full"
                         style={{
                           backgroundColor:
-                            project.status === "Complete"
+                            project.status === "Completed"
                               ? "#8FC951"
-                              : project.status === "In Progress"
+                              : project.status === "Active"
                               ? "#5EB7E0"
                               : project.status === "On Hold"
                               ? "#A88AED"
@@ -81,7 +81,7 @@ function Projects() {
                               ? "#FEEF4D"
                               : project.status === "Overdue"
                               ? "#FE4E4D"
-                              : "#ddd", // default color
+                              : "#ddd",
                         }}
                       ></div>
                       <p className="typo-b3">{project.status}</p>
@@ -119,9 +119,11 @@ const ProgressBar = ({ value = 0, status, height = 4 }) => {
         style={{
           width: `${clamped}%`,
           backgroundColor:
-            status === "Complete"
+            status === "Completed"
               ? "#8FC951"
               : status === "In Progress"
+              ? "#5EB7E0"
+              : status === "Active"
               ? "#5EB7E0"
               : status === "On Hold"
               ? "#A88AED"

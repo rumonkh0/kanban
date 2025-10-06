@@ -244,3 +244,63 @@ export const useFinancePayment = (params) => {
     queryFn: () => dashboardApi.getFinancePayment(params),
   });
 };
+
+// =========================================================================
+// Client Section Hooks (Specific Client)
+// =========================================================================
+
+export const useClientSpecificStat = (clientId, params) => {
+  // The clientId is essential for the queryKey to ensure uniqueness
+  return useQuery({
+    queryKey: ["dashboard", "client", clientId, "stat", params],
+    queryFn: () => dashboardApi.getClientSpecificStat(clientId, params),
+    // Query disabled if clientId is missing
+    enabled: !!clientId,
+  });
+};
+
+export const useClientProjectStatusPie = (clientId, params) => {
+  return useQuery({
+    queryKey: ["dashboard", "client", clientId, "projectStatus", params],
+    queryFn: () => dashboardApi.getClientProjectStatusPie(clientId, params),
+    enabled: !!clientId,
+  });
+};
+
+export const useClientProjectPayment = (clientId, params) => {
+  return useQuery({
+    queryKey: ["dashboard", "client", clientId, "projectPayment", params],
+    queryFn: () => dashboardApi.getClientProjectPayment(clientId, params),
+    enabled: !!clientId,
+  });
+};
+
+// =========================================================================
+// Freelancer Section Hooks (Specific Freelancer)
+// =========================================================================
+
+export const useFreelancerStats = (freelancerId, params) => {
+  // The freelancerId is essential for the queryKey
+  return useQuery({
+    queryKey: ["dashboard", "freelancer", freelancerId, "stat", params],
+    queryFn: () => dashboardApi.getFreelancerStats(freelancerId, params),
+    enabled: !!freelancerId,
+  });
+};
+
+export const useFreelancerTaskSummary = (freelancerId, params) => {
+  return useQuery({
+    queryKey: ["dashboard", "freelancer", freelancerId, "taskSummary", params],
+    queryFn: () => dashboardApi.getFreelancerTaskSummary(freelancerId, params),
+    enabled: !!freelancerId,
+  });
+};
+
+export const useFreelancerEarningsStats = (freelancerId, params) => {
+  return useQuery({
+    queryKey: ["dashboard", "freelancer", freelancerId, "earnings", params],
+    queryFn: () =>
+      dashboardApi.getFreelancerEarningsStats(freelancerId, params),
+    enabled: !!freelancerId,
+  });
+};

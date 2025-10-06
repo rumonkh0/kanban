@@ -1,7 +1,7 @@
 import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
 import PageTitle from "../../components/PageTitle";
-import { usePrivate } from "../../hooks/dashboard";
+import { usePrivate } from "../../hooks/useDashboard";
 
 function Private() {
   const days = [

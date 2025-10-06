@@ -18,7 +18,7 @@ import {
   useFinanceByTime,
   useFinancePayment,
   useFinanceStat,
-} from "../../../hooks/dashboard";
+} from "../../../hooks/useDashboard";
 import { useState } from "react";
 
 function Finance() {

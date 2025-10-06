@@ -18,7 +18,7 @@ import {
   useTaskActivity,
   useTaskDeadline,
   useTaskStat,
-} from "../../../hooks/dashboard";
+} from "../../../hooks/useDashboard";
 import { useState } from "react";
 
 function Tasks() {

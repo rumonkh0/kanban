@@ -16,17 +16,41 @@ import {
   PieChart,
   Pie,
 } from "recharts";
+import {
+  useFreelancerEarningsStats,
+  useFreelancerStats,
+  useFreelancerTaskSummary,
+} from "../../hooks/useDashboard";
+import { useAuthStore } from "../../stores/authStore";
+import { useState } from "react";
 function Dashboard() {
-  const task = [
-    { name: "Completed", value: 500, color: "#8FC951" },
-    { name: "Active", value: 250, color: "#5EB7E0" },
-    { name: "Overdue", value: 4000, color: "#FE4E4D" },
-  ];
-  const earning = [
-    { name: "Earning", value: 500, color: "#8FC951" },
-    { name: "Owed", value: 4000, color: "#A88AED" },
-    { name: "Paid", value: 250, color: "#5EB7E0" },
-  ];
+  const [taskPill, setTaskPill] = useState("week");
+  const freelancerId = useAuthStore((state) => state.user.user._id);
+  const { data: stats } = useFreelancerStats(freelancerId);
+  const {
+    totalEarnings = 0,
+    totalPaid = 0,
+    totalOwed = 0,
+    totalTasks = 0,
+    totalDueTasks = 0,
+    totalOverdueTasks = 0,
+    totalCompletedTasks = 0,
+  } = stats || {};
+  const { data: tasksData } = useFreelancerTaskSummary(freelancerId);
+  const tasks = tasksData?.[taskPill] || [];
+  const totalTask = tasks.reduce((sum, d) => sum + d.value, 0);
+  const statColor = {
+    Active: "#5EB7E0",
+    Complete: "#8FC951",
+    Overdue: "#FE4E4D",
+  };
+  const { data: earningsData = [] } = useFreelancerEarningsStats(freelancerId);
+  const earningColor = {
+    "Total Earnings": "#8FC951",
+    "Total Owed": "#A88AED",
+    "Total Paid": "#5EB7E0",
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
@@ -34,28 +58,37 @@ function Dashboard() {
         <MetricCard
           title="Total Earnings:"
           growth={23}
-          value="$3000"
+          value={totalEarnings}
           desc="Month"
         />
         <MetricCard
           title="Amount Paid:"
           growth={23}
-          value="$3000"
+          value={totalPaid}
           desc="Month"
         />
         <MetricCard
           title="Amount Owed:"
           growth={23}
-          value="$3000"
+          value={totalOwed}
           desc="Month"
         />
-        <MetricCard title="Total Task:" growth={23} value="3" desc="Month" />
-        <MetricCard title="Active Task:" growth={23} value="2" />
-        <MetricCard title="Overdue Task:" growth={23} value="-----" />
+        <MetricCard
+          title="Total Task:"
+          growth={23}
+          value={totalTasks}
+          desc="Month"
+        />
+        <MetricCard title="Active Task:" growth={23} value={totalDueTasks} />
+        <MetricCard
+          title="Overdue Task:"
+          growth={23}
+          value={totalOverdueTasks}
+        />
         <MetricCard
           title="Complete Task:"
           growth={23}
-          value="$3"
+          value={totalCompletedTasks}
           desc="Month"
         />
       </div>
@@ -65,15 +98,15 @@ function Dashboard() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
-              primaryLabel="Amount Owed"
-              keyValue="$5,400"
-              secondaryLabel="To team"
+              primaryLabel="Total Task"
+              keyValue={totalTask}
+              secondaryLabel={`in ${taskPill}`}
             />
 
             <ToggleTabs
-              options={["Month", "Project Based"]}
+              options={["Week", "Month", "Year"]}
               defaultValue="Month"
-              onChange={(val) => console.log("Selected:", val)}
+              onChange={(val) => setTaskPill(val.toLowerCase())}
             />
           </div>
 
@@ -82,19 +115,19 @@ function Dashboard() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={task}
+                  data={tasks}
                   dataKey="value"
-                  nameKey="name"
+                  nameKey="key"
                   cx="50%"
                   cy="50%"
                   innerRadius={0}
                   stroke="none"
                   outerRadius="90%"
                   paddingAngle={0}
-                  label={({ name, value }) => `${name} ${value}`}
+                  label={({ key, value }) => `${key} ${value}`}
                 >
-                  {task.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
+                  {tasks.map((entry, index) => (
+                    <Cell key={index} fill={statColor[entry.key]} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -107,19 +140,17 @@ function Dashboard() {
 
           {/* Legend */}
           <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-            {task.map((item) => {
+            {tasks.map((item) => {
               return (
                 <div
-                  key={item.name}
+                  key={item.key}
                   className="flex items-center gap-1 md:gap-2"
                 >
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: statColor[item.key] }}
                   ></div>
-                  <span className="typo-b3 text-xs md:text-sm">
-                    {item.name}
-                  </span>
+                  <span className="typo-b3 text-xs md:text-sm">{item.key}</span>
                 </div>
               );
             })}
@@ -131,22 +162,17 @@ function Dashboard() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
-              primaryLabel="This Month’s Revenue"
-              keyValue="$5,400"
-              secondaryLabel="+12% vs last month"
+              primaryLabel="Total Enrings"
+              keyValue={earningsData[0]?.["Total Earnings"] || 0}
+              // secondaryLabel="+12% vs last month"
             />
 
             <div className="flex gap-2 flex-wrap">
-              <FilterDropdown
+              {/* <FilterDropdown
                 label="Select Project"
                 options={["project one", "project two", "project three"]}
                 className="h-7.5"
-              />
-              <ToggleTabs
-                options={["Week", "Month", "Year"]}
-                defaultValue="Week"
-                onChange={(val) => console.log("Selected:", val)}
-              />
+              /> */}
             </div>
           </div>
 
@@ -154,11 +180,11 @@ function Dashboard() {
           <div className="flex-1 min-h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={earning}
+                data={earningsData}
                 margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
               >
                 <XAxis
-                  dataKey="name"
+                  dataKey="key"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: "#7B7B7B", dy: 16 }}
@@ -175,8 +201,12 @@ function Dashboard() {
                 />
 
                 <Bar dataKey="value" barSize={60} radius={[4, 4, 4, 4]}>
-                  {earning.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} cursor="none" />
+                  {earningsData.map((entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={earningColor[entry.key]}
+                      cursor="none"
+                    />
                   ))}
                 </Bar>
               </BarChart>
@@ -185,21 +215,19 @@ function Dashboard() {
 
           {/* Legend */}
           <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-            {earning.map((item) => {
+            {earningsData.map((item) => {
               return (
                 <div
-                  key={item.name}
+                  key={item.key}
                   className="flex items-center gap-1 md:gap-2"
                 >
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{
-                      backgroundColor: item.color,
+                      backgroundColor: earningColor[item.key],
                     }}
                   ></div>
-                  <span className="typo-b3 text-xs md:text-sm">
-                    {item.name}
-                  </span>
+                  <span className="typo-b3 text-xs md:text-sm">{item.key}</span>
                 </div>
               );
             })}

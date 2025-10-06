@@ -137,4 +137,74 @@ export const dashboardApi = {
     });
     return response.data.data;
   },
+
+  // =========================================================================
+  // Client Section Services (Specific Client)
+  // =========================================================================
+
+  /**
+   * Fetches overall project statistics for a specific client.
+   * Maps to GET /client/:clientId/clientstat
+   */
+  getClientSpecificStat: async (clientId, params) => {
+    // Note: clientId is passed directly in the URL path
+    const response = await apiClient.get(
+      `/dashboard/client/${clientId}/clientstat`,
+      { params }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Fetches project status breakdown (e.g., pie chart data) for a specific client.
+   * Maps to GET /client/:clientId/clientproject
+   */
+  getClientProjectStatusPie: async (clientId, params) => {
+    const response = await apiClient.get(
+      `/dashboard/client/${clientId}/clientproject`,
+      { params }
+    );
+    return response.data.data;
+  },
+
+  /**
+   * Fetches payment and due summary for projects associated with a specific client.
+   * Maps to GET /client/:clientId/clientpayment
+   */
+  getClientProjectPayment: async (clientId, params) => {
+    const response = await apiClient.get(
+      `/dashboard/client/${clientId}/clientpayment`,
+      { params }
+    );
+    return response.data.data;
+  },
+
+  // =========================================================================
+  // Freelancer Section Services (Specific Freelancer)
+  // =========================================================================
+
+  getFreelancerStats: async (freelancerId, params) => {
+    // Note: freelancerId is passed directly in the URL path
+    const response = await apiClient.get(
+      `/dashboard/freelancer/${freelancerId}/freelancerstat`,
+      { params }
+    );
+    return response.data.data;
+  },
+
+  getFreelancerTaskSummary: async (freelancerId, params) => {
+    const response = await apiClient.get(
+      `/dashboard/freelancer/${freelancerId}/freelancertask`,
+      { params }
+    );
+    return response.data.data;
+  },
+
+  getFreelancerEarningsStats: async (freelancerId, params) => {
+    const response = await apiClient.get(
+      `/dashboard/freelancer/${freelancerId}/freelancerearning`,
+      { params }
+    );
+    return response.data.data;
+  },
 };

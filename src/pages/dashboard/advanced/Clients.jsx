@@ -18,7 +18,7 @@ import {
   useClientPayment,
   useClientProject,
   useClientStat,
-} from "../../../hooks/dashboard";
+} from "../../../hooks/useDashboard";
 import { useState } from "react";
 function AdminClientDashboard() {
   const [projectPill, setProjectPill] = useState("week");
