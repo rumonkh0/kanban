@@ -75,7 +75,7 @@ function Tasks() {
       })),
     },
     {
-      key: "client",
+      key: "project",
       label: "Select Project",
       options: projectsData?.map((project) => ({
         value: project._id,

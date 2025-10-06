@@ -78,7 +78,7 @@ export const projectsApi = {
 
   getActivity: async (projectId) => {
     const response = await apiClient.get(
-      `/projects/${projectId}/projectactivity`
+      `/projectactivity/project/${projectId}`
     );
     if (response.data?.success) return response.data.data;
     throw new Error(response.data?.message || "Failed to remove member");

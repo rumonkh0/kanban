@@ -6,7 +6,6 @@ import { ChartHeader } from "@/components/Component";
 import { Link, useParams } from "react-router";
 import { Edit } from "../../components/Icon";
 import { useClientDetails } from "../../hooks/useClients";
-const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ClientDetails() {
   const { id } = useParams();
@@ -27,11 +26,6 @@ function ClientDetails() {
     "Total Paid": "#8FC951",
     "Total Due": "#FE4E4D",
   };
-  // console.log(client.statusCounts, data);
-
-  const imageUrl = client?.profilePicture?.filePath
-    ? `${baseURL}/${client.profilePicture.filePath}`
-    : "/images/profile.png";
 
   if (isLoading) return <div>Client Data Loading</div>;
   return (
@@ -39,7 +33,7 @@ function ClientDetails() {
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
         <PersonCard
-          image={imageUrl}
+          image={client.profilePicture}
           name={client.name}
           designation={client.role}
           // active={true}
@@ -191,7 +185,7 @@ function ClientDetails() {
                   label={({ key, value }) => `${key} : $${value}`}
                   // labelLine={false}
                 >
-                  {console.log(paymentColor[client.paymentStatus[0].key])}
+                  {/* {console.log(paymentColor[client.paymentStatus[0].key])} */}
                   {client?.paymentStatus.map((entry, index) => (
                     <Cell key={index} fill={paymentColor[entry.key]} />
                   ))}

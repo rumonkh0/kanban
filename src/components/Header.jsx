@@ -120,7 +120,7 @@ const Header = React.memo(({ onMenuClick }) => {
       <div className="flex items-center space-x-1 md:space-x-4 mr-2 md:mr-4">
         {/* Search bar - Desktop */}
         <div className="hidden xl:flex relative" ref={searchRef}>
-          <div className="w-60 md:w-100 h-10 md:h-12 border-1 border-divider rounded-lg flex items-center px-2 md:px-3 gap-2">
+          {/* <div className="w-60 md:w-100 h-10 md:h-12 border-1 border-divider rounded-lg flex items-center px-2 md:px-3 gap-2">
             <Icon name="search" size={18} />
             <input
               type="text"
@@ -128,10 +128,10 @@ const Header = React.memo(({ onMenuClick }) => {
               onFocus={() => setOpenSearch(true)}
               className="flex-1 typo-b3 text-text2 focus:outline-none placeholder:text-text2 bg-transparent"
             />
-          </div>
+          </div> */}
 
           {/* Search Type Dropdown */}
-          {openSearch && (
+          {/* {openSearch && (
             <div className="absolute top-full left-0 mt-1 w-full bg-surface2 border border-divider rounded-lg shadow-lg z-50 overflow-hidden">
               <div
                 onClick={() => {
@@ -161,20 +161,20 @@ const Header = React.memo(({ onMenuClick }) => {
                 Search Clients
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Search icon - Mobile with dropdown */}
         <div className="xl:hidden relative" ref={mobileSearchRef}>
-          <div
+          {/* <div
             onClick={() => setOpenMobileSearch(!openMobileSearch)}
             className="w-8 h-8 md:w-10 md:h-10 border-1 border-divider rounded-lg flex justify-center items-center cursor-pointer hover:bg-divider"
           >
             <Icon name="search" size={18} />
-          </div>
+          </div> */}
 
           {/* Mobile Search Dropdown */}
-          {openMobileSearch && (
+          {/* {openMobileSearch && (
             <div className="absolute top-full right-0 mt-1 w-64 bg-surface2 border border-divider rounded-lg shadow-lg z-50 p-3">
               <div className="flex flex-col gap-2">
                 <input
@@ -222,7 +222,7 @@ const Header = React.memo(({ onMenuClick }) => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Plus button with dropdown */}

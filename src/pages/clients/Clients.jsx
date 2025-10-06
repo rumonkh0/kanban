@@ -39,13 +39,13 @@ function Clients() {
             className="h-8 w-full sm:w-auto"
           />
 
-          <FilterDropdown
+          {/* <FilterDropdown
             label="Select Match"
             options={["Match 1", "Match 2", "Match 3"]}
             value={filters.match}
             onSelect={(value) => handleFilterChange("match", value)}
             className="h-8 w-full sm:w-auto"
-          />
+          /> */}
         </div>
       </div>
 

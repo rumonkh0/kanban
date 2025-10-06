@@ -20,6 +20,7 @@ import {
   useMemberProject,
 } from "../../../hooks/dashboard";
 import { useState } from "react";
+import { Polyfills } from "tailwindcss";
 function Hr() {
   const [projectPill, setProjectPill] = useState("week");
   const { data: hrStat } = useHrStat();
@@ -30,6 +31,7 @@ function Hr() {
   } = hrStat || {};
 
   const { data: hraccountstat } = useHrAccountStat();
+
   const statusColor = {
     active: "#8FC951",
     inactive: "#A88AED",
@@ -73,9 +75,9 @@ function Hr() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
-              primaryLabel="This Month’s Revenue"
-              keyValue="$5,400"
-              secondaryLabel="+12% vs last month"
+              primaryLabel="Total Members"
+              keyValue={totalMembers}
+              secondaryLabel="Members"
             />
             {/* <ToggleTabs
               options={["Month", "Project Based"]}
@@ -152,8 +154,8 @@ function Hr() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Total Tasks:"
-              keyValue="32"
-              secondaryLabel="This month"
+              keyValue={projectsData?.summary[projectPill]}
+              secondaryLabel={`This ${projectPill}`}
             />
             <ToggleTabs
               options={["Week", "Month", "Year"]}

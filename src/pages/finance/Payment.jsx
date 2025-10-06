@@ -8,11 +8,11 @@ import { Link, useParams } from "react-router";
 import {
   Dropdown,
   FilterDropdown,
-  FormatDate,
   ImageName,
   RedButton,
 } from "../../components/Component";
 import { useDeletePaidFrom, usePaidFroms } from "../../hooks/useFinance";
+import { FormatDate } from "../../utils/utils";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Payment({ from }) {

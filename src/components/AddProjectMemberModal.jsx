@@ -20,7 +20,7 @@ function AddProjectMemberModal({ onClose }) {
   }, [members]);
 
   return (
-    <div className="w-full max-w-[800px] p-4 bg-surface rounded-lg border typo-b2 border-divider mx-auto mt-40 sm:my-8 md:my-12">
+    <div className="w-full md:min-w-150 max-w-[800px] p-4 bg-surface rounded-lg border typo-b2 border-divider mx-auto mt-40 sm:my-8 md:my-12">
       {/* Header */}
       <div className="pb-4 border-b-2 border-divider flex justify-between items-center">
         <h2 className="typo-h4">Add Project Member</h2>

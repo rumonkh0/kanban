@@ -33,6 +33,8 @@ function Finance() {
   ];
   const { data: financeByTime } = useFinanceByTime();
   const earnings = financeByTime?.[earningPill] || [];
+  const tearn = earnings.reduce((sum, d) => sum + d.value, 0);
+
   const { data: payments } = useFinancePayment();
   const TeamPayment = [
     { key: "Paid", value: payments?.totalPaidToMembers },
@@ -106,8 +108,8 @@ function Finance() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="This Month’s Earnings:"
-              keyValue="$9,000"
-              secondaryLabel="+12% vs last month"
+              keyValue={`$${tearn}`}
+              secondaryLabel={`last ${earningPill}`}
             />
             <ToggleTabs
               options={["Week", "Month", "Year"]}
@@ -322,7 +324,7 @@ function Finance() {
             <ChartHeader
               primaryLabel="This Month’s Revenue"
               keyValue={`$${revenue}`}
-              secondaryLabel="+12% vs last month"
+              // secondaryLabel="+12% vs last month"
             />
             {/* <ToggleTabs
               options={["Month", "Project Based"]}

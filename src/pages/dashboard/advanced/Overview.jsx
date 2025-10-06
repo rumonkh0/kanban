@@ -20,6 +20,7 @@ import {
   useOverviewTasks,
 } from "../../../hooks/dashboard";
 import { useState } from "react";
+import { upFirst } from "../../../utils/utils";
 
 function Overview() {
   const [taskPill, setTaskPill] = useState("week");
@@ -55,9 +56,10 @@ function Overview() {
 
   const { data: taskData } = useOverviewTasks();
   const tasks = taskData?.[taskPill] || [];
+
   const { data: deadlineData } = useOverviewDeadline();
   const deadlines = deadlineData?.[deadlinePill] || [];
-  // console.log(deadlines);
+  const totalDeadline = deadlines.reduce((sum, d) => sum + d.DeadlineCount, 0);
   const projects = [
     {
       client: "Gustave KoeIpin",
@@ -320,7 +322,7 @@ function Overview() {
                 <Pie
                   data={TeamPayment}
                   dataKey="value"
-                  nameKey="name"
+                  nameKey="key"
                   cx="50%"
                   cy="50%"
                   innerRadius={0}
@@ -334,7 +336,7 @@ function Overview() {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value) => `$${value}`}
+                  formatter={(value, name) => [`$${value}`, upFirst(name)]}
                   contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
                 />
               </PieChart>
@@ -354,7 +356,7 @@ function Overview() {
                     style={{ backgroundColor: paymentColor[item.key] }}
                   ></div>
                   <span className="typo-b3 text-xs md:text-sm">
-                    {item.key}: {item.value}
+                    {upFirst(item.key)}: {item.value}
                   </span>
                 </div>
               );
@@ -368,8 +370,8 @@ function Overview() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Total Tasks:"
-              keyValue="32"
-              secondaryLabel="This month"
+              keyValue={taskData?.summary[taskPill]}
+              secondaryLabel={`This ${taskPill}`}
             />
             <ToggleTabs
               options={["Week", "Month", "Year"]}
@@ -449,8 +451,8 @@ function Overview() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Deadlines"
-              keyValue="4"
-              secondaryLabel="Project Deadlines Today"
+              keyValue={totalDeadline}
+              secondaryLabel={`Project Deadlines this ${deadlinePill}`}
             />
             <div className="flex gap-2 flex-wrap">
               <ToggleTabs

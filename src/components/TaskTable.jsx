@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import Icon from "@/components/Icon";
-import { FormatDate, Table, Td, Th, Thead } from "./Component";
+import { Table, Td, Th, Thead } from "./Component";
 import { useTasks } from "../hooks/useTasks";
 import Modal from "./Modal";
 import TaskModal from "./TaskModal";
 import DropdownMenu from "./DropdownMenu";
+import { FormatDate } from "../utils/utils";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ClientTable() {
@@ -46,7 +47,7 @@ function ClientTable() {
             />
             <Td>
               <div>
-                <div className="flex gap-4 w-fit">
+                <div className="flex gap-4 ">
                   <div>{task.stage.title}</div>
                   <div className="typo-b3 border border-text2 rounded-sm flex items-center gap-2 px-2.5">
                     <p
@@ -91,9 +92,9 @@ function ClientTable() {
             </Td>
             {/* <Td data={`null`} /> */}
             <Td>
-              <div className="w-31 h-10 flex items-center justify-center gap-2 border border-text2 rounded-sm">
+              <div className="w-35 h-10 flex items-center justify-center gap-2 border border-text2 rounded-sm">
                 <div
-                  className={`w-2 h-2 rounded-full ${
+                  className={`w-2 h-2 ml-2 rounded-full ${
                     task.status === "Completed" ? "bg-success" : "bg-blue-500"
                   }`}
                 ></div>

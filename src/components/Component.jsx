@@ -17,7 +17,7 @@ export const RedButton = ({
   return (
     <button
       onClick={onClick}
-      className={` py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${
+      className={` py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${disabled && "bg-brand/50"} ${
         className || "px-4"
       }`}
       disabled={disabled}
@@ -48,16 +48,6 @@ export const Back = ({ children }) => {
       {children}
     </div>
   );
-};
-
-export const FormatDate = (date) => {
-  if (!date) return "";
-  const d = new Date(date);
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 };
 
 export const ChartHeader = ({ primaryLabel, keyValue, secondaryLabel }) => {

@@ -51,7 +51,7 @@ function Projects() {
 
   const { data: projectDeadline } = useProjectDeadline();
   const deadlines = projectDeadline?.[deadlinePill] || [];
-
+  const totalDeadlines = deadlines.reduce((sum, d) => sum + d.DeadlineCount, 0);
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
@@ -93,8 +93,8 @@ function Projects() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Total Projects:"
-              keyValue="72"
-              secondaryLabel="Projects of This month"
+              keyValue={projectActivity?.summary[projectPill]}
+              secondaryLabel={`Projects of This ${projectPill}`}
             />
             <div className="flex gap-2 flex-wrap">
               <ToggleTabs
@@ -208,7 +208,10 @@ function Projects() {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value) => `${value}%`}
+                  formatter={(value, name, props) => [
+                    `${value}%`,
+                    props.payload.Key,
+                  ]}
                   contentStyle={{ backgroundColor: "#F3F4F6", borderRadius: 8 }}
                 />
               </PieChart>
@@ -242,8 +245,8 @@ function Projects() {
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
               primaryLabel="Deadlines"
-              keyValue="4"
-              secondaryLabel="Project Deadlines Today"
+              keyValue={totalDeadlines}
+              secondaryLabel={`Project Deadlines ${deadlinePill}`}
             />
             <div className="flex gap-2 flex-wrap">
               <ToggleTabs

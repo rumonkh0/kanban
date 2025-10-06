@@ -35,7 +35,7 @@ function AdminClientDashboard() {
   const { data: clientProjectData } = useClientProject();
   const clientProject = clientProjectData && clientProjectData[projectPill];
 
-  console.log(clientProject);
+  // console.log(clientProjectData);
 
   return (
     <div className="flex flex-col gap-4">
@@ -112,8 +112,10 @@ function AdminClientDashboard() {
           </div>
           <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
             {clientsPay.map((item) => {
-              {/* const total = clientsPay.reduce((sum, d) => sum + d.value, 0);
-              const percentage = ((item.value / total) * 100).toFixed(0); */}
+              {
+                /* const total = clientsPay.reduce((sum, d) => sum + d.value, 0);
+              const percentage = ((item.value / total) * 100).toFixed(0); */
+              }
 
               return (
                 <div
@@ -124,9 +126,7 @@ function AdminClientDashboard() {
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: paymentColor[item.key] }}
                   ></div>
-                  <span className="typo-b3 text-xs md:text-sm">
-                    {item.key}
-                  </span>
+                  <span className="typo-b3 text-xs md:text-sm">{item.key}</span>
                 </div>
               );
             })}
@@ -141,8 +141,8 @@ function AdminClientDashboard() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
-              primaryLabel="Total Clients"
-              keyValue="7"
+              primaryLabel="Total Projects of client"
+              keyValue={clientProjectData?.summary[projectPill]}
               secondaryLabel=""
             />
             <div className="flex gap-2 flex-wrap">

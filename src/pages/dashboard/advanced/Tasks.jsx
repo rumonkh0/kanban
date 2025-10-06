@@ -37,6 +37,7 @@ function Tasks() {
 
   const { data: taskDeadline } = useTaskDeadline();
   const deadlines = taskDeadline?.[deadlinePill] || [];
+  const totalDeadline = deadlines.reduce((sum, d) => sum + d.DeadlineCount, 0);
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
@@ -73,9 +74,9 @@ function Tasks() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
-              primaryLabel="Total Tasks:"
-              keyValue="32"
-              secondaryLabel="This month"
+              primaryLabel="Total Tasks"
+              keyValue={taskActivity?.summary[taskPill]}
+              secondaryLabel={`This ${taskPill}`}
             />
             <ToggleTabs
               options={["Week", "Month", "Year"]}
@@ -154,9 +155,9 @@ function Tasks() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
             <ChartHeader
-              primaryLabel="Tasks Due:"
-              keyValue="4"
-              secondaryLabel="Due task today"
+              primaryLabel="Tasks Due"
+              keyValue={totalDeadline}
+              secondaryLabel={`Due task ${deadlinePill}`}
             />
             <ToggleTabs
               options={["Week", "Month", "Year"]}

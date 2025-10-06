@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Bin, Pin } from "../../components/Icon";
 import {
   FilterDropdown,
-  FormatDate,
   ImageName,
   RedButton,
   Td,
@@ -13,6 +12,7 @@ import {
 } from "../../components/Component";
 import { useDeleteProject, useProjects } from "../../hooks/useProjects";
 import { useClients } from "../../hooks/useClients";
+import { FormatDate } from "../../utils/utils";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function Projects() {
@@ -68,7 +68,7 @@ function Projects() {
   const menuItems = (id) => [
     { label: "View", href: `/projects/${id}/manage` },
     { label: "Edit", href: `/projects/${id}/edit` },
-    { label: "Duplicate" },
+    // { label: "Duplicate" },
     { label: "Public Task Board", href: `/projects/${id}/manage/tasks` },
     { label: "Pin Project", onClick: () => handleDelete(id) },
     { label: "Archive", onClick: () => handleDelete(id) },

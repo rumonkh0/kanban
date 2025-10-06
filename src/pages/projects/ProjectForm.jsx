@@ -20,6 +20,7 @@ import {
 } from "../../hooks/useProjects";
 import { useTeamMembers } from "../../hooks/useTeam";
 import { useClients } from "../../hooks/useClients";
+import { toast } from "react-toastify";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
@@ -41,7 +42,6 @@ function ProjectForm({ edit, title = "Add Project" }) {
     ganttChart: true,
     taskBoard: true,
     taskApproval: false,
-    status: "In Progress",
     progress: 0,
     calculateProgress: false,
     projectPrice: "",
@@ -127,15 +127,66 @@ function ProjectForm({ edit, title = "Add Project" }) {
     }
     console.log(submitData);
     if (edit) {
-      updateMutation.mutate(submitData);
+      toast.promise(
+        updateMutation.mutateAsync(submitData),
+        {
+          pending: "Updating Project",
+          success: "Project Updated",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Update Project.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     } else {
-      createMutation.mutate(submitData);
+      toast.promise(
+        createMutation.mutateAsync(submitData),
+        {
+          pending: "Creating Project",
+          success: "Project Created",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Create Project.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     }
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this project?")) {
-      deleteMutation.mutate(id);
+      toast.promise(
+        deleteMutation.mutateAsync(id),
+        {
+          pending: "Deleting Project",
+          success: "Project Deleted",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Delete Project.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     }
   };
 
@@ -157,7 +208,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
         ganttChart: projectData.ganttChart || true,
         taskBoard: projectData.taskBoard || true,
         taskApproval: projectData.taskApproval || false,
-        status: projectData.status || "In Progress",
+        status: projectData.status,
         progress: projectData.progress ?? 0,
         calculateProgress: projectData.calculateProgress ?? false,
         projectPrice: projectData.projectPrice ?? null,
@@ -193,7 +244,6 @@ function ProjectForm({ edit, title = "Add Project" }) {
         ganttChart: "Enable",
         taskBoard: "Enable",
         taskApproval: "Disable",
-        status: "In Progress",
         progress: 0,
         calculateProgress: false,
         projectPrice: "",
@@ -207,7 +257,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
       });
       setRelatedFile(null);
     } else {
-      if (iscreated) navigate("/projects");
+      if (iscreated) navigate(-1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);

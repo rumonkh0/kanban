@@ -10,11 +10,10 @@ import {
   ImageName,
   Td,
   Th,
-  // Import FormatDate from the first file for consistency
-  FormatDate,
   RedButton,
 } from "../../components/Component";
 import { useDeletePaidTo, usePaidTos } from "../../hooks/useFinance";
+import { FormatDate } from "../../utils/utils";
 
 // Define baseURL if the paidTo data also includes image paths
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";

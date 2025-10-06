@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { RedButton } from "./Component";
 
 function AddCardModal({ onCreate, onEdit, data }) {
-  const [title, setTitle] = useState(data.cardTitle || "");
-  const [color, setColor] = useState(data.color || "#7B7B7B");
+  const [title, setTitle] = useState(data?.cardTitle || "");
+  const [color, setColor] = useState(data?.color || "#7B7B7B");
 
   const colors = ["#7B7B7B", "#FE4E4D", "#8FC951", "#5EB7E0", "#A88AED"];
 
