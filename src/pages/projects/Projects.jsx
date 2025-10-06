@@ -22,6 +22,7 @@ function Projects() {
     match: null,
     client: null,
     pin: false,
+    archive: false,
   });
   const { data: clientsData } = useClients();
 
@@ -31,11 +32,11 @@ function Projects() {
       label: "Status",
       options: ["Active", "Inactive", "Pending"],
     },
-    {
-      key: "match",
-      label: "Select Match",
-      options: ["Match 1", "Match 2", "Match 3"],
-    },
+    // {
+    //   key: "match",
+    //   label: "Select Match",
+    //   options: ["Match 1", "Match 2", "Match 3"],
+    // },
     {
       key: "client",
       label: "Select Client",
@@ -94,7 +95,12 @@ function Projects() {
               Add New Project
             </RedButton>
           </Link>
-          <div className="w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60">
+          <div
+            onClick={() => handleFilterChange("pin", !filters.archive)}
+            className={`w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60 ${
+              filters.archive ? "border-brand" : ""
+            }`}
+          >
             <Bin className="text-text2 " />
           </div>
           <div

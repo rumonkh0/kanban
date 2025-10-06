@@ -163,7 +163,7 @@ function ClientForm({ edit, title = "Add Client" }) {
       setFormData({
         salutation: "",
         category: "",
-        gender: "",
+        gender: null,
         name: "",
         email: "",
         country: "",
@@ -442,7 +442,6 @@ function ClientForm({ edit, title = "Add Client" }) {
                   >
                     <option>Active</option>
                     <option>Inactive</option>
-                    <option>Suspended</option>
                   </select>
                   <Icon
                     name="arrow"

@@ -233,17 +233,17 @@ function ProjectForm({ edit, title = "Add Project" }) {
       setFormData({
         shortCode: "",
         projectName: "",
-        startDate: "",
+        startDate: new Date().toISOString().split("T")[0],
         dueDate: "",
-        noDeadline: false,
+        noDeadline: true,
         service: null,
         departments: [],
         client: null,
         members: [],
         summary: "",
-        ganttChart: "Enable",
-        taskBoard: "Enable",
-        taskApproval: "Disable",
+        ganttChart: true,
+        taskBoard: true,
+        taskApproval: false,
         progress: 0,
         calculateProgress: false,
         projectPrice: "",
@@ -253,7 +253,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
         amountOwedByClient: "",
         amountPaidToTeam: "",
         amountOwedToTeam: "",
-        notifyClients: false,
+        notifyClients: true,
       });
       setRelatedFile(null);
     } else {
