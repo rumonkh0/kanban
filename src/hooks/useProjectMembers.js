@@ -2,11 +2,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectMembersApi } from "../services/projectMembers";
 
 // 🔹 Get all members of a project
-export const useProjectMembers = (projectId) => {
+export const useProjectMembers = (params) => {
   return useQuery({
-    queryKey: ["projectMembers", projectId],
-    queryFn: () => projectMembersApi.getAll(projectId),
-    enabled: !!projectId, // only run if projectId is provided
+    queryKey: ["projectMembers"],
+    queryFn: () => projectMembersApi.getAll(params),
   });
 };
 

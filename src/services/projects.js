@@ -15,6 +15,13 @@ export const projectsApi = {
     throw new Error(response.data?.message || "Failed to fetch project");
   },
 
+  // Get single project
+  getDetails: async (id) => {
+    const response = await apiClient.get(`/projects/${id}/details`);
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || "Failed to fetch project");
+  },
+
   // Create new project
   create: async (data) => {
     const response = await apiClient.post("/projects", data, {

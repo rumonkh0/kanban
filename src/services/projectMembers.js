@@ -2,8 +2,8 @@ import apiClient from "../lib/axios";
 
 export const projectMembersApi = {
   // Get all members of a project
-  getAll: async () => {
-    const response = await apiClient.get(`/projectmembers`);
+  getAll: async (params) => {
+    const response = await apiClient.get(`/projectmembers`, { params });
     if (response.data?.success) return response.data.data;
     throw new Error(
       response.data?.message || "Failed to fetch project members"

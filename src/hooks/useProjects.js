@@ -16,6 +16,13 @@ export const useProject = (id) => {
     enabled: !!id,
   });
 };
+export const useProjectDetails = (id) => {
+  return useQuery({
+    queryKey: ["project", id],
+    queryFn: () => projectsApi.getDetails(id),
+    enabled: !!id,
+  });
+};
 
 export const useCreateProject = () => {
   const queryClient = useQueryClient();

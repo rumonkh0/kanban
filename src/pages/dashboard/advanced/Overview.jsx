@@ -12,7 +12,13 @@ import {
   Pie,
 } from "recharts";
 import { ChartHeader } from "@/components/Component";
-import { FilterDropdown, ToggleTabs } from "../../../components/Component";
+import {
+  FilterDropdown,
+  ImageName,
+  Td,
+  Th,
+  ToggleTabs,
+} from "../../../components/Component";
 import {
   useOverviewDeadline,
   useOverviewFinance,
@@ -21,8 +27,11 @@ import {
 } from "../../../hooks/useDashboard";
 import { useState } from "react";
 import { upFirst } from "../../../utils/utils";
+import { useProjectMembers } from "../../../hooks/useProjectMembers";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Overview() {
+  const { data: assignedMembers } = useProjectMembers({ limit: 8 });
   const [taskPill, setTaskPill] = useState("week");
   const [deadlinePill, setDeadlinePill] = useState("week");
   const { data: stat } = useOverviewStat();
@@ -60,62 +69,6 @@ function Overview() {
   const { data: deadlineData } = useOverviewDeadline();
   const deadlines = deadlineData?.[deadlinePill] || [];
   const totalDeadline = deadlines.reduce((sum, d) => sum + d.DeadlineCount, 0);
-  const projects = [
-    {
-      client: "Gustave KoeIpin",
-      project: "Branding Redesign",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Professional WordPress Website",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Basic Logo Package",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Basic Logo Package",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Starter Deck",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "One-Page WordPress Website",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Branding Redesign",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Branding Redesign",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-    {
-      client: "Gustave KoeIpin",
-      project: "Branding Redesign",
-      teamMembers: "Gustave KoeIpin",
-      status: "Complete",
-    },
-  ];
 
   const activities = [
     {
@@ -220,7 +173,7 @@ function Overview() {
             <ChartHeader
               primaryLabel="This Month’s Revenue"
               keyValue={`$${revenue}`}
-              secondaryLabel="+12% vs last month"
+              // secondaryLabel="+12% vs last month"
             />
             {/* <ToggleTabs
                      options={["Month", "Project Based"]}
@@ -527,66 +480,55 @@ function Overview() {
             <table className="min-w-full border-separate border-spacing-y-2 border-spacing-x-0">
               <thead className="table-header-group after:content-[''] after:block after:h-1">
                 <tr className="text-left">
-                  <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
-                    Client
-                  </th>
-                  <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
-                    Project
-                  </th>
-                  <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
-                    Team Member
-                  </th>
-                  <th className="typo-b3 text-text2 px-2 md:px-4 text-xs md:text-sm">
-                    Status
-                  </th>
+                  <Th title="Client" />
+                  <Th title="Project" />
+                  <Th title="Team Member" />
+                  <Th title="Status" />
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project, index) => (
-                  <tr
-                    key={index}
-                    className="h-12 md:h-14 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
-                  >
-                    {/* Client */}
-                    <td className="py-2 px-2 md:px-4 first:rounded-l-[4px] bg-divider">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src="/images/profile.png"
-                          alt="client"
-                          className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover"
+                {assignedMembers?.length > 0 &&
+                  assignedMembers.map((member, index) => (
+                    <tr
+                      key={index}
+                      className="h-12 md:h-14 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+                    >
+                      {/* Client */}
+                      <Td className="first:rounded-l-[4px]">
+                        <ImageName
+                          image={
+                            member.project.client?.profilePicture
+                              ? `${baseURL}/${member.project.client.profilePicture.filePath}`
+                              : "/images/profile.png"
+                          }
+                          username={member.project.client.name}
                         />
-                        <span className="typo-b2 text-text text-xs md:text-sm truncate max-w-[300px]">
-                          {project.client}
+                      </Td>
+                      {/* member */}
+                      <Td className=" text-xs md:text-sm">
+                        <span className="truncate block max-w-[250px]">
+                          {member.project.projectName}
                         </span>
-                      </div>
-                    </td>
-                    {/* Project */}
-                    <td className="typo-b2 text-text py-2 px-2 md:px-4 bg-divider text-xs md:text-sm">
-                      <span className="truncate block max-w-[250px]">
-                        {project.project}
-                      </span>
-                    </td>
-                    {/* Team Member - Hidden on mobile */}
-                    <td className="py-2 px-2 md:px-4 bg-divider">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src="/images/profile.png"
-                          alt="assigned"
-                          className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover"
+                      </Td>
+                      {/* Team Member - Hidden on mobile */}
+                      <Td className="">
+                        <ImageName
+                          image={
+                            member.freelancer?.profilePicture
+                              ? `${baseURL}/${member.freelancer.profilePicture.filePath}`
+                              : "/images/profile.png"
+                          }
+                          username={member.freelancer.name}
                         />
-                        <span className="typo-b2 text-text text-xs md:text-sm truncate max-w-[200px]">
-                          {project.teamMembers}
+                      </Td>
+                      {/* Status */}
+                      <Td className=" last:rounded-r-[4px]">
+                        <span className="py-1 typo-b3 text-xs md:text-sm">
+                          {member.project.status}
                         </span>
-                      </div>
-                    </td>
-                    {/* Status */}
-                    <td className="py-2 px-2 md:px-4 bg-divider last:rounded-r-[4px]">
-                      <span className="py-1 typo-b3 text-xs md:text-sm">
-                        {project.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      </Td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -614,14 +556,14 @@ function Overview() {
                     key={index}
                     className="h-auto md:h-15 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
                   >
-                    <td className="typo-b2 text-text py-2 px-2 md:px-4 bg-divider first:rounded-l-[4px] text-xs md:text-sm whitespace-nowrap">
+                    <Td className=" first:rounded-l-[4px] text-xs md:text-sm whitespace-nowrap">
                       {activity.timestamp}
-                    </td>
-                    <td className="py-2 px-2 md:px-4 bg-divider last:rounded-r-[4px]">
+                    </Td>
+                    <Td className=" last:rounded-r-[4px]">
                       <span className="typo-b2 text-text2 text-xs md:text-sm block">
                         {activity.action}
                       </span>
-                    </td>
+                    </Td>
                   </tr>
                 ))}
               </tbody>

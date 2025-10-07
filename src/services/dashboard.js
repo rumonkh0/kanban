@@ -207,4 +207,28 @@ export const dashboardApi = {
     );
     return response.data.data;
   },
+
+  // =========================================================================
+  // Report Section Services (Assuming base path is '/')
+  // =========================================================================
+
+  getTaskReport: async (params) => {
+    const response = await apiClient.get("/dashboard/taskreport", { params });
+    return response.data.data;
+  },
+
+  getRevenueReport: async (params) => {
+    const response = await apiClient.get("/dashboard/taskrevenuereport", { params });
+    return response.data.data;
+  },
+
+  getProjectsReport: async (params) => {
+    const response = await apiClient.get("/dashboard/taskprojectreport", { params });
+    return response.data.data;
+  },
+
+  getTaskStageReport: async (params) => {
+    const response = await apiClient.get("/dashboard/taskstagereport", { params });
+    return response.data.data;
+  },
 };

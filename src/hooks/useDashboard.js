@@ -304,3 +304,39 @@ export const useFreelancerEarningsStats = (freelancerId, params) => {
     enabled: !!freelancerId,
   });
 };
+
+// =========================================================================
+// Report Section Hooks (General/Global Reports)
+// =========================================================================
+
+export const useTaskReport = (params) => {
+  return useQuery({
+    queryKey: ["report", "taskReport", params],
+    queryFn: () => dashboardApi.getTaskReport(params),
+
+  });
+};
+
+
+export const useRevenueReport = (params) => {
+  return useQuery({
+    queryKey: ["report", "revenueReport", params],
+    queryFn: () => dashboardApi.getRevenueReport(params),
+  });
+};
+
+
+export const useProjectsReport = (params) => {
+  return useQuery({
+    queryKey: ["report", "projectsReport", params],
+    queryFn: () => dashboardApi.getProjectsReport(params),
+  });
+};
+
+
+export const useTaskStageReport = (params) => {
+  return useQuery({
+    queryKey: ["report", "taskStageReport", params],
+    queryFn: () => dashboardApi.getTaskStageReport(params),
+  });
+};
