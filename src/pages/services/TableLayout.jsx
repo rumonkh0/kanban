@@ -4,8 +4,8 @@ function ServiceLayout() {
   const location = useLocation();
   const pathname = location.pathname;
   const menuItems = [
-    { label: "Main Tracker", href: "/services/trackers" },
-    { label: "Service Details", href: "/services/services" },
+    { label: "Main Tracker", href: "/admin/services/trackers" },
+    { label: "Service Details", href: "/admin/services/services" },
   ];
 
   return (

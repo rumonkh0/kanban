@@ -14,6 +14,7 @@ import {
 } from "../../components/Component";
 import { useDeletePaidTo, usePaidTos } from "../../hooks/useFinance";
 import { FormatDate } from "../../utils/utils";
+import Loading from "../../components/Loading";
 
 // Define baseURL if the paidTo data also includes image paths
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
@@ -72,9 +73,7 @@ function PaidTo({ from }) {
   // Pass all filters to the hook
   const { data: payments, isLoading, isError } = usePaidTos(filters);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <Loading />;
 
   if (isError) {
     return <div>Error loading payments</div>;
@@ -91,7 +90,7 @@ function PaidTo({ from }) {
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
         <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to={`/${from}/paid-to`}
+            to={`/admin/${from}/paid-to`}
             className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
             state={{ projectId: id }}
           >
@@ -190,7 +189,7 @@ function PaidTo({ from }) {
                         },
                         {
                           label: "Edit",
-                          href: `/${from}/paid-to/${payment._id}/edit`,
+                          href: `/admin/${from}/paid-to/${payment._id}/edit`,
                         },
                         {
                           label: "Delete",

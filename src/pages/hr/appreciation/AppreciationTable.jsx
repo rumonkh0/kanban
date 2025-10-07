@@ -43,7 +43,7 @@ function AppreciationTable() {
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4">
           <Link
-            to="/hr/add-appreciation"
+            to="/admin/hr/add-appreciation"
             className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
           >
             <div className="w-6 h-6 flex justify-center items-center">

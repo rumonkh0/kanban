@@ -6,12 +6,12 @@ function DashboardAdvancedLayout() {
   const pathname = location.pathname;
   
   const menuItems = [
-    { label: "Overview", href: "/dashboard/advanced/overview" },
-    { label: "Clients", href: "/dashboard/advanced/clients" },
-    { label: "Projects", href: "/dashboard/advanced/projects" },
-    { label: "Tasks", href: "/dashboard/advanced/tasks" },
-    { label: "HR", href: "/dashboard/advanced/hr" },
-    { label: "Finance", href: "/dashboard/advanced/finance" },
+    { label: "Overview", href: "/admin/dashboard/advanced/overview" },
+    { label: "Clients", href: "/admin/dashboard/advanced/clients" },
+    { label: "Projects", href: "/admin/dashboard/advanced/projects" },
+    { label: "Tasks", href: "/admin/dashboard/advanced/tasks" },
+    { label: "HR", href: "/admin/dashboard/advanced/hr" },
+    { label: "Finance", href: "/admin/dashboard/advanced/finance" },
   ];
 
   return (

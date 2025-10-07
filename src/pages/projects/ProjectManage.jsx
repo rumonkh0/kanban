@@ -6,14 +6,14 @@ function ProjectManage() {
   const { id } = useParams();
 
   const menuItems = [
-    { label: "Overview", href: `/projects/${id}/manage/overview` },
-    { label: "Members", href: `/projects/${id}/manage/members` },
-    { label: "Files", href: `/projects/${id}/manage/files` },
-    { label: "Tasks", href: `/projects/${id}/manage/tasks` },
-    { label: "Payment", href: `/projects/${id}/manage/payment` },
-    { label: "Team Payment", href: `/projects/${id}/manage/team-payment` },
-    { label: "Notes", href: `/projects/${id}/manage/notes` },
-    { label: "Activity", href: `/projects/${id}/manage/activity` },
+    { label: "Overview", href: `/admin/projects/${id}/manage/overview` },
+    { label: "Members", href: `/admin/projects/${id}/manage/members` },
+    { label: "Files", href: `/admin/projects/${id}/manage/files` },
+    { label: "Tasks", href: `/admin/projects/${id}/manage/tasks` },
+    { label: "Payment", href: `/admin/projects/${id}/manage/payment` },
+    { label: "Team Payment", href: `/admin/projects/${id}/manage/team-payment` },
+    { label: "Notes", href: `/admin/projects/${id}/manage/notes` },
+    { label: "Activity", href: `/admin/projects/${id}/manage/activity` },
   ];
 
   return (

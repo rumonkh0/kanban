@@ -12,6 +12,7 @@ import { ImageName, Td, Th } from "../../../components/Component";
 import { Bin } from "../../../components/Icon";
 import { useUpdateProjectMember } from "../../../hooks/useProjectMembers";
 import { toast } from "react-toastify";
+import Loading from "../../../components/Loading";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Members() {
@@ -21,7 +22,7 @@ function Members() {
   const { mutate: removeProjectMember } = useRemoveProjectMember(id);
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {

@@ -57,7 +57,7 @@ function TeamMemberDetails() {
           active={true}
           className="relative"
         >
-          <Link to="/hr/team-member/2/edit">
+          <Link to="/admin/hr/team-member/2/edit">
             <Icon name="edit" className="absolute right-4 top-4" />
           </Link>
         </PersonCard>

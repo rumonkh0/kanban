@@ -19,6 +19,7 @@ import {
 } from "../../hooks/useTasks";
 import { useParams } from "react-router";
 import { useUpdateStageOrder } from "../../hooks/useStages";
+import Loading from "../../components/Loading";
 
 function KanbanBoard({ stages, setStages, role = "member", filters = {} }) {
   const { id } = useParams();
@@ -214,7 +215,7 @@ function KanbanBoard({ stages, setStages, role = "member", filters = {} }) {
   useEffect(() => {
     console.log("Rendered:", renderCount.current);
   });
-  if (isLoading) return <div className="text-center">Loading tasks</div>;
+  if (isLoading) return <Loading />;
   return (
     <>
       <DndContext

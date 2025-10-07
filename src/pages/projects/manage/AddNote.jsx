@@ -15,6 +15,7 @@ import {
   useUpdateNote,
 } from "../../../hooks/useNotes";
 import { toast } from "react-toastify";
+import Loading from "../../../components/Loading";
 
 function AddNote({ edit = false }) {
   const { noteId } = useParams();
@@ -102,7 +103,7 @@ function AddNote({ edit = false }) {
   }, [noteData]);
 
   if (edit && isPending) {
-    return <div>Loading note data...</div>;
+    return <Loading />;
   }
 
   return (

@@ -140,10 +140,6 @@ function PaidFrom({ toHref }) {
             <Icon name="arrow" />
           </div>
           <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
-            <div className="flex-1 text-center">Select match</div>
-            <Icon name="arrow" />
-          </div>
-          <div className="h-full min-w-35.5 px-2 py-1 border-1 border-divider flex justify-between items-center rounded-sm">
             <div className="flex-1 text-center">Select Client</div>
             <Icon name="arrow" />
           </div>

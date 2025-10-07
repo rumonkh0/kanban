@@ -38,7 +38,7 @@ function RoleTable() {
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4">
           <Link
-            to="/hr/add-role"
+            to="/admin/hr/add-role"
             className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
           >
             <div className="w-6 h-6 flex justify-center items-center">
@@ -92,7 +92,7 @@ function RoleTable() {
                       menuItems={[
                         {
                           label: "Edit",
-                          href: "/hr/role/3/edit",
+                          href: "/admin/hr/role/3/edit",
                         },
                       ]}
                     />

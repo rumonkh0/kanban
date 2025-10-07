@@ -54,13 +54,13 @@ function Reports() {
         {/* Left buttons */}
         <div className="flex gap-2 lg:gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to="/services/add-tracker"
+            to="/admin/services/add-tracker"
             className="flex-1 lg:flex-none min-w-[150px] lg:min-w-0"
           >
             <RedButton className="w-full lg:w-auto px-4">Download PDF</RedButton>
           </Link>
           <Link
-            to="/services/add-tracker"
+            to="/admin/services/add-tracker"
             className="flex-1 lg:flex-none min-w-[150px] lg:min-w-0"
           >
             <RedBorderButton className="w-full lg:w-auto">

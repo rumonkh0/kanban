@@ -1,15 +1,17 @@
 import { useParams } from "react-router";
 import { useProjectActivity } from "../../../hooks/useProjects";
 import moment from "moment";
+import Loading from "../../../components/Loading";
 
 function Activity() {
   const { id } = useParams();
   const { data: activityLog = [], isPending } = useProjectActivity(id);
 
-  if (isPending)
-    return <div className="typo-h1 text-center">Loading Activities</div>;
-
-  if (activityLog.length === 0) return <div>No Activity Found.</div>;
+  if (isPending) return <Loading />;
+  if (activityLog.length === 0)
+    return (
+      <div className="typo-h4 flex justify-center">No Activity Found.</div>
+    );
 
   return (
     <div className="flex flex-col gap-3 text-text">

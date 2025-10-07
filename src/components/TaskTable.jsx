@@ -7,6 +7,7 @@ import Modal from "./Modal";
 import TaskModal from "./TaskModal";
 import DropdownMenu from "./DropdownMenu";
 import { FormatDate } from "../utils/utils";
+import Loading from "./Loading";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ClientTable() {
@@ -19,7 +20,7 @@ function ClientTable() {
     setActiveMenu(activeMenu === index ? null : index);
   };
   const [currentId, setCurrentId] = useState(null);
-  if (isPending) return <div>Loading tasks...</div>;
+  if (isPending) return <Loading />;
   return (
     <Table>
       <Thead>

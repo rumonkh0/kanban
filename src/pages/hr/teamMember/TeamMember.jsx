@@ -35,7 +35,7 @@ function TeamMember() {
   return (
     <>
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
-        <Link to="/hr/add-team-member" className="flex">
+        <Link to="/admin/hr/add-team-member" className="flex">
           <RedButton className="flex-1 px-4">
             <div className="w-6 h-6 flex justify-center items-center">
               <Icon name="plus" size={15} />

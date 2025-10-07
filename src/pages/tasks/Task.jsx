@@ -10,6 +10,7 @@ import { useParams } from "react-router";
 import PageTitle from "../../components/PageTitle";
 import { useProjects } from "../../hooks/useProjects";
 import { useTeamMembers } from "../../hooks/useTeam";
+import Loading from "../../components/Loading";
 
 // const taka = [
 //   {
@@ -94,7 +95,7 @@ function Tasks() {
     }
   }, [stagesData]);
 
-  if (isLoading) return <div className="text-center">Loading tasks</div>;
+  if (isLoading) return <Loading />;
   return (
     <div className="bg-surface2 p-2 rounded-sm border-2 border-divider select-none">
       <PageTitle title="Tasks" />

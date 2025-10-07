@@ -5,11 +5,11 @@ function SettingLayout() {
   const location = useLocation();
   const pathname = location.pathname;
   const menuItems = [
-    { label: "Company Settings", href: "/settings/company" },
-    { label: "Business Address", href: "/settings/business" },
-    { label: "Profile Settings", href: "/settings/profile" },
-    { label: "Security Settings", href: "/settings/security" },
-    { label: "Theme Settings", href: "/settings/theme" },
+    { label: "Company Settings", href: "/admin/settings/company" },
+    { label: "Business Address", href: "/admin/settings/business" },
+    { label: "Profile Settings", href: "/admin/settings/profile" },
+    { label: "Security Settings", href: "/admin/settings/security" },
+    { label: "Theme Settings", href: "/admin/settings/theme" },
   ];
 
   return (

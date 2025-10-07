@@ -1,5 +1,6 @@
 // import { Link } from "react-router";
 import { FilterDropdown,  Td, Th } from "../../components/Component";
+import Loading from "../../components/Loading";
 import { useProjects } from "../../hooks/useProjects";
 import { FormatDate } from "../../utils/utils";
 // import { useState } from "react";
@@ -9,7 +10,7 @@ import { FormatDate } from "../../utils/utils";
 function Projects() {
   // const [taskModal, setTaskModal] = useState(false);
   const { data: projects = [], isPending } = useProjects();
-  if (isPending) return <div>Loading Projects</div>;
+  if (isPending) return <Loading />;
   return (
     <>
       <div className=" h-10 flex justify-between mb-4">
@@ -45,7 +46,7 @@ function Projects() {
                   {project.projectId}
                 </Td>
                 {/* <Td>
-                  <Link to="/projects/manage">
+                  <Link to="/admin/projects/manage">
                   <div className="flex items-center gap-2">
                     <img
                       src="/images/profile.png"

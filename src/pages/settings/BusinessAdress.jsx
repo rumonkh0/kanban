@@ -3,6 +3,7 @@ import Modal from "../../components/Modal";
 import { Icon, Table, Td, Th, Thead } from "../../components/Component";
 import { useState } from "react";
 import { useBusinessAddress } from "../../hooks/useSettings"; // Import the fetch hook
+import Loading from "../../components/Loading";
 
 function BusinessAdress() {
   // State to control the modal visibility
@@ -15,8 +16,7 @@ function BusinessAdress() {
   const adresses = addressData ? [addressData] : [];
 
   if (isLoading) {
-    return <div className="p-4 text-text2">Loading business address...</div>;
-  }
+return <Loading />;  }
 
   if (adresses.length === 0) {
     return (

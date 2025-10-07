@@ -11,7 +11,7 @@ const ProtectedRedirect = () => {
   }
 
   // redirect based on role
-  if (user?.role === "Admin") return <Navigate to="/dashboard" replace />;
+  if (user?.role === "Admin") return <Navigate to="/admin" replace />;
   if (user?.role === "Freelancer") return <Navigate to="/member" replace />;
   if (user?.role === "Client") return <Navigate to="/client" replace />;
 

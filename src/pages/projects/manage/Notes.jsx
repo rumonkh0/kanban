@@ -9,6 +9,7 @@ import { FilterDropdown, Td, Th } from "../../../components/Component";
 import { useDeleteNote, useNotes } from "../../../hooks/useNotes";
 import { toast } from "react-toastify";
 import { World } from "../../../components/Icon";
+import Loading from "../../../components/Loading";
 
 function Notes() {
   const { id } = useParams();
@@ -38,13 +39,13 @@ function Notes() {
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
-  if (isPending) return <div className="tyo-h1">Notes Loading</div>;
+  if (isPending) return <Loading />;
   return (
     <>
       <div className=" h-10 flex justify-between mb-4">
         <div className="flex gap-4">
           <Link
-            to="/projects/add-note"
+            to="/admin/projects/add-note"
             state={{ projectId: id }}
             className="px-4 typo-cta bg-brand rounded-sm flex items-center gap-1"
           >
@@ -111,7 +112,7 @@ function Notes() {
                         { label: "View", onClick: () => setPaymentModal(true) },
                         {
                           label: "Edit",
-                          href: `/projects/notes/${note._id}/edit`,
+                          href: `/admin/projects/notes/${note._id}/edit`,
                         },
                         {
                           label: "Delete",

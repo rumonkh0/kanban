@@ -13,6 +13,7 @@ import {
 } from "../../components/Component";
 import { useDeletePaidFrom, usePaidFroms } from "../../hooks/useFinance";
 import { FormatDate } from "../../utils/utils";
+import Loading from "../../components/Loading";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Payment({ from }) {
@@ -64,9 +65,7 @@ function Payment({ from }) {
 
   const { data: financeData, isLoading, isError } = usePaidFroms(filters);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading)return <Loading />;
 
   if (isError) {
     return <div>Error loading clients</div>;
@@ -77,7 +76,7 @@ function Payment({ from }) {
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
         <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to={`/${from}/paid-by`}
+            to={`/admin/${from}/paid-by`}
             state={{ projectId: id }}
             className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
@@ -181,7 +180,7 @@ function Payment({ from }) {
                         },
                         {
                           label: "Edit",
-                          href: `/${from}/paid-by/${payment._id}/edit`,
+                          href: `/admin/${from}/paid-by/${payment._id}/edit`,
                           state: { paymentId: payment._id },
                         },
                         {

@@ -13,6 +13,7 @@ import {
 import { useDeleteProject, useProjects } from "../../hooks/useProjects";
 import { useClients } from "../../hooks/useClients";
 import { FormatDate } from "../../utils/utils";
+import Loading from "../../components/Loading";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function Projects() {
@@ -67,17 +68,17 @@ function Projects() {
   };
 
   const menuItems = (id) => [
-    { label: "View", href: `/projects/${id}/manage` },
-    { label: "Edit", href: `/projects/${id}/edit` },
+    { label: "View", href: `/admin/projects/${id}/manage` },
+    { label: "Edit", href: `/admin/projects/${id}/edit` },
     // { label: "Duplicate" },
-    { label: "Public Task Board", href: `/projects/${id}/manage/tasks` },
+    { label: "Public Task Board", href: `/admin/projects/${id}/manage/tasks` },
     { label: "Pin Project", onClick: () => handleDelete(id) },
     { label: "Archive", onClick: () => handleDelete(id) },
     { label: "Delete", onClick: () => handleDelete(id) },
   ];
 
   if (isLoading) {
-    return <div className="text-center typo-h1">Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {
@@ -87,7 +88,7 @@ function Projects() {
     <>
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-4 lg:gap-0">
         <div className="flex flex-wrap gap-4">
-          <Link to="/projects/add-project" className="flex flex-1">
+          <Link to="/admin/projects/add-project" className="flex flex-1">
             <RedButton className="flex-1 px-4">
               <div className="w-6 h-6 flex justify-center items-center">
                 <Icon name="plus" size={15} />
@@ -165,7 +166,7 @@ function Projects() {
                       )}
                     </Td>
                     <Td className="typo-b2 text-text  bg-divider">
-                      <Link to={`/projects/${project._id}/manage`}>
+                      <Link to={`/admin/projects/${project._id}/manage`}>
                         {project.projectName}
                       </Link>
                     </Td>

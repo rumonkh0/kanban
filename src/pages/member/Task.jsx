@@ -4,6 +4,7 @@ import KanbanBoard from "../tasks/KanbanBoard";
 import { useStages } from "../../hooks/useStages";
 import { useProjects } from "../../hooks/useProjects";
 import { useAuthStore } from "../../stores/authStore";
+import Loading from "../../components/Loading";
 
 function Task() {
   const [stages, setStages] = useState([]);
@@ -32,7 +33,7 @@ function Task() {
       setStages(stagesData);
     }
   }, [stagesData]);
-  if (isLoading) return <div className="text-center">Loading tasks</div>;
+  if (isLoading) return <Loading />;
   return (
     <div className="bg-surface2 p-2 rounded-sm border-2 border-divider">
       <div className=" h-10 flex justify-between mb-4">

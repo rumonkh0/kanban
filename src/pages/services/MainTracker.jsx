@@ -127,7 +127,7 @@ function MainTracker() {
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
         <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to={`/services/add-tracker`}
+            to={`/admin/services/add-tracker`}
             className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
             <RedButton>
@@ -251,7 +251,7 @@ function MainTracker() {
                     menuItems={[
                       {
                         label: "Edit",
-                        href: "/services/edit-tracker",
+                        href: "/admin/services/edit-tracker",
                       },
                     ]}
                   />

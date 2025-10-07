@@ -6,6 +6,7 @@ import { ChartHeader } from "@/components/Component";
 import { Link, useParams } from "react-router";
 import { Edit } from "../../components/Icon";
 import { useClientDetails } from "../../hooks/useClients";
+import Loading from "../../components/Loading";
 
 function ClientDetails() {
   const { id } = useParams();
@@ -27,7 +28,7 @@ function ClientDetails() {
     "Total Due": "#FE4E4D",
   };
 
-  if (isLoading) return <div>Client Data Loading</div>;
+  if (isLoading)return <Loading />;
   return (
     <div className="flex flex-col gap-4">
       {/* <div className="flex gap-2 flex-wrap"> */}
@@ -40,7 +41,7 @@ function ClientDetails() {
           lastLogin={client.user.lastLogin}
           className="relative"
         >
-          <Link to={`/clients/${id}/edit`} className="absolute right-4 top-4 ">
+          <Link to={`/admin/clients/${id}/edit`} className="absolute right-4 top-4 ">
             <Edit />
           </Link>
         </PersonCard>
@@ -97,7 +98,7 @@ function ClientDetails() {
             />
           </div>
           <div className="flex justify-between">
-            <Link to={`/clients/${client._id}/edit`}>
+            <Link to={`/admin/clients/${client._id}/edit`}>
               <RedBorderButton>Edit</RedBorderButton>
             </Link>
             <RedButton>Share</RedButton>

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useClients } from "@/hooks/useClients";
 import { useDeleteClient } from "../../hooks/useClients";
 import moment from "moment/moment";
+import Loading from "../../components/Loading";
 
 function ClientTable({ filters }) {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -29,104 +30,13 @@ function ClientTable({ filters }) {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isError) {
     return <div>Error loading clients</div>;
   }
 
-  //   {
-  //     clientName: "Gustave Koeipin",
-  //     email: "caitlyn66@example.net7",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Prof. Toni Swift",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Brayan Gutkowski",
-  //     email: "raul.dicki@example.com7",
-  //     project: "Corporate Website Revamp",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Pasquale O'Connell",
-  //     lastUpdate: "Aug 3, 2025",
-  //   },
-  //   {
-  //     clientName: "Lavon Effertz",
-  //     email: "eklocko@example.com2",
-  //     project: "E-Commerce Platform",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Mrs. Angela Bechtelar Jr.",
-  //     lastUpdate: "Jul 30, 2025",
-  //   },
-  //   {
-  //     clientName: "Brycen Sipes",
-  //     email: "rickey87@example.com8",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Celia Jast",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Randy Botsford Jr.",
-  //     email: "abshire.keenan@example.net7",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Mrs. Yesenia Shields",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Miss Esmeralda Gerhold",
-  //     email: "gkautzer@example.net8",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Quinton Kemmer",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Rusty Mills II",
-  //     email: "hortense.bode@example.org6",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Fabian Breitenberg DDS",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Ms. Maybell Orn Jr.",
-  //     email: "douglas.beau@example.com3",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Mr. Wilton Nader",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Dr. Eldora Emard",
-  //     email: "creinger@example.net9",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "Cecil Franecki",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  //   {
-  //     clientName: "Mrs. Eulalia Casper",
-  //     email: "client@example.com",
-  //     project: "Wellness App Redesign",
-  //     status: "Active",
-  //     image: "/images/profile.png",
-  //     assignedTo: "EMP-3 Dr. Alfred Stark",
-  //     lastUpdate: "Aug 6, 2025",
-  //   },
-  // ];
   if (!clientsData || clientsData.length === 0)
     return <div className="text-center typo-h1">No Client Found</div>;
   return (
@@ -154,7 +64,7 @@ function ClientTable({ filters }) {
             >
               {/* Client Name with Avatar */}
               <Td className="first:rounded-l-[4px]">
-                <Link to={`/clients/${client.id}`}>
+                <Link to={`/admin/clients/${client.id}`}>
                   <ImageName image={imageUrl} username={client.name} />
                 </Link>
               </Td>
@@ -192,8 +102,8 @@ function ClientTable({ filters }) {
                     isOpen={activeMenu === index}
                     onClose={() => setActiveMenu(null)}
                     menuItems={[
-                      { label: "View", href: `/clients/${client.id}` },
-                      { label: "Edit", href: `/clients/${client.id}/edit` },
+                      { label: "View", href: `/admin/clients/${client.id}` },
+                      { label: "Edit", href: `/admin/clients/${client.id}/edit` },
                       {
                         label: "Delete",
                         onClick: () => handleDelete(client.id),

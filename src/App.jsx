@@ -87,7 +87,7 @@ function App() {
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="reset-password" element={<ResetPassword />} />
         <Route path="otp" element={<Otp />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Route>
       <Route element={<RoleBasedRoute roles={["Freelancer"]} />}>
         <Route path="/member" element={<RootLayout sidebar="member" />}>
@@ -108,14 +108,17 @@ function App() {
         </Route>
       </Route>
       <Route element={<RoleBasedRoute roles={["Admin"]} />}>
-        <Route path="/" element={<RootLayout />}>
-          <Route index element={<Navigate to="/dashboard/private" replace />} />
+        <Route path="/admin" element={<RootLayout />}>
+          <Route
+            index
+            element={<Navigate to="/admin/dashboard/private" replace />}
+          />
 
           <Route path="dashboard/private" element={<Private />} />
           <Route path="dashboard/advanced" element={<Advanced />}>
             <Route
               index
-              element={<Navigate to="/dashboard/advanced/overview" replace />}
+              element={<Navigate to="/admin/dashboard/advanced/overview" replace />}
             />
             <Route path="overview" element={<Overview />} />
             <Route path="clients" element={<ClientsDashboard />} />
@@ -145,7 +148,7 @@ function App() {
               <Route
                 path="team-payment"
                 element={
-                  <TeamPayment toHref="/projects/paid-to" from="projects" />
+                  <TeamPayment toHref="/admin/projects/paid-to" from="projects" />
                 }
               />
               <Route path="notes" element={<ProjectNotes />} />
@@ -169,7 +172,7 @@ function App() {
           <Route path="tasks" element={<ProjectTask />} />
 
           <Route path="hr" element={<HrLayout />}>
-            <Route index element={<Navigate to="/hr/team-members" replace />} />
+            <Route index element={<Navigate to="/admin/hr/team-members" replace />} />
             <Route path="team-members" element={<TeamMember />} />
             <Route path="add-team-member" element={<TeamMemberForm />} />
             <Route path="team-member/:id" element={<TeamMemberDetails />} />
@@ -223,7 +226,7 @@ function App() {
             <Route element={<TableLayout />}>
               <Route
                 index
-                element={<Navigate to="/services/trackers" replace />}
+                element={<Navigate to="/admin/services/trackers" replace />}
               />
               <Route path="trackers" element={<MainTracker />} />
               <Route path="services" element={<ServiceDetails />} />
@@ -245,7 +248,7 @@ function App() {
           <Route path="settings" element={<SettingLayout />}>
             <Route
               index
-              element={<Navigate to="/settings/company" replace />}
+              element={<Navigate to="/admin/settings/company" replace />}
             />
             <Route path="company" element={<CompanySetting />} />
             <Route path="business" element={<BusinessAdress />} />

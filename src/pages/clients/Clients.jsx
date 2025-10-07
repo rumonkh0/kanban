@@ -18,7 +18,7 @@ function Clients() {
     <>
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-4 lg:gap-0">
         <Link
-          to="/clients/add-client"
+          to="/admin/clients/add-client"
           className="flex"
           // className="px-4 py-2 typo-cta bg-brand rounded-sm flex items-center gap-1 w-full lg:w-auto justify-center lg:justify-start"
         >

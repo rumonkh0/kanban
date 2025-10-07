@@ -8,6 +8,7 @@ import ServiceDetailsModal from "../../components/ServiceDetailsModal";
 import { useDeleteService, useServices } from "../../hooks/useService";
 import PageTitle from "../../components/PageTitle";
 import { RedButton } from "../../components/Component";
+import Loading from "../../components/Loading";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function ServiceDetails() {
@@ -30,8 +31,7 @@ function ServiceDetails() {
     }
   };
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
+return <Loading />;  }
 
   if (isError) {
     return <div>Error loading clients</div>;
@@ -44,7 +44,7 @@ function ServiceDetails() {
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
         <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
           <Link
-            to={`/services/add-service`}
+            to={`/admin/services/add-service`}
             className="bg-brand rounded-sm flex items-center flex-1 lg:flex-none  justify-center"
           >
             <RedButton>
@@ -120,7 +120,7 @@ function ServiceDetails() {
                         },
                         {
                           label: "Edit",
-                          href: `/services/services/${service._id}/edit`,
+                          href: `/admin/services/services/${service._id}/edit`,
                         },
                         {
                           label: "Delete",

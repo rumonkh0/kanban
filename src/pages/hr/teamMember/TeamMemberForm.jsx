@@ -24,6 +24,7 @@ import {
   generateLanguageOptions,
 } from "../../../components/Constants";
 import PhoneNumberInput from "../../../components/PhoneNumberInput";
+import Loading from "../../../components/Loading";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TeamMemberForm({ edit, title = "Add Team Member" }) {
@@ -231,7 +232,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     return <div>Loading team member data...</div>;
   }
 
-  // if (departmentsLoading) return <div>loading</div>;
+  // if (departmentsLoading) return <Loading />;
   return (
     <>
       <PageTitle title={title} />

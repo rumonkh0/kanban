@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { useDepartments } from "../../../hooks/hr/useDepartments";
 import { RedButton } from "../../../components/Component";
+import Loading from "../../../components/Loading";
 
 function DepartmentTable() {
   // const [filters] = useState({});
@@ -48,13 +49,12 @@ function DepartmentTable() {
   if (isError) {
     return <div>Error loading clients</div>;
   }
-  if (departmentsLoading)
-    return <div className="text-center">Data Loading</div>;
+  if (departmentsLoading) return <Loading />;
   return (
     <>
       <PageTitle title="Role" />
       <div className="h-10 flex justify-between mb-4">
-        <Link to="/hr/add-department" className="flex flex-1 sm:flex-none">
+        <Link to="/admin/hr/add-department" className="flex flex-1 sm:flex-none">
           <RedButton className="w-full sm:w-auto px-4">
             <div className="w-6 h-6 flex justify-center items-center">
               <Icon name="plus" size={15} />
@@ -105,7 +105,7 @@ function DepartmentTable() {
                       menuItems={[
                         {
                           label: "Edit",
-                          href: `/hr/department/${department._id}/edit`,
+                          href: `/admin/hr/department/${department._id}/edit`,
                         },
                       ]}
                     />

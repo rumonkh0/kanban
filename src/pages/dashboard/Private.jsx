@@ -2,6 +2,7 @@ import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
 import PageTitle from "../../components/PageTitle";
 import { usePrivate } from "../../hooks/useDashboard";
+import Loading from "../../components/Loading";
 
 function Private() {
   const days = [
@@ -16,7 +17,7 @@ function Private() {
 
   const { data: dashboard, isPending } = usePrivate();
 
-  if (isPending) return <div>Loading Dashboard</div>;
+  if (isPending) return <Loading />;
   return (
     <div className="flex flex-col gap-4">
       <PageTitle title="Dashboard" />

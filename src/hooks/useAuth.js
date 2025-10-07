@@ -16,7 +16,7 @@ export const useLogin = () => {
       const userRole = data?.role;
       switch (userRole) {
         case "Admin":
-          navigate("/dashboard/private");
+          navigate("/admin/dashboard/private");
           break;
         case "Client":
           navigate("/client");

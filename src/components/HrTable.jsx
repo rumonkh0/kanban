@@ -4,6 +4,7 @@ import Icon from "@/components/Icon";
 import { ImageName, Table, Td, Th, Thead } from "./Component";
 import DropdownMenu from "./DropdownMenu";
 import { useDeleteTeamMember, useTeamMembers } from "../hooks/useTeam";
+import Loading from "./Loading";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 // format date helper
@@ -76,8 +77,7 @@ function TeamMembersTable({ filters }) {
   };
   if (isError) return <div>Error loading clients</div>;
 
-  if (teamMembersLoading)
-    return <div className="text-center">Data Loading</div>;
+  if (teamMembersLoading) return <Loading />;
   return (
     <Table>
       <Thead>
@@ -108,7 +108,7 @@ function TeamMembersTable({ filters }) {
                 data={teamMember.memberId}
               />
               <Td>
-                <Link to="/hr/team-members/member-details">
+                <Link to="/admin/hr/team-members/member-details">
                   <ImageName image={memberImage} username={teamMember.name} />
                 </Link>
               </Td>
@@ -148,11 +148,11 @@ function TeamMembersTable({ filters }) {
                     menuItems={[
                       {
                         label: "View",
-                        href: `/hr/team-member/${teamMember._id}`,
+                        href: `/admin/hr/team-member/${teamMember._id}`,
                       },
                       {
                         label: "Edit",
-                        href: `/hr/team-member/${teamMember._id}/edit`,
+                        href: `/admin/hr/team-member/${teamMember._id}/edit`,
                       },
                       {
                         label: "Delete",
