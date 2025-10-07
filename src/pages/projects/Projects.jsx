@@ -10,7 +10,12 @@ import {
   Td,
   Th,
 } from "../../components/Component";
-import { useDeleteProject, useProjects } from "../../hooks/useProjects";
+import {
+  useDeleteProject,
+  useProjects,
+  useUpdateProject,
+  useUpdateProjectId,
+} from "../../hooks/useProjects";
 import { useClients } from "../../hooks/useClients";
 import { FormatDate } from "../../utils/utils";
 import Loading from "../../components/Loading";
@@ -48,6 +53,8 @@ function Projects() {
     },
   ];
   const { data: projectsData, isLoading, isError } = useProjects(filters);
+
+  const updateProject = useUpdateProjectId();
   const deleteClientMutation = useDeleteProject();
 
   const handleFilterChange = (key, value) => {
@@ -66,14 +73,26 @@ function Projects() {
       });
     }
   };
+  const handleArchieve = (id) => {
+    updateProject.mutate({
+      id,
+      data: { archive: true },
+    });
+  };
+  const handlePin = (id) => {
+    updateProject.mutate({
+      id,
+      data: { pin: true },
+    });
+  };
 
   const menuItems = (id) => [
     { label: "View", href: `/admin/projects/${id}/manage` },
     { label: "Edit", href: `/admin/projects/${id}/edit` },
     // { label: "Duplicate" },
     { label: "Public Task Board", href: `/admin/projects/${id}/manage/tasks` },
-    { label: "Pin Project", onClick: () => handleDelete(id) },
-    { label: "Archive", onClick: () => handleDelete(id) },
+    { label: "Pin Project", onClick: () => handlePin(id) },
+    { label: "Archive", onClick: () => handleArchieve(id) },
     { label: "Delete", onClick: () => handleDelete(id) },
   ];
 
@@ -97,12 +116,12 @@ function Projects() {
             </RedButton>
           </Link>
           <div
-            onClick={() => handleFilterChange("pin", !filters.archive)}
+            onClick={() => handleFilterChange("archive", !filters.archive)}
             className={`w-10 h-10 flex justify-center items-center border-2 border-divider rounded-sm cursor-pointer hover:bg-surface2/60 ${
-              filters.archive ? "border-brand" : ""
+              filters.archive ? "text-brand" : ""
             }`}
           >
-            <Bin className="text-text2 " />
+            <Bin className={filters.archive ? "text-brand" : "text-text2"} />
           </div>
           <div
             onClick={() => handleFilterChange("pin", !filters.pin)}

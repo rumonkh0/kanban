@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import Icon, { Hambrger, LogOut, Notification, People, Settings } from "./Icon";
+import Icon, { Briefcase, Hambrger, LogOut, Notification, People, Settings, Users } from "./Icon";
 import { usePageTitleStore } from "@/stores/usePageTitleStore";
 import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "../stores/authStore";
@@ -15,9 +15,9 @@ const Header = React.memo(({ onMenuClick }) => {
   const [openProfile, setOpenProfile] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [openPlus, setOpenPlus] = useState(false);
-  const [openSearch, setOpenSearch] = useState(false);
-  const [openMobileSearch, setOpenMobileSearch] = useState(false);
-  const [searchType, setSearchType] = useState("project");
+  // const [openSearch, setOpenSearch] = useState(false);
+  // const [openMobileSearch, setOpenMobileSearch] = useState(false);
+  // const [searchType, setSearchType] = useState("project");
 
   const profileRef = useRef(null);
   const notificationRef = useRef(null);
@@ -69,15 +69,15 @@ const Header = React.memo(({ onMenuClick }) => {
       if (plusRef.current && !plusRef.current.contains(e.target)) {
         setOpenPlus(false);
       }
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setOpenSearch(false);
-      }
-      if (
-        mobileSearchRef.current &&
-        !mobileSearchRef.current.contains(e.target)
-      ) {
-        setOpenMobileSearch(false);
-      }
+    //   if (searchRef.current && !searchRef.current.contains(e.target)) {
+    //     setOpenSearch(false);
+    //   }
+    //   if (
+    //     mobileSearchRef.current &&
+    //     !mobileSearchRef.current.contains(e.target)
+    //   ) {
+    //     setOpenMobileSearch(false);
+    //   }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -227,7 +227,7 @@ const Header = React.memo(({ onMenuClick }) => {
                 onClick={() => setOpenPlus(false)}
                 className="px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2 border-b border-divider"
               >
-                <People className={`text-text2`} />
+                <Users className={`text-text2`} />
                 Add Client
               </Link>
               <Link
@@ -244,7 +244,7 @@ const Header = React.memo(({ onMenuClick }) => {
                 onClick={() => setOpenPlus(false)}
                 className="px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2"
               >
-                <People className={`text-text2`} />
+                <Briefcase className={`text-text2`} />
                 Add Project
               </Link>
             </div>

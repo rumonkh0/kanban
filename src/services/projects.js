@@ -33,6 +33,7 @@ export const projectsApi = {
 
   // Update project
   update: async (id, data) => {
+    console.log(id, data);
     const response = await apiClient.put(`/projects/${id}`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     });

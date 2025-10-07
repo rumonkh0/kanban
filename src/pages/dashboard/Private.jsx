@@ -3,8 +3,10 @@ import PersonCard from "@/components/PersonCard";
 import PageTitle from "../../components/PageTitle";
 import { usePrivate } from "../../hooks/useDashboard";
 import Loading from "../../components/Loading";
+import { useAuthStore } from "../../stores/authStore";
 
 function Private() {
+  const user = useAuthStore((state) => state.user);
   const days = [
     "Sunday",
     "Monday",
@@ -24,11 +26,12 @@ function Private() {
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
         <PersonCard
-          name="creativezethdesign"
+          name={user.user.name}
           designation="Admin"
-          id={34556}
+          // id={34556}
+          image={user.user?.profilePicture}
           active={true}
-        />
+        ></PersonCard>
         <MetricCard
           title="Pending Task:"
           value={dashboard.tasks.pendingTasks}

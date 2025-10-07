@@ -215,7 +215,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
     );
   };
   const markAsComplete = () => {
-    updatetask.mutate({ status: "Complete" });
+    updatetask.mutate({ status: "Completed" });
   };
 
   // Close on outside click for image dropdown
@@ -349,17 +349,19 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       </div>
 
       {/* Body */}
-      <div className="p-2 md:p-4 overflow-y-scroll mx-h-[50vh]">
-        <input
-          className="w-full h-10 border-2 border-divider rounded-sm flex items-center px-2 md:px-4 typo-b2 text-text"
-          placeholder="Task 2"
-          value={formData?.title}
-          onChange={(e) => handleChange("title", e.target.value)}
-          disabled={role === "member"}
-        />
+      <div className="overflow-y-scroll mx-h-[50vh]">
+        <div className="p-2 md:p-4 pb-0 md:pb-0">
+          <input
+            className="w-full h-10 border-2 border-divider rounded-sm flex items-center px-2 md:px-4 typo-b2 text-text"
+            placeholder="Task 2"
+            value={formData?.title}
+            onChange={(e) => handleChange("title", e.target.value)}
+            disabled={role === "member"}
+          />
+        </div>
 
         {/* Main Content Row - Stack on mobile */}
-        <div className="mt-2 flex flex-col lg:flex-row items-stretch h-[450px] lg:h-[288px] overflow-y-scroll">
+        <div className="p-2 md:p-4  flex flex-col lg:flex-row items-stretch h-[450px] lg:h-[288px] overflow-y-scroll">
           {/* Left Column */}
           {role === "admin" ? (
             <div className="flex-1 lg:pr-2 pb-2 lg:pb-0 lg:border-r-2 border-b-2 lg:border-b-0 border-divider flex flex-col gap-2 lg:overflow-y-scroll">

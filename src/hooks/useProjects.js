@@ -49,6 +49,19 @@ export const useUpdateProject = (id) => {
     },
   });
 };
+export const useUpdateProjectId = () => {
+  const queryClient = useQueryClient();
+  // const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: ({id, data}) => projectsApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["projectMembers"] });
+      // navigate(-1);
+    },
+  });
+};
 
 export const useProjectMembers = (id) => {
   return useQuery({

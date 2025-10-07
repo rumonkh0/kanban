@@ -19,11 +19,11 @@ const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Overview() {
   const { id } = useParams();
-  const { data: details, isPending } = useProjectDetails(id);
-  // console.log(details);
+  const { data: project, isPending, isError } = useProjectDetails(id);
+  // console.log(project);
   const chartData = [
-    { name: "Progress", value: details?.progress, color: "#5EB7E0" },
-    { name: "Not done", value: 100 - details?.progress, color: "#7B7B7B" },
+    { name: "Progress", value: project?.progress, color: "#5EB7E0" },
+    { name: "Not done", value: 100 - project?.progress, color: "#7B7B7B" },
   ];
   const projectColor = {
     Active: "#5EB7E0",
@@ -33,61 +33,63 @@ function Overview() {
   const data = [
     {
       name: "Project Cost",
-      sales: details?.finalAmountForClient,
+      sales: project?.finalAmountForClient,
       color: "#5EB7E0",
     },
     {
       name: "Payment",
-      sales: details?.amountPayableToMembers,
+      sales: project?.amountPayableToMembers,
       color: "#FE4E4D",
     },
-    { name: "Earning", sales: details?.finalAmountEarned, color: "#8FC951" },
+    { name: "Earning", sales: project?.finalAmountEarned, color: "#8FC951" },
   ];
   const revenue = [
     {
       name: "Expenses",
-      sales: details?.finalAmountForClient * (80 / 100),
+      sales: project?.finalAmountForClient * (80 / 100),
       color: "#8FC951",
     },
     {
       name: "Owner's pay",
-      sales: details?.finalAmountForClient * (10 / 100),
+      sales: project?.finalAmountForClient * (10 / 100),
       color: "#A88AED",
     },
     {
       name: "Taxes",
-      sales: details?.finalAmountForClient * (5 / 100),
+      sales: project?.finalAmountForClient * (5 / 100),
       color: "#FE4E4D",
     },
     {
       name: "Growth Fund",
-      sales: details?.finalAmountForClient * (5 / 100),
+      sales: project?.finalAmountForClient * (5 / 100),
       color: "#5EB7E0",
     },
   ];
   const budget = [
     {
       name: "Project Budget",
-      sales: details?.finalAmountForClient,
+      sales: project?.finalAmountForClient,
       color: "#5EB7E0",
     },
     {
       name: "Team Payment",
-      sales: details?.amountPaidToMembers,
+      sales: project?.amountPaidToMembers,
       color: "#FE4E4D",
     },
     {
       name: "Project Advance",
-      sales: details?.amountPaidByClient,
+      sales: project?.amountPaidByClient,
       color: "#A88AED",
     },
     {
       name: "Earning",
-      sales: details?.amountPaidByClient - details?.amountPaidToMembers,
+      sales: project?.amountPaidByClient - project?.amountPaidToMembers,
       color: "#8FC951",
     },
   ];
   if (isPending) return <Loading />;
+  if (isError)
+    return <div className="typo-h4 text-center">Something Happen Wrong.</div>;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
       <BorderDiv className="min-h-60">
@@ -129,7 +131,7 @@ function Overview() {
             </ResponsiveContainer>
             {/* Center overlay */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <h2 className="typo-h4 mb-2 text-center">{details?.progress}%</h2>
+              <h2 className="typo-h4 mb-2 text-center">{project?.progress}%</h2>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#5EB7E0]"></div>
                 <p className="typo-b3">In Progress</p>
@@ -140,12 +142,12 @@ function Overview() {
           <div className="w-full md:w-[194px] flex flex-row md:flex-col justify-between gap-4 md:gap-6">
             <div className="flex flex-col gap-2 md:gap-4">
               <p className="typo-b2 text-text2">Start Date:</p>
-              <h2 className="typo-h4">{FormatDate(details.startDate)}</h2>
+              <h2 className="typo-h4">{FormatDate(project.startDate)}</h2>
             </div>
             <div className="flex flex-col gap-2 md:gap-4">
               <p className="typo-b2 text-text2">Deadline:</p>
               <h2 className="typo-h4 text-brand">
-                {FormatDate(details.dueDate) || "No Due Date Assigned"}
+                {FormatDate(project.dueDate) || "No Due Date Assigned"}
               </h2>
             </div>
           </div>
@@ -156,35 +158,35 @@ function Overview() {
       <BorderDiv className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
         <img
           src={
-            details.client?.profilePicture?.filePath
-              ? `${baseURL}/${details.client.profilePicture.filePath}`
+            project.client?.profilePicture?.filePath
+              ? `${baseURL}/${project.client.profilePicture.filePath}`
               : "/images/profile.png"
           }
           alt="profile"
           className="h-20 w-20 sm:h-40 sm:w-auto aspect-square object-cover rounded-sm"
         />
         <div className="flex flex-col gap-2 items-center sm:items-start text-center sm:text-left">
-          <div className="typo-h4">{details.client.name}</div>
+          <div className="typo-h4">{project.client.name}</div>
           <div className="typo-b2 text-text2">Client</div>
           <div className="typo-b2 text-text2">
-            Total Project: {details.clientStats?.totalProjects}
+            Total Project: {project.clientStats?.totalProjects}
           </div>
           <div className="typo-b2 text-text2">
-            Active Project: {details.clientStats?.activeProjects}
+            Active Project: {project.clientStats?.activeProjects}
           </div>
           <div className="w-[134px] h-8 flex items-center justify-center gap-2 border border-text2 rounded-sm">
             <div
               className={`w-2 h-2 bg-success rounded-full ${
-                details.status === "Completed"
+                project.status === "Completed"
                   ? "bg-success"
-                  : details.status === "On Hold"
+                  : project.status === "On Hold"
                   ? "bg-brand"
-                  : details.status === "Active"
+                  : project.status === "Active"
                   ? "bg-[#5EB7E0]"
                   : ""
               }`}
             ></div>
-            <div className="typo-b3">{details.status}</div>
+            <div className="typo-b3">{project.status}</div>
             <div>{/* <Icon name="arrow" /> */}</div>
           </div>
         </div>
@@ -194,8 +196,8 @@ function Overview() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
           <ChartHeader
-            primaryLabel="Project Report"
-            keyValue={details?.taskStats?.reduce((sum, d) => sum + d.value, 0)}
+            primaryLabel="Project's task Report"
+            keyValue={project?.taskStats?.reduce((sum, d) => sum + d.value, 0)}
           />
         </div>
 
@@ -205,7 +207,7 @@ function Overview() {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={details?.taskStats}
+                data={project?.taskStats}
                 dataKey="value"
                 nameKey="key"
                 cx="50%"
@@ -216,7 +218,7 @@ function Overview() {
                 paddingAngle={0}
                 label={({ key, value }) => `${key} ${value}`}
               >
-                {details?.taskStats?.map((entry, index) => (
+                {project?.taskStats?.map((entry, index) => (
                   <Cell key={index} fill={projectColor[entry.key]} />
                 ))}
               </Pie>
@@ -236,7 +238,7 @@ function Overview() {
 
         {/* Legend */}
         <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-          {details?.taskStats?.map((item) => {
+          {project?.taskStats?.map((item) => {
             return (
               <div key={item.key} className="flex items-center gap-1 md:gap-2">
                 <div
@@ -315,7 +317,7 @@ function Overview() {
         <div className="flex justify-between">
           <ChartHeader
             primaryLabel="Revenue"
-            keyValue={`$${details?.finalAmountForClient}`}
+            keyValue={`$${project?.finalAmountForClient}`}
           />
         </div>
 

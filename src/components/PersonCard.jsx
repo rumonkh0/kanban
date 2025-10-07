@@ -4,6 +4,7 @@ export default function PersonCard({
   designation,
   id,
   start,
+  email,
   end,
   date,
   returning,
@@ -43,6 +44,7 @@ export default function PersonCard({
       />
       <div className="flex-1 flex flex-col gap-[1px]">
         <p className="typo-b2 pb-[1px]">{name}</p>
+        {email && <p className="typo-b2 pb-[1px]">{email}</p>}
         <p className="typo-b3 text-text2">{designation}</p>
         {id && <p className="typo-b3 text-text2">ID: {id}</p>}
         {active ? (
