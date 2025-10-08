@@ -17,6 +17,7 @@ import {
 } from "../hooks/useComment";
 import { toast } from "react-toastify";
 import { useProjectMembers, useProjects } from "../hooks/useProjects";
+import { FormatDate } from "../utils/utils";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TaskModal({ stage, role = "member", id, onClose }) {
@@ -57,6 +58,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       enabled: !id,
     }
   );
+  console.log(taskData);
   const creataeTask = useCreateTask();
 
   // File upload handler for images
@@ -539,7 +541,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
             </div>
           ) : (
             <div className="flex-1 flex flex-col gap-2 md:gap-4 lg:pr-2 pb-2 lg:pb-0 pt-2 lg:border-r-2 border-b-2 lg:border-b-0 border-divider lg:overflow-y-scroll">
-              <InfoItem label="Project" value="Sample project one" />
+              <InfoItem label="Project" value={taskData.project.projectName} />
               {role === "member" && (
                 <InfoItem label="Assigned Member">
                   <ImageName
@@ -548,8 +550,11 @@ function TaskModal({ stage, role = "member", id, onClose }) {
                   />
                 </InfoItem>
               )}
-              <InfoItem label="Create Date" value="Aug 20, 2025" />
-              <InfoItem label="Due Date" value="Aug 20, 2025" />
+              <InfoItem
+                label="Create Date"
+                value={FormatDate(taskData.createdDate)}
+              />
+              <InfoItem label="Due Date" value={FormatDate(taskData.dueDate)} />
               <InfoItem label="Priority">
                 <>
                   <div
@@ -566,14 +571,34 @@ function TaskModal({ stage, role = "member", id, onClose }) {
               </InfoItem>
               {role === "member" && (
                 <InfoItem label="Related File">
-                  <div className="h-10 flex justify-between items-center gap-1 rounded-sm">
-                    <Icon name="file" size={40} />
-                    <div className="typo-b3 text-text flex flex-col">
-                      <h2 className="text-success underline typo-b2 pb-2 cursor-pointer">
-                        Download
-                      </h2>
-                      <p className="cursor-pointer">view</p>
-                    </div>
+                  <div className="flex flex-col gap-4 max-w-20">
+                    {files &&
+                      files.length > 0 &&
+                      files.map((f) => (
+                        <div
+                          key={f._id} // always add a key when mapping
+                          className="h-10 flex justify-between items-center gap-1 rounded-sm"
+                        >
+                          <div className="min-w-8 min-h-8">
+                            <Icon name="file" size={40} />
+                          </div>
+
+                          <div className="typo-b3 text-text flex flex-col">
+                            <h2
+                              className="text-success underline typo-b2 pb-2 cursor-pointer truncate"
+                              onClick={() => window.open(f.url, "_blank")}
+                            >
+                              {f.originalName}
+                            </h2>
+                            <p
+                              className="cursor-pointer"
+                              onClick={() => window.open(f.url, "_blank")}
+                            >
+                              View
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 </InfoItem>
               )}
