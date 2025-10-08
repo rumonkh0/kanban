@@ -115,7 +115,7 @@ function TeamMembersTable({ filters }) {
                   <ImageName image={memberImage} username={teamMember.name} />
                 </Link>
               </Td>
-              <Td data={teamMember.user.email} />
+              <Td data={teamMember.user?.email} />
               <Td>
                 <div className="w-full h-10 flex items-center justify-between px-2 gap-2 border border-text2 rounded-sm">
                   <div className="typo-b3">{teamMember.designation}</div>
