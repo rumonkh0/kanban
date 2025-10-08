@@ -111,9 +111,9 @@ function TeamMembersTable({ filters }) {
                 data={teamMember.memberId}
               />
               <Td>
-                <Link to="/admin/hr/team-members/member-details">
+                {/* <Link to="/admin/hr/team-members/member-details"> */}
                   <ImageName image={memberImage} username={teamMember.name} />
-                </Link>
+                {/* </Link> */}
               </Td>
               <Td data={teamMember.user?.email} />
               <Td>
