@@ -408,38 +408,39 @@ export const Pin = ({ className }) => {
 export const Hambrger = ({ className }) => {
   return (
     <svg
-      viewBox="0 0 24 24"
-      fill="none"
+      viewBox="0 0 20 20"
+      version="1.1"
       xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
       className={className}
     >
-      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
       <g
         id="SVGRepo_tracerCarrier"
         strokeLinecap="round"
         strokeLinejoin="round"
       ></g>
       <g id="SVGRepo_iconCarrier">
-        <g clipPath="url(#clip0_429_11066)">
-          <path
-            d="M3 6.00092H21M3 12.0009H21M3 18.0009H21"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <title>hamburger</title>
+        <defs> </defs>
+        <g
+          id="Page-1"
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fillRule="evenodd"
+        >
+          <g
+            id="Icon-Set-Filled"
+            transform="translate(-212.000000, -888.000000)"
             fill="currentColor"
-            stroke="currentColor"
-          ></path>
+          >
+            <path
+              d="M230,904 L214,904 C212.896,904 212,904.896 212,906 C212,907.104 212.896,908 214,908 L230,908 C231.104,908 232,907.104 232,906 C232,904.896 231.104,904 230,904 L230,904 Z M230,896 L214,896 C212.896,896 212,896.896 212,898 C212,899.104 212.896,900 214,900 L230,900 C231.104,900 232,899.104 232,898 C232,896.896 231.104,896 230,896 L230,896 Z M214,892 L230,892 C231.104,892 232,891.104 232,890 C232,888.896 231.104,888 230,888 L214,888 C212.896,888 212,888.896 212,890 C212,891.104 212.896,892 214,892 L214,892 Z"
+              id="hamburger"
+            ></path>
+          </g>
         </g>
-        <defs>
-          <clipPath id="clip0_429_11066">
-            <rect
-              width="24"
-              height="24"
-              fill="white"
-              transform="translate(0 0.000915527)"
-            ></rect>
-          </clipPath>
-        </defs>
       </g>
     </svg>
   );
@@ -526,4 +527,3 @@ export const World = ({ className }) => {
     </svg>
   );
 };
-

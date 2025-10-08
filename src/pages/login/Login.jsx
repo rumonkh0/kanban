@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 function Login() {
   // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ email: "admin@mail.com", password: "aaaaaaaa" });
   const [error, setError] = useState(null);
   const loginMutation = useLogin();
 

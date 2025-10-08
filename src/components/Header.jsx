@@ -106,7 +106,7 @@ const Header = React.memo(({ onMenuClick }) => {
         className="lg:hidden ml-2 md:ml-4 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-divider cursor-pointer"
       >
         {/* <Icon name="menu" size={20} /> */}
-        <Hambrger className="text-text" />
+        <Hambrger className="w-6 h-6"/>
       </button>
 
       {/* Title */}
@@ -287,7 +287,7 @@ const Header = React.memo(({ onMenuClick }) => {
                 <span className="typo-b2 text-text">Notifications</span>
                 <button
                   onClick={markAllAsRead}
-                  className="typo-b3 text-brand hover:underline"
+                  className="typo-b3 text-brand hover:underline cursor-pointer"
                 >
                   Mark all as read
                 </button>
