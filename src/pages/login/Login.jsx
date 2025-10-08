@@ -77,7 +77,7 @@ function Login() {
             </button>
           </div>
         </FormField>
-
+        {/* 
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
@@ -87,7 +87,7 @@ function Login() {
           <label htmlFor="rememberMe" className="typo-b3 text-text">
             Remember Me
           </label>
-        </div>
+        </div> */}
         <RedButton
           type="submit"
           className="typo-cta py-3 w-full mt-4"

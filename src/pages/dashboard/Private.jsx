@@ -139,7 +139,7 @@ function Private() {
             {dashboard.lastAppreciations.map((per) => (
               <PersonCard
                 name={per.name}
-                designation="Client"
+                designation="Member"
                 id={34556}
                 active={true}
               />
@@ -151,7 +151,7 @@ function Private() {
             {dashboard.todaysJoining.map((per) => (
               <PersonCard
                 name={per.name}
-                designation="Client"
+                designation="Member"
                 id={34556}
                 active={true}
               />
@@ -163,9 +163,9 @@ function Private() {
             {dashboard.noticePeriodEnding.map((per) => (
               <PersonCard
                 name={per.name}
-                designation="Client"
-                id={34556}
-                active={true}
+                designation="Member"
+                // id={34556}
+                // active={true}
               />
             ))}
           </DuelCardHolder>
@@ -175,9 +175,9 @@ function Private() {
             {dashboard.probationEnding.map((per) => (
               <PersonCard
                 name={per.name}
-                designation="Client"
-                id={34556}
-                active={true}
+                designation="Member"
+                // id={34556}
+                // active={true}
               />
             ))}
           </DuelCardHolder>
