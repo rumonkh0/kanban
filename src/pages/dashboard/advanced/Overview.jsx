@@ -30,12 +30,14 @@ import { upFirst } from "../../../utils/utils";
 import { useProjectMembers } from "../../../hooks/useProjectMembers";
 import { useGetNotifications } from "../../../hooks/useNotification";
 import Loading from "../../../components/Loading";
+import { Link } from "react-router";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Overview() {
   const { data: notifications = [], isPending: notificationPending } =
     useGetNotifications();
-  const { data: assignedMembers } = useProjectMembers({ limit: 8 });
+  const { data: assignedMembers, isPending: membersPending } =
+    useProjectMembers({ limit: 8 });
   const [taskPill, setTaskPill] = useState("week");
   const [deadlinePill, setDeadlinePill] = useState("week");
   const { data: stat } = useOverviewStat();
@@ -437,66 +439,75 @@ function Overview() {
         <div className="bg-surface2 border-2 border-divider rounded-lg p-3 md:p-4 pb-2">
           <div className="flex justify-between mb-4 typo-b2 text-text">
             <div>Assigned Team Members</div>
-            <div className="text-text2 cursor-pointer hover:text-text">
+            <Link
+              to="/admin/hr/team-members"
+              className="text-text2 cursor-pointer hover:text-text"
+            >
               see all
+            </Link>
+          </div>
+          {membersPending ? (
+            <Loading />
+          ) : assignedMembers.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-separate border-spacing-y-2 border-spacing-x-0">
+                <thead className="table-header-group after:content-[''] after:block after:h-1">
+                  <tr className="text-left">
+                    <Th title="Client" />
+                    <Th title="Project" />
+                    <Th title="Team Member" />
+                    <Th title="Status" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {assignedMembers?.length > 0 &&
+                    assignedMembers.map((member, index) => (
+                      <tr
+                        key={index}
+                        className="h-12 md:h-14 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+                      >
+                        {/* Client */}
+                        <Td className="first:rounded-l-[4px]">
+                          <ImageName
+                            image={
+                              member.project.client?.profilePicture
+                                ? `${baseURL}/${member.project.client.profilePicture.filePath}`
+                                : "/images/profile.png"
+                            }
+                            username={member.project.client.name}
+                          />
+                        </Td>
+                        {/* member */}
+                        <Td className=" text-xs md:text-sm">
+                          <span className="truncate block max-w-[250px]">
+                            {member.project.projectName}
+                          </span>
+                        </Td>
+                        {/* Team Member - Hidden on mobile */}
+                        <Td className="">
+                          <ImageName
+                            image={
+                              member.freelancer?.profilePicture
+                                ? `${baseURL}/${member.freelancer.profilePicture.filePath}`
+                                : "/images/profile.png"
+                            }
+                            username={member.freelancer?.name}
+                          />
+                        </Td>
+                        {/* Status */}
+                        <Td className=" last:rounded-r-[4px]">
+                          <span className="py-1 typo-b3 text-xs md:text-sm">
+                            {member.project.status}
+                          </span>
+                        </Td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-separate border-spacing-y-2 border-spacing-x-0">
-              <thead className="table-header-group after:content-[''] after:block after:h-1">
-                <tr className="text-left">
-                  <Th title="Client" />
-                  <Th title="Project" />
-                  <Th title="Team Member" />
-                  <Th title="Status" />
-                </tr>
-              </thead>
-              <tbody>
-                {assignedMembers?.length > 0 &&
-                  assignedMembers.map((member, index) => (
-                    <tr
-                      key={index}
-                      className="h-12 md:h-14 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
-                    >
-                      {/* Client */}
-                      <Td className="first:rounded-l-[4px]">
-                        <ImageName
-                          image={
-                            member.project.client?.profilePicture
-                              ? `${baseURL}/${member.project.client.profilePicture.filePath}`
-                              : "/images/profile.png"
-                          }
-                          username={member.project.client.name}
-                        />
-                      </Td>
-                      {/* member */}
-                      <Td className=" text-xs md:text-sm">
-                        <span className="truncate block max-w-[250px]">
-                          {member.project.projectName}
-                        </span>
-                      </Td>
-                      {/* Team Member - Hidden on mobile */}
-                      <Td className="">
-                        <ImageName
-                          image={
-                            member.freelancer?.profilePicture
-                              ? `${baseURL}/${member.freelancer.profilePicture.filePath}`
-                              : "/images/profile.png"
-                          }
-                          username={member.freelancer.name}
-                        />
-                      </Td>
-                      {/* Status */}
-                      <Td className=" last:rounded-r-[4px]">
-                        <span className="py-1 typo-b3 text-xs md:text-sm">
-                          {member.project.status}
-                        </span>
-                      </Td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+          ) : (
+            <div className="text-center typo-h4">No assigned members</div>
+          )}
         </div>
 
         {/* Recent Activity Log */}

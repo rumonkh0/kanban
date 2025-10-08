@@ -78,6 +78,9 @@ function TeamMembersTable({ filters }) {
   if (isError) return <div>Error loading clients</div>;
 
   if (teamMembersLoading) return <Loading />;
+
+  if (teamMembersData.length === 0)
+    return <div className="text-center typo-h4">No Members found</div>;
   return (
     <Table>
       <Thead>
@@ -116,9 +119,7 @@ function TeamMembersTable({ filters }) {
               <Td>
                 <div className="w-full h-10 flex items-center justify-between px-2 gap-2 border border-text2 rounded-sm">
                   <div className="typo-b3">{teamMember.designation}</div>
-                  <div>
-                    {/* <Icon name="arrow" /> */}
-                  </div>
+                  <div>{/* <Icon name="arrow" /> */}</div>
                 </div>
               </Td>
 
