@@ -117,7 +117,7 @@ function TeamMembersTable({ filters }) {
                 <div className="w-full h-10 flex items-center justify-between px-2 gap-2 border border-text2 rounded-sm">
                   <div className="typo-b3">{teamMember.designation}</div>
                   <div>
-                    <Icon name="arrow" />
+                    {/* <Icon name="arrow" /> */}
                   </div>
                 </div>
               </Td>

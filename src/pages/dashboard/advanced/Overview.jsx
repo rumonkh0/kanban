@@ -28,9 +28,13 @@ import {
 import { useState } from "react";
 import { upFirst } from "../../../utils/utils";
 import { useProjectMembers } from "../../../hooks/useProjectMembers";
+import { useGetNotifications } from "../../../hooks/useNotification";
+import Loading from "../../../components/Loading";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Overview() {
+  const { data: notifications = [], isPending: notificationPending } =
+    useGetNotifications();
   const { data: assignedMembers } = useProjectMembers({ limit: 8 });
   const [taskPill, setTaskPill] = useState("week");
   const [deadlinePill, setDeadlinePill] = useState("week");
@@ -69,45 +73,6 @@ function Overview() {
   const { data: deadlineData } = useOverviewDeadline();
   const deadlines = deadlineData?.[deadlinePill] || [];
   const totalDeadline = deadlines.reduce((sum, d) => sum + d.DeadlineCount, 0);
-
-  const activities = [
-    {
-      timestamp: "Today, 09:45 AM",
-      action: 'Sarah M. completed task "UI Prototype – Home Page"',
-    },
-    {
-      timestamp: "Today, 09:45 AM",
-      action: 'Sarah M. completed task "UI Prototype – Home Page"',
-    },
-    {
-      timestamp: "Yesterday, 04:30 PM",
-      action: "New revenue entry of $2,500 added for Project Flexify",
-    },
-    {
-      timestamp: "Yesterday, 11:15 AM",
-      action: "Client Zenwell Ltd assigned to Freelancer Ayaan H",
-    },
-    {
-      timestamp: "Aug 5, 06:22 PM",
-      action: 'Task "Fix Mobile Navbar" moved to Review by Meera R.',
-    },
-    {
-      timestamp: "Aug 5, 01:10 PM",
-      action: 'Project "Wellness App Redesign" In Progress.',
-    },
-    {
-      timestamp: "Aug 5, 01:10 PM",
-      action: 'Project "Wellness App Redesign" In Progress.',
-    },
-    {
-      timestamp: "Aug 5, 01:10 PM",
-      action: 'Project "Wellness App Redesign" In Progress.',
-    },
-    {
-      timestamp: "Aug 5, 01:10 PM",
-      action: 'Project "Wellness App Redesign" In Progress.',
-    },
-  ];
 
   return (
     <div className="flex flex-col gap-4">
@@ -466,7 +431,7 @@ function Overview() {
         </div>
       </div>
 
-      {/* Tables Section - Responsive */}
+      {/* Tables Section */}
       <div className="w-full grid grid-cols-1 xl:grid-cols-[1.4fr_1.1fr] gap-4">
         {/* Assigned Team Members Table */}
         <div className="bg-surface2 border-2 border-divider rounded-lg p-3 md:p-4 pb-2">
@@ -538,37 +503,45 @@ function Overview() {
         <div className="border-2 border-divider bg-surface2 rounded-lg p-3 md:p-4 pb-2">
           <div className="flex justify-between mb-4 typo-b2 text-text">
             <div>Recent Activity Log</div>
-            <div className="text-text2 cursor-pointer hover:text-text">
+            {/* <div className="text-text2 cursor-pointer hover:text-text">
               see all
+            </div> */}
+          </div>
+          {notificationPending ? (
+            <Loading />
+          ) : (
+            <div className="overflow-x-auto">
+              {notifications.length > 0 ? (
+                <table className="min-w-full border-separate border-spacing-y-2 border-spacing-x-0">
+                  <thead className="hidden after:content-[''] after:block after:h-1">
+                    <tr className="text-left">
+                      <th className="typo-b3 text-text2 px-4">Time</th>
+                      <th className="typo-b3 text-text2 px-4">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {notifications.map((activity, index) => (
+                      <tr
+                        key={index}
+                        className="h-auto md:h-15 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
+                      >
+                        <Td className=" first:rounded-l-[4px] text-xs md:text-sm whitespace-nowrap">
+                          {activity.timestamp}
+                        </Td>
+                        <Td className=" last:rounded-r-[4px]">
+                          <span className="typo-b2 text-text2 text-xs md:text-sm block">
+                            {activity.action}
+                          </span>
+                        </Td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="text-center typo-h4">No Activity Found</div>
+              )}
             </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-separate border-spacing-y-2 border-spacing-x-0">
-              <thead className="hidden after:content-[''] after:block after:h-1">
-                <tr className="text-left">
-                  <th className="typo-b3 text-text2 px-4">Time</th>
-                  <th className="typo-b3 text-text2 px-4">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activities.map((activity, index) => (
-                  <tr
-                    key={index}
-                    className="h-auto md:h-15 shadow-sm hover:[&_td]:bg-divider/80 transition-colors"
-                  >
-                    <Td className=" first:rounded-l-[4px] text-xs md:text-sm whitespace-nowrap">
-                      {activity.timestamp}
-                    </Td>
-                    <Td className=" last:rounded-r-[4px]">
-                      <span className="typo-b2 text-text2 text-xs md:text-sm block">
-                        {activity.action}
-                      </span>
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          )}
         </div>
       </div>
     </div>

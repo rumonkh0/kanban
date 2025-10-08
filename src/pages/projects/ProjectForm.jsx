@@ -625,15 +625,16 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 </div>
               </div>
 
+
+                {/* ["Amount Paid By Client", "amountPaidByClient"],
+                ["Amount Owed By Client", "amountOwedByClient"],
+                ["Amount Paid To Team Members", "amountPaidToTeam"],
+                ["Amount Owed To Team Members", "amountOwedToTeam"], */}
               {/* Money fields */}
               {[
                 ["Project Price", "projectPrice"],
                 ["Discount", "discount"],
                 ["Team Members Pay", "amountPayableToMembers"],
-                ["Amount Paid By Client", "amountPaidByClient"],
-                ["Amount Owed By Client", "amountOwedByClient"],
-                ["Amount Paid To Team Members", "amountPaidToTeam"],
-                ["Amount Owed To Team Members", "amountOwedToTeam"],
               ].map(([label, field]) => (
                 <div key={field} className="col-span-1 flex flex-col gap-2">
                   <label className="typo-b2 text-text2">{label}</label>
