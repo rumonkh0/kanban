@@ -8,6 +8,12 @@ export const projectsApi = {
     throw new Error(response.data?.message || "Failed to fetch projects");
   },
 
+  // getTrackers: async (params) => {
+  //   const response = await apiClient.get("/projects", { params });
+  //   if (response.data?.success) return response.data.data;
+  //   throw new Error(response.data?.message || "Failed to fetch projects");
+  // },
+
   // Get single project
   getById: async (id) => {
     const response = await apiClient.get(`/projects/${id}`);

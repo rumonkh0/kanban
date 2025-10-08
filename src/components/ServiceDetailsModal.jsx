@@ -1,38 +1,24 @@
 import Icon from "./Icon";
 
-function ServiceDetailsModal({ onClose }) {
-  const serviceDetails = {
-    service: "Social Media Page",
-    description:
-      "Setup for 2 social media accounts (e.g., Facebook & Instagram) Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nesciunt error quidem modi cupiditate minus, porro at odit recusandae ut aliquid ipsum voluptate assumenda, nulla aliquam aut. Explicabo blanditiis et nam autem perferendis laborum voluptas! Dolor consequuntur neque rerum, voluptatum architecto at aliquid laborum hic dicta tempore quibusdam vero animi.",
-    clientsPay: "$78.00",
-    teamsPayment: "$14.00",
-    teamMember: {
-      name: "Akash",
-      role: "Marketing Head",
-    },
-    addons: "----",
-  };
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
+function ServiceDetailsModal({ service, onClose }) {
   return (
     <div className="w-full max-h-200 md:w-200 lg:max-h-[900px] p-4 bg-surface rounded-lg border typo-b2 border-divider flex flex-col">
       <div className="pb-4 border-b-2 border-divider flex justify-between">
-        <h2>Company Details</h2>
+        <h2>Service Details</h2>
         <div onClick={onClose}>
           <Icon name="close" className="cursor-pointer" />
         </div>
       </div>
       <div className="flex-1 mt-4 flex flex-col gap-4 border border-divider rounded-lg p-4 shadow-sm bg-surface2 overflow-y-scroll">
-        <InfoItem label="Service" value={serviceDetails.service} />
-        <InfoItem label="Description" value={serviceDetails.description} />
-        <InfoItem label="Client's Pay" value={serviceDetails.clientsPay} />
-        <InfoItem label="Team's Payment" value={serviceDetails.teamsPayment} />
+        <InfoItem label="Service" value={service.serviceName} />
+        <InfoItem label="Description" value={service.description} />
+        <InfoItem label="Client's Pay" value={service.clientsPay} />
+        <InfoItem label="Team's Payment" value={service.teamsPayment} />
         <InfoItem label="Team Member">
-          <UserCard
-            name={serviceDetails.teamMember.name}
-            role={serviceDetails.teamMember.role}
-          />
+          <Members members={service.freelancers} />
         </InfoItem>
-        <InfoItem label="addons" value={serviceDetails.addons} />
+        <InfoItem label="addons" value={service.addons} />
       </div>
     </div>
   );
@@ -50,18 +36,56 @@ const InfoItem = ({ label, value, text, children }) => (
   </div>
 );
 
-const UserCard = ({ name, role }) => (
-  <div className="flex items-center gap-2">
-    <img
-      src="/images/profile.png"
-      alt={name}
-      className="w-8 h-8 rounded-full object-cover"
-    />
-    <div>
-      <p className="typo-b2">{name}</p>
-      <p className="typo-b3 text-text2">{role}</p>
+function Members({ members }) {
+  if (!members || members.length === 0) return "-------";
+
+  // ✅ Only 1 member → avatar + name
+  if (members.length === 1) {
+    const m = members[0];
+    const memberImage = m?.profilePicture?.filePath
+      ? `${baseURL}/${m.profilePicture.filePath}`
+      : "/images/profile.png";
+    return <ImageName image={memberImage} username={m.name} />;
+  }
+
+  return (
+    <div className="flex -space-x-3">
+      {members.slice(0, 5).map((m, idx) => {
+        const memberImage = m?.profilePicture?.filePath
+          ? `${baseURL}/${m.profilePicture.filePath}`
+          : "/images/profile.png";
+
+        return (
+          <img
+            key={idx}
+            src={memberImage}
+            alt={m?.name || `member ${idx}`}
+            title={m?.name}
+            className="w-8 h-8 rounded-full object-cover border-2 border-white"
+          />
+        );
+      })}
+      {members.length > 5 && (
+        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-700 border-2 border-white">
+          +{members.length - 5}
+        </span>
+      )}
     </div>
-  </div>
-);
+  );
+}
+
+// const UserCard = ({ name, role }) => (
+//   <div className="flex items-center gap-2">
+//     <img
+//       src="/images/profile.png"
+//       alt={name}
+//       className="w-8 h-8 rounded-full object-cover"
+//     />
+//     <div>
+//       <p className="typo-b2">{name}</p>
+//       <p className="typo-b3 text-text2">{role}</p>
+//     </div>
+//   </div>
+// );
 
 export default ServiceDetailsModal;

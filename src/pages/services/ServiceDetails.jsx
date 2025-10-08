@@ -13,7 +13,7 @@ import Loading from "../../components/Loading";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function ServiceDetails() {
   const [ServiceModal, setServiceModal] = useState(false);
-
+  const [service, setService] = useState({});
   const { data: services, isLoading, isError } = useServices();
   const deleteClientMutation = useDeleteService();
   const [activeMenu, setActiveMenu] = useState(null);
@@ -31,7 +31,8 @@ function ServiceDetails() {
     }
   };
   if (isLoading) {
-return <Loading />;  }
+    return <Loading />;
+  }
 
   if (isError) {
     return <div>Error loading clients</div>;
@@ -116,7 +117,10 @@ return <Loading />;  }
                       menuItems={[
                         {
                           label: "View",
-                          onClick: () => setServiceModal(true),
+                          onClick: () => {
+                            setService(service);
+                            setServiceModal(true);
+                          },
                         },
                         {
                           label: "Edit",
@@ -138,7 +142,10 @@ return <Loading />;  }
         </tbody>
       </Table>
       <Modal isOpen={ServiceModal} onClose={() => setServiceModal(false)}>
-        <ServiceDetailsModal onClose={() => setServiceModal(false)} />
+        <ServiceDetailsModal
+          service={service}
+          onClose={() => setServiceModal(false)}
+        />
       </Modal>
     </>
   );

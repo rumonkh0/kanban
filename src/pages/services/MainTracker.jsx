@@ -8,9 +8,15 @@ import { useState } from "react";
 import { Link } from "react-router";
 import TrackerDetailsModal from "../../components/TrackerDetailsModal";
 import { FilterDropdown, RedButton } from "../../components/Component";
+import { useProjects } from "../../hooks/useProjects";
+import { FormatDate } from "../../utils/utils";
+import Loading from "../../components/Loading";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function MainTracker() {
   const [trackerModal, setTrackerModal] = useState(false);
+  const [tracker, setTracker] = useState({});
+  const { data: trackersData, isPending } = useProjects();
   const tableHeadings = [
     "Company Name",
     "Client",
@@ -25,15 +31,15 @@ function MainTracker() {
     "Discount",
     "Final Amount For Client",
     "Mode of Payment",
-    "Payment Date",
+    // "Payment Date",
     "Amount Paid",
     "Amount Owed by Client",
     "Payable Amount To Member",
-    "Due Paid To Member",
+    // "Due Paid To Member",
     "Amount Paid To Member",
     "Amount Owed To Member",
     "Amount Earned",
-    "Amount Claimed",
+    // "Amount Claimed",
     "Action",
   ];
   const trackers = [
@@ -87,6 +93,7 @@ function MainTracker() {
       AmountClaimed: 800,
     },
   ];
+  console.log(trackersData);
   const [filters, setFilters] = useState({
     status: "",
     project: "", // Added project filter for consistency
@@ -139,7 +146,7 @@ function MainTracker() {
           </Link>
         </div>
         <div className="flex flex-col sm:flex-row flex-wrap gap-2 lg:gap-4">
-          {filterConfigs.map(({ key, label, options }) => (
+          {/* {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
               label={label}
@@ -148,7 +155,7 @@ function MainTracker() {
               onSelect={(value) => handleFilterChange(key, value)}
               className="h-8 w-full sm:w-auto"
             />
-          ))}
+          ))} */}
         </div>
       </div>
 
@@ -161,110 +168,182 @@ function MainTracker() {
           </tr>
         </Thead>
         <tbody>
-          {trackers.map((tracker, index) => (
-            <tr
-              onClick={() => setTrackerModal(true)}
-              key={index}
-              className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors cursor-pointer"
-            >
-              <Td className="irst:rounded-l-[4px] min-w-45">
-                {tracker.CompanyName}
-              </Td>
-              <Td className="min-w-45">
-                <ImageName
-                  image="/images/profile.png"
-                  username={tracker.Client}
-                  designation={tracker.Client}
-                />
-              </Td>
-              <Td className="min-w-45">
-                <ImageName
-                  image="/images/profile.png"
-                  username={tracker.TeamMemberAssigned}
-                  designation={tracker.TeamMemberAssigned}
-                />
-              </Td>
-              <Td className="min-w-45">{tracker.ProjectName}</Td>
-              <Td className="min-w-60">
-                <div className="line-clamp-2">{tracker.Description}</div>
-              </Td>
-              <Td>{tracker.Start}</Td>
-              <Td>{tracker.DueDate}</Td>
-              <Td>
-                <div className="w-30 border border-text2 rounded-sm flex items-center p-3 gap-2 typo-b3">
-                  <p className="w-2 h-2 bg-success rounded-full"></p>
-                  {tracker.Status}
-                </div>
-              </Td>
-              <Td>${tracker.Price}</Td>
-              <Td>
-                {tracker.CustomPrice ? `$${tracker.CustomPrice}` : "------"}
-              </Td>
-              <Td>{tracker.Discount ? `$${tracker.Discount}` : "------"}</Td>
-              <Td>
-                {tracker.FinalAmountForClient
-                  ? `$${tracker.FinalAmountForClient}`
-                  : "------"}
-              </Td>
-              <Td>{tracker.ModeOfPayment}</Td>
-              <Td>{tracker.PaymentDate}</Td>
-              <Td>
-                {tracker.AmountPaid ? `$${tracker.AmountPaid}` : "------"}
-              </Td>
-              <Td>
-                {tracker.AmountOwedByClient
-                  ? `$${tracker.AmountOwedByClient}`
-                  : "------"}
-              </Td>
-              <Td>
-                {tracker.PayableAmountToMember
-                  ? `$${tracker.PayableAmountToMember}`
-                  : "------"}
-              </Td>
-              <Td>{tracker.DatePaidToMember}</Td>
-              <Td>
-                {tracker.AmountPaidToMember
-                  ? `$${tracker.AmountPaidToMember}`
-                  : "------"}
-              </Td>
-              <Td>
-                {tracker.AmountOwedToMember
-                  ? `$${tracker.AmountOwedToMember}`
-                  : "------"}
-              </Td>
-              <Td>
-                {tracker.AmountEarned ? `$${tracker.AmountEarned}` : "------"}
-              </Td>
-              <Td>
-                {tracker.AmountClaimed ? `$${tracker.AmountClaimed}` : "------"}
-              </Td>
-
-              <Td className="last:rounded-r-[4px]">
-                <button
-                  onClick={(e) => handleMenuClick(index, e)}
-                  className="relative p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm"
-                >
-                  <Icon name="menu" size={20} />
-                  <DropdownMenu
-                    isOpen={activeMenu === index}
-                    onClose={() => setActiveMenu(null)}
-                    menuItems={[
-                      {
-                        label: "Edit",
-                        href: "/admin/services/edit-tracker",
-                      },
-                    ]}
+          {isPending ? (
+            <Loading />
+          ) : (
+            trackersData.map((tracker, index) => (
+              <tr
+                // onClick={() => setTrackerModal(true)}
+                key={index}
+                className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors cursor-pointer"
+              >
+                <Td className="irst:rounded-l-[4px] min-w-45">
+                  {tracker.client?.companyName}
+                </Td>
+                <Td className="min-w-45">
+                  <ImageName
+                    image={
+                      tracker.client?.profilePicture?.filePath
+                        ? `${baseURL}/${tracker.client?.profilePicture.filePath}`
+                        : "/images/profile.png"
+                    }
+                    username={tracker.client?.name}
+                    // designation={tracker.Client}
                   />
-                </button>
-              </Td>
-            </tr>
-          ))}
+                </Td>
+                <Td className="min-w-45">
+                  <Members members={tracker.members} />
+                </Td>
+                <Td className="min-w-45">{tracker.projectName}</Td>
+                <Td className="min-w-60">
+                  <div className="line-clamp-2">{tracker.description}</div>
+                </Td>
+                <Td>{FormatDate(tracker.startDate)}</Td>
+                <Td>{FormatDate(tracker.dueDate)}</Td>
+                <Td>
+                  <div className="w-30 border border-text2 rounded-sm flex items-center p-3 gap-2 typo-b3">
+                    <p
+                      className={`w-2 h-2 rounded-full ${
+                        tracker.status === "Completed"
+                          ? "bg-success"
+                          : tracker.status === "On Hold"
+                          ? "bg-brand"
+                          : tracker.status === "Active"
+                          ? "bg-[#5EB7E0]"
+                          : ""
+                      }`}
+                    ></p>
+                    {tracker.status}
+                  </div>
+                </Td>
+                <Td>${tracker.projectPrice}</Td>
+                <Td>
+                  {tracker.customPrice ? `$${tracker.customPrice}` : "------"}
+                </Td>
+                <Td>{tracker.discount ? `$${tracker.discount}` : "------"}</Td>
+                <Td>
+                  {tracker.finalAmountForClient
+                    ? `$${tracker.finalAmountForClient}`
+                    : "------"}
+                </Td>
+                <Td>{tracker.modeOfPayment}</Td>
+                {/* <Td>{tracker.PaymentDate}</Td> */}
+                <Td>
+                  {tracker.amountPaidByClient
+                    ? `$${tracker.amountPaidByClient}`
+                    : "------"}
+                </Td>
+                <Td>
+                  {tracker.amountOwedByClient
+                    ? `$${tracker.amountOwedByClient}`
+                    : "------"}
+                </Td>
+                <Td>
+                  {tracker.amountPayableToMembers
+                    ? `$${tracker.amountPayableToMembers}`
+                    : "------"}
+                </Td>
+                {/* <Td>{tracker.DatePaidToMember}</Td> */}
+                <Td>
+                  {tracker.amountPaidToMembers
+                    ? `$${tracker.amountPaidToMembers}`
+                    : "------"}
+                </Td>
+                <Td>
+                  {tracker.amountOwedToMembers
+                    ? `$${tracker.amountOwedToMembers}`
+                    : "------"}
+                </Td>
+                <Td>
+                  {tracker.amountPaidByClient - tracker.amountPaidToMembers
+                    ? `$${
+                        tracker.amountPaidByClient - tracker.amountPaidToMembers
+                      }`
+                    : "------"}
+                </Td>
+                {/* <Td>
+                {tracker.AmountClaimed ? `$${tracker.AmountClaimed}` : "------"}
+              </Td> */}
+
+                <Td className="last:rounded-r-[4px]">
+                  <button
+                    onClick={(e) => handleMenuClick(index, e)}
+                    className="relative p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm"
+                  >
+                    <Icon name="menu" size={20} />
+                    <DropdownMenu
+                      isOpen={activeMenu === index}
+                      onClose={() => setActiveMenu(null)}
+                      menuItems={[
+                        {
+                          label: "View",
+                          onClick: () => {
+                            setTracker(tracker);
+                            setTrackerModal(true);
+                          },
+                        },
+                        {
+                          label: "Edit",
+                          href: "/admin/services/edit-tracker",
+                        },
+                        {
+                          label: "Delete",
+                          onClick: () => setTracker(tracker),
+                        },
+                      ]}
+                    />
+                  </button>
+                </Td>
+              </tr>
+            ))
+          )}
         </tbody>
       </Table>
       <Modal isOpen={trackerModal} onClose={() => setTrackerModal(false)}>
-        <TrackerDetailsModal onClose={() => setTrackerModal(false)} />
+        <TrackerDetailsModal
+          tracker={tracker}
+          onClose={() => setTrackerModal(false)}
+        />
       </Modal>
     </>
+  );
+}
+
+function Members({ members }) {
+  if (!members || members.length === 0) return "-------";
+
+  // ✅ Only 1 member → avatar + name
+  if (members.length === 1) {
+    const m = members[0];
+    const memberImage = m?.profilePicture?.filePath
+      ? `${baseURL}/${m.profilePicture.filePath}`
+      : "/images/profile.png";
+    return <ImageName image={memberImage} username={m.name} />;
+  }
+
+  return (
+    <div className="flex -space-x-3">
+      {members.slice(0, 5).map((m, idx) => {
+        const memberImage = m?.profilePicture?.filePath
+          ? `${baseURL}/${m.profilePicture.filePath}`
+          : "/images/profile.png";
+
+        return (
+          <img
+            key={idx}
+            src={memberImage}
+            alt={m?.name || `member ${idx}`}
+            title={m?.name}
+            className="w-8 h-8 rounded-full object-cover border-2 border-white"
+          />
+        );
+      })}
+      {members.length > 5 && (
+        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-700 border-2 border-white">
+          +{members.length - 5}
+        </span>
+      )}
+    </div>
   );
 }
 

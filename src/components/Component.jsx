@@ -17,9 +17,9 @@ export const RedButton = ({
   return (
     <button
       onClick={onClick}
-      className={` py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${disabled && "bg-brand/50"} ${
-        className || "px-4"
-      }`}
+      className={` py-2 bg-brand text-text rounded-sm hover:bg-brand/80 transition-colors duration-200 flex items-center justify-center cursor-pointer ${
+        disabled && "bg-brand/50"
+      } ${className || "px-4"}`}
       disabled={disabled}
     >
       {children}
@@ -77,7 +77,7 @@ export const Thead = ({ children }) => (
 
 export const Td = ({ data, className, children }) => (
   <td
-    className={`min-w-30 w-auto typo-b2 text-text py-2 px-2 md:px-4 bg-divider ${
+    className={`min-w-40 w-auto typo-b2 text-text py-2 px-2 md:px-4 bg-divider ${
       className || ""
     }`}
   >
