@@ -76,8 +76,10 @@ import MemberSettings from "./pages/member/Settings";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import ProtectedRedirect from "./components/Redirect";
 import Task from "./pages/member/Task";
+import useTheme from "./hooks/useThere";
 
 function App() {
+  useTheme();
   return (
     <Routes>
       <Route path="/" element={<ProtectedRedirect />} />
@@ -118,7 +120,9 @@ function App() {
           <Route path="dashboard/advanced" element={<Advanced />}>
             <Route
               index
-              element={<Navigate to="/admin/dashboard/advanced/overview" replace />}
+              element={
+                <Navigate to="/admin/dashboard/advanced/overview" replace />
+              }
             />
             <Route path="overview" element={<Overview />} />
             <Route path="clients" element={<ClientsDashboard />} />
@@ -148,7 +152,10 @@ function App() {
               <Route
                 path="team-payment"
                 element={
-                  <TeamPayment toHref="/admin/projects/paid-to" from="projects" />
+                  <TeamPayment
+                    toHref="/admin/projects/paid-to"
+                    from="projects"
+                  />
                 }
               />
               <Route path="notes" element={<ProjectNotes />} />
@@ -172,7 +179,10 @@ function App() {
           <Route path="tasks" element={<ProjectTask />} />
 
           <Route path="hr" element={<HrLayout />}>
-            <Route index element={<Navigate to="/admin/hr/team-members" replace />} />
+            <Route
+              index
+              element={<Navigate to="/admin/hr/team-members" replace />}
+            />
             <Route path="team-members" element={<TeamMember />} />
             <Route path="add-team-member" element={<TeamMemberForm />} />
             <Route path="team-member/:id" element={<TeamMemberDetails />} />
