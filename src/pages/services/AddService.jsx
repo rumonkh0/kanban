@@ -49,7 +49,7 @@ function AddService({ edit = false, title = "Add Service" }) {
     deleteMutation.isPending;
 
   const handleSubmit = () => {
-    console.log(formData);
+    // console.log(formData);
     if (!formData.serviceName || !formData.description) {
       alert("Please fill in the required fields.");
       return;

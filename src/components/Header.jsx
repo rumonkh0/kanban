@@ -16,7 +16,9 @@ import {
   useMarkAllAsRead,
 } from "../hooks/useNotification";
 import moment from "moment";
+import { useMe } from "../hooks/useAuth";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
+
 const Header = React.memo(({ onMenuClick }) => {
   const title = usePageTitleStore((state) => state.title);
   const navigate = useNavigate();
@@ -32,13 +34,13 @@ const Header = React.memo(({ onMenuClick }) => {
   const plusRef = useRef(null);
   const searchRef = useRef(null);
   const mobileSearchRef = useRef(null);
-
-  const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
 
-  const role = user?.role;
-  const userName = user?.user?.name;
-  const profilePicture = user?.user?.profilePicture;
+  const { data: me, isPending: mePending } = useMe();
+
+  const role = me?.role;
+  const userName = me?.profile?.name;
+  const profilePicture = me?.profile?.profilePicture;
 
   const photo =
     (profilePicture?.filePath && `${baseURL}/${profilePicture.filePath}`) ||
@@ -53,13 +55,9 @@ const Header = React.memo(({ onMenuClick }) => {
   };
 
   const handleLogout = () => {
-    console.log("zero");
     logout();
-    console.log("one");
     setOpenProfile(false);
-    console.log("two");
     navigate("/login", { replace: true });
-    console.log("three");
   };
 
   // Close dropdowns when clicking outside

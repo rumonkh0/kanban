@@ -6,7 +6,7 @@ const ProtectedRedirect = () => {
   const token = useAuthStore((state) => state.token);
   const user = useAuthStore((state) => state.user);
 
-  console.log("from redirect", isAuthenticated, user);
+  // console.log("from redirect", isAuthenticated, user);
   if (!isAuthenticated || !token || !user) {
     return <Navigate to="/login" replace />;
   }

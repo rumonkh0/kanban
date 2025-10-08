@@ -40,7 +40,7 @@ function Reports() {
     { name: "Taxes", sales: revenueData * (5 / 100), color: "#FE4E4D" },
     { name: "Growth Fund", sales: revenueData * (5 / 100), color: "#5EB7E0" },
   ];
-  console.log(stageData);
+  // console.log(stageData);
 
   const projectColor = {
     Active: "#5EB7E0",

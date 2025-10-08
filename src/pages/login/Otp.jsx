@@ -36,7 +36,6 @@ function Otp() {
           toast.success("Password reset successful!"), navigate("/login");
         },
         onError: (err) => {
-          console.log(err);
           const message =
             err.response?.data?.message ||
             err.response?.data?.error ||

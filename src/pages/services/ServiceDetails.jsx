@@ -39,7 +39,7 @@ return <Loading />;  }
 
   return (
     <>
-      {console.log("from services", services)}
+      {/* {console.log("from services", services)} */}
       <PageTitle title="Services" />
       <div className="flex flex-col lg:flex-row justify-between mb-4 gap-2 lg:gap-0">
         <div className="flex gap-4 flex-wrap justify-center lg:justify-start">

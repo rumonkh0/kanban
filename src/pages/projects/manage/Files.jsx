@@ -84,9 +84,9 @@ function Files() {
     event.target.value = null;
   };
   const deleteFile = useDeleteFile();
-  useEffect(() => {
-    console.log(uploads);
-  }, [uploads]);
+  // useEffect(() => {
+  //   console.log(uploads);
+  // }, [uploads]);
 
   return (
     <div className="bg-surface2 border-2 border-divider rounded-lg p-4">

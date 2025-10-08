@@ -9,7 +9,6 @@ export const authApi = {
   },
 
   getMe: async () => {
-    console.log("hi");
     const response = await apiClient.get("/auth/me");
     if (response.data?.success) return response.data?.data;
     throw new Error(response.data?.message || "Faied Request");

@@ -22,14 +22,11 @@ function Private() {
   const { data: calendarData = [], isPending: calanderPending } =
     usePrivateCalander();
   const now = new Date();
-  const month = now.getMonth(); // current month
+  const month = now.getMonth();
   const year = now.getFullYear();
   const firstDayIndex = new Date(year, month, 1).getDay();
-  // 👆 0 = Sunday, 3 = Wednesday, etc.
-  const totalDays = new Date(year, month + 1, 0).getDate(); // total days in month
+  const totalDays = new Date(year, month + 1, 0).getDate(); 
   const todayDate = now.getDate();
-
-  console.log(calendarData);
 
   if (isPending) return <Loading />;
   return (
@@ -84,53 +81,60 @@ function Private() {
 
         {/* Dates */}
         <div className="grid grid-cols-7 min-w-[62rem]">
-          {Array.from({ length: 35 }).map((_, i) => {
-            const date = i - firstDayIndex + 1;
-            const projects = calendarData[date] || [];
-            const isToday = date === todayDate;
+          {calanderPending ? (
+            <Loading />
+          ) : (
+            Array.from({ length: 35 }).map((_, i) => {
+              const date = i - firstDayIndex + 1;
+              const projects = calendarData[date] || [];
+              const isToday = date === todayDate;
 
-            return (
-              <div
-                key={i}
-                className={`h-40 flex items-stretch justify-between p-2 ${
-                  (i + 1) % 7 ? "border-r" : ""
-                } ${i < 8 ? "" : "border-t"} ${
-                  i > 27 ? "" : "border-b"
-                } border-divider last:border-r-0`}
-              >
-                {date > 0 && date <= totalDays && (
-                  <div className="flex flex-1 flex-row justify-between h-full w-full">
-                    {/* Events */}
-                    <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
-                      {projects.map((p) => (
-                        <Link to={`/admin/projects/${p.id}/manage`} key={p.id}>
-                          <div className="text-brand truncate">{p.name}</div>
-                        </Link>
-                      ))}
-                    </div>
+              return (
+                <div
+                  key={i}
+                  className={`h-40 flex items-stretch justify-between p-2 ${
+                    (i + 1) % 7 ? "border-r" : ""
+                  } ${i < 8 ? "" : "border-t"} ${
+                    i > 27 ? "" : "border-b"
+                  } border-divider last:border-r-0`}
+                >
+                  {date > 0 && date <= totalDays && (
+                    <div className="flex flex-1 flex-row justify-between h-full w-full">
+                      {/* Events */}
+                      <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
+                        {projects.map((p) => (
+                          <Link
+                            to={`/admin/projects/${p.id}/manage`}
+                            key={p.id}
+                          >
+                            <div className="text-brand truncate">{p.name}</div>
+                          </Link>
+                        ))}
+                      </div>
 
-                    {/* Date */}
-                    <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
-                      <div
-                        className={`${
-                          isToday
-                            ? "bg-brand text-white rounded-sm px-2 py-1"
-                            : "text-text2"
-                        }`}
-                      >
-                        {date}
-                      </div>
-                      <div className="text-text2">
-                        {new Date(year, month).toLocaleString("default", {
-                          month: "short",
-                        })}
+                      {/* Date */}
+                      <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
+                        <div
+                          className={`${
+                            isToday
+                              ? "bg-brand text-white rounded-sm px-2 py-1"
+                              : "text-text2"
+                          }`}
+                        >
+                          {date}
+                        </div>
+                        <div className="text-text2">
+                          {new Date(year, month).toLocaleString("default", {
+                            month: "short",
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

@@ -35,7 +35,7 @@ export const stagesApi = {
 
   // Update stage order
   updateOrder: async (id, prev, next) => {
-    console.log(prev, next)
+    // console.log(prev, next)
     const response = await apiClient.put(`/stages/${id}/reorder`, { prev, next });
 
     if (response.data?.success) return response.data.data;

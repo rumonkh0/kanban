@@ -169,7 +169,7 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
 
     // Basic validation
     if (!formData.projectName || !formData.description) {

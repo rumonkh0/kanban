@@ -212,9 +212,9 @@ function KanbanBoard({ stages, setStages, role = "member", filters = {} }) {
 
   renderCount.current += 1; // increase on every render
 
-  useEffect(() => {
-    console.log("Rendered:", renderCount.current);
-  });
+  // useEffect(() => {
+  //   console.log("Rendered:", renderCount.current);
+  // });
   if (isLoading) return <Loading />;
   return (
     <>

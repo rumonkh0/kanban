@@ -303,7 +303,6 @@ function Setting() {
                   options={languageOptions} // Pass the structured options array
                   value={formData.language} // The current ISO code
                   onChange={(lan) => {
-                    console.log(lan);
                     handleChange("language", lan);
                   }} // Receives the new ISO code
                   placeholder="Choose Language"

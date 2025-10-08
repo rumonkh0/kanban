@@ -37,7 +37,6 @@ export const clientsApi = {
 
   // Update client
   update: async (id, data) => {
-    console.log("hello from updae ---: ", id);
     const response = await apiClient.put(`/clients/${id}`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     });
