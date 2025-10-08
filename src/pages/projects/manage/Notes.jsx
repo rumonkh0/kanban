@@ -55,13 +55,13 @@ function Notes() {
             Add Note
           </Link>
         </div>
-        <FilterDropdown
+        {/* <FilterDropdown
           label="Status"
           options={["complete", "incomplete"]}
           value={filters.status}
           onSelect={(value) => handleFilterChange("status", value)}
           className="h-8"
-        />
+        /> */}
       </div>
       {NotesData && NotesData.length > 0 ? (
         <div className="overflow-x-auto p-2 pb-1.5 border-2 border-divider rounded-lg bg-surface2 shadow-sm">

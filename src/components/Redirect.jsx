@@ -3,10 +3,11 @@ import { useAuthStore } from "../stores/authStore";
 
 const ProtectedRedirect = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const token = useAuthStore((state) => state.token);
   const user = useAuthStore((state) => state.user);
 
-  console.log("from redirect.jsx");
-  if (!isAuthenticated) {
+  console.log("from redirect", isAuthenticated, user);
+  if (!isAuthenticated || !token || !user) {
     return <Navigate to="/login" replace />;
   }
 

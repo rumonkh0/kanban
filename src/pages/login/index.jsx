@@ -3,8 +3,9 @@ import { useAuthStore } from "../../stores/authStore";
 
 function LoginLayout() {
   const token = useAuthStore((state) => state.token);
+  const user = useAuthStore((state) => state.user);
 
-  if (token) {
+  if (token && user) {
     return <Navigate to="/" replace />;
   }
 

@@ -103,7 +103,7 @@ function PaidTo({ from }) {
           </Link>
         </div>
         <div className="flex flex-col sm:flex-row flex-wrap gap-2 lg:gap-4">
-          {filterConfigs.map(({ key, label, options }) => (
+          {/* {filterConfigs.map(({ key, label, options }) => (
             <FilterDropdown
               key={key}
               label={label}
@@ -112,7 +112,7 @@ function PaidTo({ from }) {
               onSelect={(value) => handleFilterChange(key, value)}
               className="h-8 w-full sm:w-auto"
             />
-          ))}
+          ))} */}
         </div>
       </div>
 
