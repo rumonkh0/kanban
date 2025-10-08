@@ -16,6 +16,13 @@ export const usePrivate = (params) => {
   });
 };
 
+export const usePrivateCalander = () => {
+  return useQuery({
+    queryKey: ["dashboard", "calander"],
+    queryFn: () => dashboardApi.getPrivateCalander(),
+  });
+};
+
 /**
  * Fetches core statistical data (total users, projects, etc.).
  * Maps to GET /dashboard/overviewstat
@@ -313,10 +320,8 @@ export const useTaskReport = (params) => {
   return useQuery({
     queryKey: ["report", "taskReport", params],
     queryFn: () => dashboardApi.getTaskReport(params),
-
   });
 };
-
 
 export const useRevenueReport = (params) => {
   return useQuery({
@@ -325,14 +330,12 @@ export const useRevenueReport = (params) => {
   });
 };
 
-
 export const useProjectsReport = (params) => {
   return useQuery({
     queryKey: ["report", "projectsReport", params],
     queryFn: () => dashboardApi.getProjectsReport(params),
   });
 };
-
 
 export const useTaskStageReport = (params) => {
   return useQuery({

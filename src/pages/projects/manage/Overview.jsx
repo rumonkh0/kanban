@@ -358,18 +358,13 @@ function Overview() {
         {/* Legend */}
         <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
           {revenue.map((item) => {
-            const total = data.reduce((sum, d) => sum + d.sales, 0);
-            const percentage = ((item.sales / total) * 100).toFixed(0);
-
             return (
               <div key={item.name} className="flex items-center gap-1 md:gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 ></div>
-                <span className="typo-b3">
-                  {percentage}% {item.name}
-                </span>
+                <span className="typo-b3">{item.name}</span>
               </div>
             );
           })}

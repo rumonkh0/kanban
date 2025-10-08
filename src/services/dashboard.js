@@ -9,6 +9,10 @@ export const dashboardApi = {
     const response = await apiClient.get(`/dashboard/private`, { params });
     return response.data.data;
   },
+  getPrivateCalander: async () => {
+    const response = await apiClient.get(`/dashboard/privatecalander`);
+    return response.data.data;
+  },
 
   // =========================================================================
   // Core Dashboard/Overview Services
@@ -218,17 +222,23 @@ export const dashboardApi = {
   },
 
   getRevenueReport: async (params) => {
-    const response = await apiClient.get("/dashboard/taskrevenuereport", { params });
+    const response = await apiClient.get("/dashboard/taskrevenuereport", {
+      params,
+    });
     return response.data.data;
   },
 
   getProjectsReport: async (params) => {
-    const response = await apiClient.get("/dashboard/taskprojectreport", { params });
+    const response = await apiClient.get("/dashboard/taskprojectreport", {
+      params,
+    });
     return response.data.data;
   },
 
   getTaskStageReport: async (params) => {
-    const response = await apiClient.get("/dashboard/taskstagereport", { params });
+    const response = await apiClient.get("/dashboard/taskstagereport", {
+      params,
+    });
     return response.data.data;
   },
 };

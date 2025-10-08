@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { authApi } from "../services/auth";
 import { useNavigate } from "react-router";
 import { useAuthStore } from "../stores/authStore";
@@ -29,6 +29,12 @@ export const useLogin = () => {
           break;
       }
     },
+  });
+};
+export const useMe = () => {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: () => authApi.getMe(),
   });
 };
 

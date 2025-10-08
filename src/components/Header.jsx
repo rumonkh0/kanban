@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import Icon, { Briefcase, Hambrger, LogOut, Notification, People, Settings, Users } from "./Icon";
+import Icon, {
+  Briefcase,
+  Hambrger,
+  LogOut,
+  Notification,
+  People,
+  Settings,
+  Users,
+} from "./Icon";
 import { usePageTitleStore } from "@/stores/usePageTitleStore";
 import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "../stores/authStore";
@@ -69,15 +77,16 @@ const Header = React.memo(({ onMenuClick }) => {
       if (plusRef.current && !plusRef.current.contains(e.target)) {
         setOpenPlus(false);
       }
-    //   if (searchRef.current && !searchRef.current.contains(e.target)) {
-    //     setOpenSearch(false);
-    //   }
-    //   if (
-    //     mobileSearchRef.current &&
-    //     !mobileSearchRef.current.contains(e.target)
-    //   ) {
-    //     setOpenMobileSearch(false);
-    //   }
+      //   if (searchRef.current && !searchRef.current.contains(e.target)) {
+      //     setOpenSearch(false);
+      //   }
+      //   if (
+
+      //     mobileSearchRef.current &&
+      //     !mobileSearchRef.current.contains(e.target)
+      //   ) {
+      //     setOpenMobileSearch(false);
+      //   }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -93,7 +102,7 @@ const Header = React.memo(({ onMenuClick }) => {
         className="lg:hidden ml-2 md:ml-4 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-divider cursor-pointer"
       >
         {/* <Icon name="menu" size={20} /> */}
-        <Hambrger />
+        <Hambrger className="text-text" />
       </button>
 
       {/* Title */}

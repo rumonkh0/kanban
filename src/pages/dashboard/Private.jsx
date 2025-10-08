@@ -1,12 +1,12 @@
 import MetricCard from "@/components/MetricCard";
 import PersonCard from "@/components/PersonCard";
 import PageTitle from "../../components/PageTitle";
-import { usePrivate } from "../../hooks/useDashboard";
+import { usePrivate, usePrivateCalander } from "../../hooks/useDashboard";
 import Loading from "../../components/Loading";
-import { useAuthStore } from "../../stores/authStore";
+import { useMe } from "../../hooks/useAuth";
+import { Link } from "react-router";
 
 function Private() {
-  const user = useAuthStore((state) => state.user);
   const days = [
     "Sunday",
     "Monday",
@@ -18,6 +18,18 @@ function Private() {
   ];
 
   const { data: dashboard, isPending } = usePrivate();
+  const { data: me, isPending: mePending } = useMe();
+  const { data: calendarData = [], isPending: calanderPending } =
+    usePrivateCalander();
+  const now = new Date();
+  const month = now.getMonth(); // current month
+  const year = now.getFullYear();
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  // 👆 0 = Sunday, 3 = Wednesday, etc.
+  const totalDays = new Date(year, month + 1, 0).getDate(); // total days in month
+  const todayDate = now.getDate();
+
+  console.log(calendarData);
 
   if (isPending) return <Loading />;
   return (
@@ -25,13 +37,17 @@ function Private() {
       <PageTitle title="Dashboard" />
       {/* <div className="flex gap-2 flex-wrap"> */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(293px,1fr))] gap-2">
-        <PersonCard
-          name={user.user.name}
-          designation="Admin"
-          // id={34556}
-          image={user.user?.profilePicture}
-          active={true}
-        ></PersonCard>
+        {mePending ? (
+          <Loading />
+        ) : (
+          <PersonCard
+            name={me.profile.name}
+            designation="Admin"
+            // id={34556}
+            image={me.profile?.profilePicture}
+            active={true}
+          ></PersonCard>
+        )}
         <MetricCard
           title="Pending Task:"
           value={dashboard.tasks.pendingTasks}
@@ -68,44 +84,53 @@ function Private() {
 
         {/* Dates */}
         <div className="grid grid-cols-7 min-w-[62rem]">
-          {Array.from({ length: 35 }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-40 flex items-stretch justify-between p-2 ${
-                (i + 1) % 7 ? "border-r" : ""
-              } ${i < 8 ? "" : "border-t"} ${
-                i > 27 ? "" : "border-b"
-              } border-divider last:border-r-0`}
-            >
-              {i < 30 && (
-                <div className="flex flex-1 flex-col justify-between h-full w-full">
-                  {/* Event/data on the left */}
-                  <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
-                    {i == 9 && (
-                      <>
-                        <div className="text-text2">10:20</div>
-                        <div>Management in Parliament</div>
-                      </>
-                    )}
-                  </div>
+          {Array.from({ length: 35 }).map((_, i) => {
+            const date = i - firstDayIndex + 1;
+            const projects = calendarData[date] || [];
+            const isToday = date === todayDate;
 
-                  {/* Date on top, month at bottom (right side) */}
-                  <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
-                    <div
-                      className={`${
-                        i == 9
-                          ? "bg-brand rounded-sm text-white px-2 py-1"
-                          : "text-text2"
-                      }`}
-                    >
-                      {i + 1} {/* Date */}
+            return (
+              <div
+                key={i}
+                className={`h-40 flex items-stretch justify-between p-2 ${
+                  (i + 1) % 7 ? "border-r" : ""
+                } ${i < 8 ? "" : "border-t"} ${
+                  i > 27 ? "" : "border-b"
+                } border-divider last:border-r-0`}
+              >
+                {date > 0 && date <= totalDays && (
+                  <div className="flex flex-1 flex-row justify-between h-full w-full">
+                    {/* Events */}
+                    <div className="flex flex-col gap-1 p-2 text-xs sm:text-sm typo-b3">
+                      {projects.map((p) => (
+                        <Link to={`/admin/projects/${p.id}/manage`} key={p.id}>
+                          <div className="text-brand truncate">{p.name}</div>
+                        </Link>
+                      ))}
                     </div>
-                    <div className="text-text2">{/* Month */}July</div>
+
+                    {/* Date */}
+                    <div className="flex flex-col items-end justify-between p-2 typo-b1 h-full">
+                      <div
+                        className={`${
+                          isToday
+                            ? "bg-brand text-white rounded-sm px-2 py-1"
+                            : "text-text2"
+                        }`}
+                      >
+                        {date}
+                      </div>
+                      <div className="text-text2">
+                        {new Date(year, month).toLocaleString("default", {
+                          month: "short",
+                        })}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
