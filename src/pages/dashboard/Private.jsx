@@ -145,8 +145,8 @@ function Private() {
               <PersonCard
                 name={per.name}
                 designation="Client"
-                id={34556}
-                active={true}
+                // id={34556}
+                // active={true}
               />
             ))}
           </DuelCardHolder>
@@ -157,8 +157,8 @@ function Private() {
               <PersonCard
                 name={per.name}
                 designation="Member"
-                id={34556}
-                active={true}
+                // id={34556}
+                // active={true}
               />
             ))}
           </DuelCardHolder>
@@ -169,8 +169,8 @@ function Private() {
               <PersonCard
                 name={per.name}
                 designation="Member"
-                id={34556}
-                active={true}
+                // id={34556}
+                // active={true}
               />
             ))}
           </DuelCardHolder>
@@ -181,8 +181,8 @@ function Private() {
               <PersonCard
                 name={per.name}
                 designation="Member"
-                id={34556}
-                active={true}
+                // id={34556}
+                // active={true}
               />
             ))}
           </DuelCardHolder>
