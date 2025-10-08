@@ -50,6 +50,12 @@ const Header = React.memo(({ onMenuClick }) => {
   const { data: notifications = [] } = useGetNotifications();
   const markRead = useMarkAllAsRead();
 
+  const rolePaths = {
+    Admin: "/admin/settings/profile",
+    Client: "/client/settings",
+    Freelancer: "/member/settings",
+  };
+
   const markAllAsRead = () => {
     markRead.mutate();
   };
@@ -336,7 +342,7 @@ const Header = React.memo(({ onMenuClick }) => {
           {openProfile && (
             <div className="absolute top-full right-0 mt-1 w-48 bg-surface2 border border-divider rounded-lg shadow-lg z-50 overflow-hidden">
               <Link
-                to="/admin/settings/profile"
+                to={rolePaths[me?.role]}
                 // onClick={handleLogout}
                 className="px-4 py-3 hover:bg-divider cursor-pointer text-text2 typo-b2 flex items-center gap-2 border-b border-divider group"
               >
