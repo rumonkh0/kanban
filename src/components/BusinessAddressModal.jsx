@@ -9,7 +9,7 @@ import {
 } from "../hooks/useSettings";
 import { toast } from "react-toastify";
 
-function ServiceDetailsModal({ onClose }) {
+function ServiceDetailsModal({ address, onClose }) {
   const [formData, setFormData] = useState({
     country: "USA",
     location: "",
@@ -19,34 +19,30 @@ function ServiceDetailsModal({ onClose }) {
     latitude: "",
     longitude: "",
   });
+  console.log("from business modal");
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // 2. FETCH EXISTING BUSINESS ADDRESS SETTINGS
-  const { data: addressData, isLoading: isLoadingAddress } =
-    useBusinessAddress();
-
-  // 3. HANDLE DATA POPULATION
   useEffect(() => {
-    if (addressData) {
+    if (address) {
       // Ensure numerical fields are converted to strings for input components
       setFormData({
-        country: addressData.country || "USA",
-        location: addressData.location || "",
-        taxName: addressData.taxName || "",
-        taxNumber: addressData.taxNumber || "",
-        address: addressData.address || "",
-        latitude: addressData.latitude?.toString() || "",
-        longitude: addressData.longitude?.toString() || "",
+        country: address.country || "USA",
+        location: address.location || "",
+        taxName: address.taxName || "",
+        taxNumber: address.taxNumber || "",
+        address: address.address || "",
+        latitude: address.latitude?.toString() || "",
+        longitude: address.longitude?.toString() || "",
       });
     }
-  }, [addressData]);
+  }, [address]);
 
   // 4. SETUP UPDATE MUTATION HOOK
   const updateMutation = useEditBusinessAddress();
-  const isLoading = updateMutation.isPending || isLoadingAddress;
+  const isLoading = updateMutation.isPending;
 
   // handle form submit
   const handleSubmit = (e) => {
@@ -91,11 +87,7 @@ function ServiceDetailsModal({ onClose }) {
       </div>
 
       {/* Scrollable Form */}
-      {isLoadingAddress ? (
-        <div className="text-center typo-">
-          Loading business address settings...
-        </div>
-      ) : (
+      {
         <div className="overflow-y-auto flex-1 p-4">
           <form
             onSubmit={handleSubmit}
@@ -195,7 +187,7 @@ function ServiceDetailsModal({ onClose }) {
             </div>
           </form>
         </div>
-      )}
+      }
     </div>
   );
 }
