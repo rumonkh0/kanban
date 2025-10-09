@@ -23,6 +23,7 @@ import { useState } from "react";
 
 function Finance() {
   const [earningPill, setEarningPill] = useState("week");
+  const [calculator, setCalculator] = useState("");
   const { data: finfnceStat } = useFinanceStat();
   const { revenue = 0, toBePaid = 0, totalEarnings = 0 } = finfnceStat || {};
   const revenueChart = [
@@ -401,20 +402,40 @@ function Finance() {
         {/* Left */}
         <div className="w-full  bg-surface2 border-2 border-divider rounded-lg p-4 pb-2 flex flex-col gap-6">
           <div>Calculate Your Revenue:</div>
-          <div className="typo-h2">${revenue}</div>
+          <div className="relative w-full">
+            {/* $ sign inside input */}
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 typo-h2 ">
+              $
+            </span>
+
+            <input
+              type="text"
+              value={calculator}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, "");
+                setCalculator(value);
+              }}
+              placeholder="Enter your Revenue"
+              className="typo-h2 w-full pl-10 pr-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-brand placeholder:text-text2/30  no-spinners"
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <RevenueCard
               title="80% Business Expenses:"
-              value={revenueChart[0].value}
+              value={(+calculator * 0.8).toFixed(3)}
             />
             <RevenueCard
               title="10% Owner’s Pay:"
-              value={revenueChart[1].value}
+              value={(+calculator * 0.1).toFixed(3)}
             />
-            <RevenueCard title="5% Taxes:" value={revenueChart[2].value} />
+            <RevenueCard
+              title="5% Taxes:"
+              value={(+calculator * 0.05).toFixed(3)}
+            />
             <RevenueCard
               title="5% Growth Fund:"
-              value={revenueChart[3].value}
+              value={(+calculator * 0.05).toFixed(3)}
             />
           </div>
         </div>

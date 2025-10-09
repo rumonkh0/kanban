@@ -11,8 +11,10 @@ import {
   useEditThemeSetting,
   // useResetThemeSetting
 } from "../../hooks/useSettings";
+import useTheme from "../../hooks/useTheme";
 
 function ThemeSetting() {
+  const applyTheme = useTheme();
   const [formData, setFormData] = useState({
     appName: "",
     brandingStyle: "style1",
@@ -116,10 +118,10 @@ function ThemeSetting() {
       }
     });
 
-
     // Execute mutation
     updateMutation.mutate(submitData, {
       onSuccess: () => {
+        applyTheme();
         alert("Theme settings updated successfully!");
       },
       onError: (error) => {
@@ -242,16 +244,16 @@ function ThemeSetting() {
           </FormField>
         ))}
 
-        <FormField label="Login Screen Logo's background Color" required>
+        {/* <FormField label="Login Screen Logo's background Color" required>
           <Input
             type="color" // Changed to type color for better UX
             placeholder="Enter Color"
             value={formData.loginLogoBgColor}
             onChange={(val) => handleChange("loginLogoBgColor", val)}
           />
-        </FormField>
+        </FormField> */}
 
-        <FormField label="Login Screen Logo's text Color.">
+        {/* <FormField label="Login Screen Logo's text Color.">
           <div className="flex typo-cta">
             {["Dark", "Light"].map((mode, idx) => (
               <label
@@ -275,10 +277,10 @@ function ThemeSetting() {
               </label>
             ))}
           </div>
-        </FormField>
+        </FormField> */}
 
         {/* Panels */}
-        {["public", "admin", "employee", "client"].map((panel) => (
+        {["admin", "employee", "client"].map((panel) => (
           <div
             key={panel}
             className="flex flex-col gap-4 md:col-span-2 lg:col-span-3"

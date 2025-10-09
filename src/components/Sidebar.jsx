@@ -11,6 +11,9 @@ import Icon, {
   Users,
 } from "./Icon";
 import { Link, useLocation } from "react-router";
+import { useAppStore } from "../stores/theme";
+import { useAuthStore } from "../stores/authStore";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 const admin = [
   {
@@ -109,6 +112,33 @@ const client = [
   },
 ];
 export default function Sidebar({ sidebar, isMobileOpen, onClose }) {
+  const theme = useAppStore((state) => state.theme);
+  const company = useAppStore((state) => state.company);
+  const user = useAuthStore((state) => state.user);
+  console.log(theme);
+  const userRole = user?.role || "";
+  let logo;
+  let mode;
+  let brandStyle = theme?.brandingStyle || "style1";
+  if (userRole === "Admin") {
+    mode = theme?.adminTheme;
+  } else if (userRole === "Freelancer") {
+    mode = theme?.employeeTheme;
+  } else if (userRole === "Client") {
+    mode = theme?.clientTheme;
+  } else {
+    mode = "Lignt";
+  }
+
+  if (mode === "Dark") {
+    logo = theme?.darkModeLogo
+      ? `${baseURL}/${theme.darkModeLogo.filePath}`
+      : "/logo.png";
+  } else {
+    logo = theme?.lightModeLogo
+      ? `${baseURL}/${theme.lightModeLogo.filePath}`
+      : "/logo.png";
+  }
   let menuItems = admin;
   if (sidebar === "member") {
     menuItems = member;
@@ -160,15 +190,30 @@ export default function Sidebar({ sidebar, isMobileOpen, onClose }) {
         >
           <Icon name="close" size={20} />
         </button>
-
         {/* Logo */}
-        <Link
-          // to="/"
-          className="pb-6 flex items-center justify-center"
-          onClick={handleLinkClick}
-        >
-          <img src="/logo.png" alt="Logo" className="h-12" />
-        </Link>
+        {brandStyle === "style1" ? (
+          <Link
+            to="/"
+            className="pb-6 flex items-center justify-center"
+            onClick={handleLinkClick}
+          >
+            <img src={logo} alt="Logo" className="h-12" />
+          </Link>
+        ) : (
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <div className="typo-cta text-brand">{company?.companyName || "Creative Zeth"}</div>
+              <div className="typo-b3">{user?.user?.name}</div>
+            </div>
+            <div className="w-10">
+              <img
+                src={logo}
+                alt="Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Menu */}
         <nav className="flex-1 flex flex-col gap-1 overflow-y-auto scrollbar-hide">

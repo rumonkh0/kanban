@@ -76,10 +76,15 @@ import MemberSettings from "./pages/member/Settings";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import ProtectedRedirect from "./components/Redirect";
 import Task from "./pages/member/Task";
-import useTheme from "./hooks/useThere";
+import useTheme from "./hooks/useTheme";
+import { useEffect } from "react";
 
 function App() {
-  useTheme();
+  const applyTheme = useTheme();
+  useEffect(() => {
+    applyTheme();
+  }, []);
+  
   return (
     <Routes>
       <Route path="/" element={<ProtectedRedirect />} />

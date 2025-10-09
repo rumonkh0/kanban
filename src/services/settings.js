@@ -1,6 +1,7 @@
 import apiClient from "../lib/axios";
 
 export const settingsAPI = {
+
   getAdminSetting: async () => {
     const response = await apiClient.get(`/settings/admin`);
     if (response.data?.success) return response.data.data;
