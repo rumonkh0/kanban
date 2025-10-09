@@ -34,7 +34,7 @@ function useTheme() {
             "--brand",
             res?.data?.theme?.clientPrimaryColor
           );
-        console.log(res);
+        // console.log(res);
       });
   }, []);
 

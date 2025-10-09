@@ -10,6 +10,14 @@ export const useTeamMembers = (params) => {
 };
 
 // Get single team member
+export const useTeamMemberstat = (id) => {
+  return useQuery({
+    queryKey: ["teamMembersstat", id],
+    queryFn: () => freelancersApi.getByIdStat(id),
+    enabled: !!id,
+  });
+};
+
 export const useTeamMember = (id) => {
   return useQuery({
     queryKey: ["teamMembers", id],

@@ -164,12 +164,15 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
         progress: projectData.progress ?? 0,
         calculateProgress: projectData.calculateProgress ?? false,
         projectPrice: projectData.projectPrice ?? null,
+        customPrice: projectData.customPrice ?? null,
         discount: projectData.discount ?? null,
+        finalAmountForClient: projectData.finalAmountForClient ?? null,
         amountPayableToMembers: projectData.amountPayableToMembers ?? null,
         amountPaidByClient: projectData.amountPaidByClient ?? null,
         amountOwedByClient: projectData.amountOwedByClient ?? null,
-        amountPaidToTeam: projectData.amountPaidToTeam ?? null,
-        amountOwedToTeam: projectData.amountOwedToTeam ?? null,
+        amountPaidToMembers: projectData.amountPaidToMembers ?? null,
+        amountOwedToMembers: projectData.amountOwedToMembers ?? null,
+        finalAmountEarned: projectData.finalAmountEarned ?? null,
         notifyClients: projectData.notifyClients ?? false,
       }));
     }

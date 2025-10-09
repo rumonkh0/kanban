@@ -11,6 +11,14 @@ export const freelancersApi = {
   },
 
   // Get single freelancer
+  getByIdStat: async (id) => {
+    const response = await apiClient.get(`/freelancers/${id}/stat`);
+
+    if (response.data?.success) return response.data.data;
+    throw new Error(response.data?.message || "Failed to fetch freelancer's stat");
+  },
+
+  // Get single freelancer
   getById: async (id) => {
     const response = await apiClient.get(`/freelancers/${id}`);
 

@@ -1,3 +1,5 @@
+import { getProfileImageUrl } from "../utils/utils";
+
 export default function PersonCard({
   name,
   image,
@@ -15,7 +17,6 @@ export default function PersonCard({
   className,
   children,
 }) {
-  const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
   // format date helper
   const formatDate = (date) => {
     if (!date) return "";
@@ -26,10 +27,8 @@ export default function PersonCard({
       day: "numeric",
     });
   };
+  const photo = getProfileImageUrl(image);
 
-  const photo = image?.filePath
-    ? `${baseURL}/${image.filePath}`
-    : "/images/profile.png";
 
   return (
     <div
