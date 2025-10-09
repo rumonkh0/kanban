@@ -16,7 +16,7 @@ const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 function MainTracker() {
   const [trackerModal, setTrackerModal] = useState(false);
   const [tracker, setTracker] = useState({});
-  const { data: trackersData, isPending } = useProjects();
+  const { data: trackersData, isPending } = useProjects({ tracker: true });
   const tableHeadings = [
     "Company Name",
     "Client",
@@ -42,58 +42,7 @@ function MainTracker() {
     // "Amount Claimed",
     "Action",
   ];
-  const trackers = [
-    {
-      CompanyName: "TechCorp Ltd",
-      Client: "John Doe",
-      TeamMemberAssigned: "Akash",
-      ProjectName: "Website Redesign",
-      Description:
-        "Complete redesign of company website Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor?",
-      Start: "2025-07-10",
-      DueDate: "2025-08-15",
-      Status: "In Progress",
-      Price: 1500,
-      CustomPrice: 1400,
-      Discount: 100,
-      FinalAmountForClient: 1400,
-      ModeOfPayment: "Stripe",
-      PaymentDate: "2025-08-05",
-      AmountPaid: 1000,
-      AmountOwedByClient: 400,
-      PayableAmountToMember: 1000,
-      DatePaidToMember: 500,
-      AmountPaidToMember: 500,
-      AmountOwedToMember: 500,
-      AmountEarned: 900,
-      AmountClaimed: 0,
-    },
-    {
-      CompanyName: "Creative Studio",
-      Client: "Jane Smith",
-      TeamMemberAssigned: "Rahul",
-      ProjectName: "Social Media Campaign",
-      Description: "3-month Instagram and Facebook ad campaign",
-      Start: "2025-06-01",
-      DueDate: "2025-09-01",
-      Status: "Completed",
-      Price: 2000,
-      CustomPrice: 2000,
-      Discount: 0,
-      FinalAmountForClient: 2000,
-      ModeOfPayment: "Bank Transfer",
-      PaymentDate: "2025-08-20",
-      AmountPaid: 2000,
-      AmountOwedByClient: 0,
-      PayableAmountToMember: 1200,
-      DatePaidToMember: 1200,
-      AmountPaidToMember: 1200,
-      AmountOwedToMember: 0,
-      AmountEarned: 800,
-      AmountClaimed: 800,
-    },
-  ];
-  console.log(trackersData);
+
   const [filters, setFilters] = useState({
     status: "",
     project: "", // Added project filter for consistency
@@ -159,146 +108,152 @@ function MainTracker() {
         </div>
       </div>
 
-      <Table>
-        <Thead>
-          <tr>
-            {tableHeadings.map((heading, index) => (
-              <Th key={index} title={heading} />
-            ))}
-          </tr>
-        </Thead>
-        <tbody>
-          {isPending ? (
-            <Loading />
-          ) : (
-            trackersData.map((tracker, index) => (
-              <tr
-                // onClick={() => setTrackerModal(true)}
-                key={index}
-                className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors cursor-pointer"
-              >
-                <Td className="irst:rounded-l-[4px] min-w-45">
-                  {tracker.client?.companyName}
-                </Td>
-                <Td className="min-w-45">
-                  <ImageName
-                    image={
-                      tracker.client?.profilePicture?.filePath
-                        ? `${baseURL}/${tracker.client?.profilePicture.filePath}`
-                        : "/images/profile.png"
-                    }
-                    username={tracker.client?.name}
-                    // designation={tracker.Client}
-                  />
-                </Td>
-                <Td className="min-w-45">
-                  <Members members={tracker.members} />
-                </Td>
-                <Td className="min-w-45">{tracker.projectName}</Td>
-                <Td className="min-w-60">
-                  <div className="line-clamp-2">{tracker.description}</div>
-                </Td>
-                <Td>{FormatDate(tracker.startDate)}</Td>
-                <Td>{FormatDate(tracker.dueDate)}</Td>
-                <Td>
-                  <div className="w-30 border border-text2 rounded-sm flex items-center p-3 gap-2 typo-b3">
-                    <p
-                      className={`w-2 h-2 rounded-full ${
-                        tracker.status === "Completed"
-                          ? "bg-success"
-                          : tracker.status === "On Hold"
-                          ? "bg-brand"
-                          : tracker.status === "Active"
-                          ? "bg-[#5EB7E0]"
-                          : ""
-                      }`}
-                    ></p>
-                    {tracker.status}
-                  </div>
-                </Td>
-                <Td>${tracker.projectPrice}</Td>
-                <Td>
-                  {tracker.customPrice ? `$${tracker.customPrice}` : "------"}
-                </Td>
-                <Td>{tracker.discount ? `$${tracker.discount}` : "------"}</Td>
-                <Td>
-                  {tracker.finalAmountForClient
-                    ? `$${tracker.finalAmountForClient}`
-                    : "------"}
-                </Td>
-                <Td>{tracker.modeOfPayment}</Td>
-                {/* <Td>{tracker.PaymentDate}</Td> */}
-                <Td>
-                  {tracker.amountPaidByClient
-                    ? `$${tracker.amountPaidByClient}`
-                    : "------"}
-                </Td>
-                <Td>
-                  {tracker.amountOwedByClient
-                    ? `$${tracker.amountOwedByClient}`
-                    : "------"}
-                </Td>
-                <Td>
-                  {tracker.amountPayableToMembers
-                    ? `$${tracker.amountPayableToMembers}`
-                    : "------"}
-                </Td>
-                {/* <Td>{tracker.DatePaidToMember}</Td> */}
-                <Td>
-                  {tracker.amountPaidToMembers
-                    ? `$${tracker.amountPaidToMembers}`
-                    : "------"}
-                </Td>
-                <Td>
-                  {tracker.amountOwedToMembers
-                    ? `$${tracker.amountOwedToMembers}`
-                    : "------"}
-                </Td>
-                <Td>
-                  {tracker.amountPaidByClient - tracker.amountPaidToMembers
-                    ? `$${
-                        tracker.amountPaidByClient - tracker.amountPaidToMembers
-                      }`
-                    : "------"}
-                </Td>
-                {/* <Td>
+      {isPending ? (
+        <Loading />
+      ) : (
+        trackersData &&
+        trackersData.length > 0 && (
+          <Table>
+            <Thead>
+              <tr>
+                {tableHeadings.map((heading, index) => (
+                  <Th key={index} title={heading} />
+                ))}
+              </tr>
+            </Thead>
+            <tbody>
+              {trackersData.map((tracker, index) => (
+                <tr
+                  // onClick={() => setTrackerModal(true)}
+                  key={index}
+                  className="h-17 px-4 shadow-sm hover:[&_td]:bg-divider/80 transition-colors cursor-pointer"
+                >
+                  <Td className="irst:rounded-l-[4px] min-w-45">
+                    {tracker.client?.companyName}
+                  </Td>
+                  <Td className="min-w-45">
+                    <ImageName
+                      image={
+                        tracker.client?.profilePicture?.filePath
+                          ? `${baseURL}/${tracker.client?.profilePicture.filePath}`
+                          : "/images/profile.png"
+                      }
+                      username={tracker.client?.name}
+                      // designation={tracker.Client}
+                    />
+                  </Td>
+                  <Td className="min-w-45">
+                    <Members members={tracker.members} />
+                  </Td>
+                  <Td className="min-w-45">{tracker.projectName}</Td>
+                  <Td className="min-w-60">
+                    <div className="line-clamp-2">{tracker.description}</div>
+                  </Td>
+                  <Td>{FormatDate(tracker.startDate)}</Td>
+                  <Td>{FormatDate(tracker.dueDate)}</Td>
+                  <Td>
+                    <div className="w-30 border border-text2 rounded-sm flex items-center p-3 gap-2 typo-b3">
+                      <p
+                        className={`w-2 h-2 rounded-full ${
+                          tracker.status === "Completed"
+                            ? "bg-success"
+                            : tracker.status === "On Hold"
+                            ? "bg-brand"
+                            : tracker.status === "Active"
+                            ? "bg-[#5EB7E0]"
+                            : ""
+                        }`}
+                      ></p>
+                      {tracker.status}
+                    </div>
+                  </Td>
+                  <Td>${tracker.projectPrice}</Td>
+                  <Td>
+                    {tracker.customPrice ? `$${tracker.customPrice}` : "------"}
+                  </Td>
+                  <Td>
+                    {tracker.discount ? `$${tracker.discount}` : "------"}
+                  </Td>
+                  <Td>
+                    {tracker.finalAmountForClient
+                      ? `$${tracker.finalAmountForClient}`
+                      : "------"}
+                  </Td>
+                  <Td>{tracker.modeOfPayment}</Td>
+                  {/* <Td>{tracker.PaymentDate}</Td> */}
+                  <Td>
+                    {tracker.amountPaidByClient
+                      ? `$${tracker.amountPaidByClient}`
+                      : "------"}
+                  </Td>
+                  <Td>
+                    {tracker.amountOwedByClient
+                      ? `$${tracker.amountOwedByClient}`
+                      : "------"}
+                  </Td>
+                  <Td>
+                    {tracker.amountPayableToMembers
+                      ? `$${tracker.amountPayableToMembers}`
+                      : "------"}
+                  </Td>
+                  {/* <Td>{tracker.DatePaidToMember}</Td> */}
+                  <Td>
+                    {tracker.amountPaidToMembers
+                      ? `$${tracker.amountPaidToMembers}`
+                      : "------"}
+                  </Td>
+                  <Td>
+                    {tracker.amountOwedToMembers
+                      ? `$${tracker.amountOwedToMembers}`
+                      : "------"}
+                  </Td>
+                  <Td>
+                    {tracker.amountPaidByClient - tracker.amountPaidToMembers
+                      ? `$${
+                          tracker.amountPaidByClient -
+                          tracker.amountPaidToMembers
+                        }`
+                      : "------"}
+                  </Td>
+                  {/* <Td>
                 {tracker.AmountClaimed ? `$${tracker.AmountClaimed}` : "------"}
               </Td> */}
 
-                <Td className="last:rounded-r-[4px]">
-                  <button
-                    onClick={(e) => handleMenuClick(index, e)}
-                    className="relative p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm"
-                  >
-                    <Icon name="menu" size={20} />
-                    <DropdownMenu
-                      isOpen={activeMenu === index}
-                      onClose={() => setActiveMenu(null)}
-                      menuItems={[
-                        {
-                          label: "View",
-                          onClick: () => {
-                            setTracker(tracker);
-                            setTrackerModal(true);
+                  <Td className="last:rounded-r-[4px]">
+                    <button
+                      onClick={(e) => handleMenuClick(index, e)}
+                      className="relative p-2 cursor-pointer hover:bg-surface2/60 border border-text2 rounded-sm"
+                    >
+                      <Icon name="menu" size={20} />
+                      <DropdownMenu
+                        isOpen={activeMenu === index}
+                        onClose={() => setActiveMenu(null)}
+                        menuItems={[
+                          {
+                            label: "View",
+                            onClick: () => {
+                              setTracker(tracker);
+                              setTrackerModal(true);
+                            },
                           },
-                        },
-                        {
-                          label: "Edit",
-                          href: "/admin/services/edit-tracker",
-                        },
-                        {
-                          label: "Delete",
-                          onClick: () => setTracker(tracker),
-                        },
-                      ]}
-                    />
-                  </button>
-                </Td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </Table>
+                          {
+                            label: "Edit",
+                            href: `/admin/services/trackers/${tracker._id}/edit`,
+                          },
+                          // {
+                          //   label: "Delete",
+                          //   onClick: () => handleDelete(id),
+                          // },
+                        ]}
+                      />
+                    </button>
+                  </Td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )
+      )}
       <Modal isOpen={trackerModal} onClose={() => setTrackerModal(false)}>
         <TrackerDetailsModal
           tracker={tracker}

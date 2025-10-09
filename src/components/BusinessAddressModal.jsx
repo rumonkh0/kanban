@@ -19,7 +19,7 @@ function ServiceDetailsModal({ address, onClose }) {
     latitude: "",
     longitude: "",
   });
-  console.log("from business modal");
+  // console.log("from business modal");
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

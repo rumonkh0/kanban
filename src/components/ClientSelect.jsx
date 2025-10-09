@@ -15,7 +15,7 @@ export default function ClientSelect({
   required,
   mode = "single", // "single" | "multi"
   addingTitle = "Add new client",
-  linkTo = "/clients/add-client",
+  linkTo = "/admin/clients/add-client",
   placeHolder = "Select Client...",
   disabled = false,
   addButton = true,
@@ -184,9 +184,9 @@ export default function ClientSelect({
                 <Link to={linkTo}>
                   <RedButton
                     type="button"
-                    onClick={(e) => {
-                      e.preventDefault(); /* Handle add new client */
-                    }}
+                    // onClick={(e) => {
+                    //   e.preventDefault(); /* Handle add new client */
+                    // }}
                     className="flex items-center px-4"
                   >
                     <Icon name="plus" size={16} className="mr-2" />

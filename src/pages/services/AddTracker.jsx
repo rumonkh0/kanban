@@ -10,50 +10,22 @@ import {
 } from "@/components/Component";
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
-import React, { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-
-// API Functions
-const trackerAPI = {
-  // Get single tracker
-  getById: async (id) => {
-    const response = await axios.get(`/api/trackers/${id}`);
-    return response.data;
-  },
-
-  // Create new tracker
-  create: async (data) => {
-    const response = await axios.post("/api/trackers", data);
-    return response.data;
-  },
-
-  // Update tracker
-  update: async ({ id, data }) => {
-    const response = await axios.put(`/api/trackers/${id}`, data);
-    return response.data;
-  },
-
-  // Delete tracker
-  delete: async (id) => {
-    const response = await axios.delete(`/api/trackers/${id}`);
-    return response.data;
-  },
-};
-
-// Get projects for dropdown
-const getProjects = async () => {
-  const response = await axios.get("/api/projects");
-  return response.data;
-};
+import {
+  useProject,
+  useProjects,
+  useUpdateProject,
+} from "../../hooks/useProjects";
+import { toast } from "react-toastify";
+import Loading from "../../components/Loading";
 
 function AddTracker({ edit = false, title = "Add Tracker" }) {
   const navigate = useNavigate();
   const { id } = useParams();
-  const queryClient = useQueryClient();
-
+  const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
+    project: null,
     projectName: "",
     client: null,
     companyName: "",
@@ -78,159 +50,169 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
     comments: "",
   });
 
+  // const { data: projectData, isLoading: isLoadingProject } = useProject(id);
+  const { data: projectData, isPendingProject } = useProject(
+    id || formData.project
+  );
+  const { data: projectsData, isProjectDataPending } = useProjects(
+    { tracker: false, archive: false },
+    {
+      enabled: !id,
+    }
+  );
+  const updateMutation = useUpdateProject(id || formData.project);
+
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Fetch projects
-  const { data: projects = [] } = useQuery({
-    queryKey: ["projects"],
-    queryFn: getProjects,
-  });
+  const isLoading = updateMutation.isPending;
 
-  // Fetch tracker data for editing
-  // eslint-disable-next-line no-unused-vars
-  const { data: trackerData, isLoading: isLoadingTracker } = useQuery({
-    queryKey: ["tracker", id],
-    queryFn: () => trackerAPI.getById(id),
-    enabled: edit && !!id,
-    onSuccess: (data) => {
-      setFormData({
-        projectName: data.projectName || "",
-        client: data.client || null,
-        companyName: data.companyName || "",
-        teamMember: data.teamMember || null,
-        startDate: data.startDate || "",
-        dueDate: data.dueDate || "",
-        description: data.description || "",
-        status: data.status || "Active",
-        price: data.price || "",
-        customPrice: data.customPrice || "",
-        discount: data.discount || "",
-        finalAmountForClient: data.finalAmountForClient || "",
-        modeOfPayment: data.modeOfPayment || "",
-        datePaidByClient: data.datePaidByClient || "",
-        amountPaidByClient: data.amountPaidByClient || "",
-        amountOwedByClient: data.amountOwedByClient || "",
-        amountPayableToMembers: data.amountPayableToMembers || "",
-        datePaidToMembers: data.datePaidToMembers || "",
-        amountPaidToMembers: data.amountPaidToMembers || "",
-        amountOwedToMembers: data.amountOwedToMembers || "",
-        finalAmountEarned: data.finalAmountEarned || "",
-        comments: data.comments || "",
-      });
-    },
-  });
-
-  // Create tracker mutation
-  const createMutation = useMutation({
-    mutationFn: trackerAPI.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["trackers"] });
-      navigate("/services");
-    },
-    onError: (error) => {
-      console.error("Error creating tracker:", error);
-      alert("Failed to create tracker. Please try again.");
-    },
-  });
-
-  // Update tracker mutation
-  const updateMutation = useMutation({
-    mutationFn: trackerAPI.update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["trackers"] });
-      queryClient.invalidateQueries({ queryKey: ["tracker", id] });
-      navigate("/services");
-    },
-    onError: (error) => {
-      console.error("Error updating tracker:", error);
-      alert("Failed to update tracker. Please try again.");
-    },
-  });
-
-  // Delete tracker mutation
-  const deleteMutation = useMutation({
-    mutationFn: trackerAPI.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["trackers"] });
-      navigate("/services");
-    },
-    onError: (error) => {
-      console.error("Error deleting tracker:", error);
-      alert("Failed to delete tracker. Please try again.");
-    },
-  });
-
-  const isLoading =
-    createMutation.isPending ||
-    updateMutation.isPending ||
-    deleteMutation.isPending;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     // console.log(formData);
 
-    // Basic validation
-    if (!formData.projectName || !formData.description) {
-      alert("Please fill in the required fields.");
-      return;
-    }
+    // Create FormData for file upload
+    const submitData = new FormData();
 
-    if (edit) {
-      updateMutation.mutate({ id, data: formData });
-    } else {
-      createMutation.mutate(formData);
-    }
-  };
+    // Append all form fields
 
-  const handleSaveAndAddMore = (e) => {
-    e.preventDefault();
-
-    if (!formData.projectName || !formData.description) {
-      alert("Please fill in the required fields.");
-      return;
-    }
-
-    createMutation.mutate(formData, {
-      onSuccess: () => {
-        // Reset form for adding more
-        setFormData({
-          projectName: "",
-          client: null,
-          companyName: "",
-          teamMember: null,
-          startDate: "",
-          dueDate: "",
-          description: "",
-          status: "Active",
-          price: "",
-          customPrice: "",
-          discount: "",
-          finalAmountForClient: "",
-          modeOfPayment: "",
-          datePaidByClient: "",
-          amountPaidByClient: "",
-          amountOwedByClient: "",
-          amountPayableToMembers: "",
-          datePaidToMembers: "",
-          amountPaidToMembers: "",
-          amountOwedToMembers: "",
-          finalAmountEarned: "",
-          comments: "",
-        });
-      },
+    // Append all form fields
+    Object.keys(formData).forEach((key) => {
+      const value = formData[key];
+      if (
+        value !== undefined &&
+        value !== null &&
+        key !== "members" &&
+        key !== "departments" &&
+        key !== "client" &&
+        key !== "finalAmountForClient" &&
+        key !== "amountPaidByClient" &&
+        key !== "amountOwedByClient" &&
+        key !== "amountPaidToMembers" &&
+        key !== "amountOwedToMembers"
+      ) {
+        submitData.append(key, value);
+      }
     });
+    submitData.append("tracker", true);
+
+    console.log(submitData);
+    toast.promise(
+      updateMutation.mutateAsync(submitData),
+      {
+        pending: "Updating Project",
+        success: "Project Updated",
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to Update Project.";
+            return errorMessage;
+          },
+        },
+      },
+      { autoClose: 5000 }
+    );
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this tracker?")) {
-      deleteMutation.mutate(id);
+      toast.promise(
+        updateMutation.mutateAsync(
+          { tracker: false },
+          { onSuccess: navigate(-1) }
+        ),
+        {
+          pending: "Deleting Tracker",
+          success: "Tracker Deleted",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Delete Tracker.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     }
   };
 
-  if (edit && isLoadingTracker) {
-    return <div>Loading tracker data...</div>;
+  useEffect(() => {
+    if (projectData) {
+      setFormData((prev) => ({
+        ...prev,
+        shortCode: projectData.shortCode || "",
+        projectName: projectData.projectName || "",
+        startDate: projectData.startDate.split("T")[0] || "",
+        dueDate: projectData.dueDate?.split("T")[0] || "",
+        noDeadline: projectData.noDeadline ?? false,
+        service: projectData.service || null,
+        departments: projectData.department || [],
+        client: projectData.client || null,
+        members: projectData.members,
+        summary: projectData.summary || "",
+        ganttChart: projectData.ganttChart || true,
+        taskBoard: projectData.taskBoard || true,
+        taskApproval: projectData.taskApproval || false,
+        status: projectData.status,
+        progress: projectData.progress ?? 0,
+        calculateProgress: projectData.calculateProgress ?? false,
+        projectPrice: projectData.projectPrice ?? null,
+        discount: projectData.discount ?? null,
+        amountPayableToMembers: projectData.amountPayableToMembers ?? null,
+        amountPaidByClient: projectData.amountPaidByClient ?? null,
+        amountOwedByClient: projectData.amountOwedByClient ?? null,
+        amountPaidToTeam: projectData.amountPaidToTeam ?? null,
+        amountOwedToTeam: projectData.amountOwedToTeam ?? null,
+        notifyClients: projectData.notifyClients ?? false,
+      }));
+    }
+  }, [projectData]);
+
+  useEffect(() => {
+    const iscreated = updateMutation.isSuccess;
+    if (iscreated && more) {
+      setFormData(() => ({
+        project: null,
+        projectName: "",
+        client: null,
+        companyName: "",
+        teamMember: null,
+        startDate: "",
+        dueDate: "",
+        description: "",
+        status: "Active",
+        price: "",
+        customPrice: "",
+        discount: "",
+        finalAmountForClient: "",
+        modeOfPayment: "",
+        datePaidByClient: "",
+        amountPaidByClient: "",
+        amountOwedByClient: "",
+        amountPayableToMembers: "",
+        datePaidToMembers: "",
+        amountPaidToMembers: "",
+        amountOwedToMembers: "",
+        finalAmountEarned: "",
+        comments: "",
+      }));
+      setMore(false);
+      toast.success("You can add another Tracker now.");
+    } else {
+      if (iscreated) navigate(-1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateMutation.isSuccess]);
+
+  if (edit && isPendingProject) {
+    return <Loading />;
   }
   return (
     <>
@@ -246,19 +228,41 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
           <div className="bg-surface1 rounded-xl">
             <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormField label="Project" required>
-                <Dropdown
-                  options={
-                    Array.isArray(projects) && projects.length > 0
-                      ? projects.map((p) => p.name)
-                      : ["project one"]
-                  }
-                  value={formData.project || ""}
-                  onChange={(val) => handleChange("projectName", val)}
-                />
+                {edit ? (
+                  <Dropdown
+                    options={[`${formData?.projectName}`]}
+                    value={formData?.projectName}
+                    onChange={(val) => handleChange("project", val)}
+                  />
+                ) : (
+                  <Dropdown
+                    options={
+                      Array.isArray(projectsData) && projectsData.length > 0
+                        ? projectsData.map((service) => ({
+                            value: service._id,
+                            label: service.projectName,
+                          }))
+                        : []
+                    }
+                    value={formData?.project || ""}
+                    onChange={(val) => handleChange("project", val)}
+                    disabled={isProjectDataPending}
+                  />
+                )}
               </FormField>
               <ClientSelect
-                label="client"
-                onSelect={(client) => handleChange("client", client)}
+                value={formData.client?._id}
+                clients={[
+                  {
+                    id: formData?.client?._id,
+                    name: formData?.client?.name,
+                    email: formData?.client?.user?.email,
+                    profilePicture: formData?.client?.profilePicture,
+                  },
+                ]}
+                onChange={(client) => handleChange("client", client)}
+                label="Client"
+                disabled
               />
               <FormField label="Company Name (auto take)">
                 <Input
@@ -268,16 +272,28 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
                 />
               </FormField>
               <ClientSelect
-                label="Team Member Assigned (auto take)"
-                onSelect={(member) => handleChange("teamMember", member)}
+                value={formData?.members?.map((m) => m._id)}
+                clients={formData?.members?.map((f) => ({
+                  id: f._id,
+                  name: f.name,
+                  // email: f.user.email,
+                  profilePicture: f.profilePicture,
+                }))}
+                onChange={(members) => handleChange("members", members)}
+                mode="multi"
+                label="Team Members"
+                addingTitle="Add new member"
+                placeHolder="Select Members...."
+                disabled
               />
               <FormField label="Start Date (auto take after projec or clint select)">
                 <div className="relative">
                   <Input
                     type="date"
                     placeholder="Select Date"
-                    value={formData.startDate}
+                    value={formData?.startDate}
                     onChange={(val) => handleChange("startDate", val)}
+                    disabled
                   />
                   <Icon
                     name="calendar"
@@ -290,8 +306,9 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
                   <Input
                     type="date"
                     placeholder="Select Date"
-                    value={formData.dueDate}
+                    value={formData?.dueDate}
                     onChange={(val) => handleChange("dueDate", val)}
+                    disabled
                   />
                   <Icon
                     name="calendar"
@@ -305,30 +322,32 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
               >
                 <textarea
                   placeholder="Enter Message"
-                  value={formData.description}
+                  value={formData?.summary}
                   onChange={(e) => handleChange("description", e.target.value)}
                   className="w-full h-50 p-4 bg-surface2 border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-brand typo-b3"
                 />
               </FormField>
-              <FormField label="Account Status">
+              <FormField label="Project Status">
                 <div className="relative">
                   <div
                     className={`w-2 h-2 rounded-full absolute left-4 top-1/2 -translate-y-1/2 ${
-                      formData.status === "Active"
+                      formData?.status === "Completed"
                         ? "bg-success"
-                        : formData.status === "Inactive"
+                        : formData?.status === "On Hold"
                         ? "bg-brand"
-                        : "bg-gray-400"
+                        : formData?.status === "Active"
+                        ? "bg-[#5EB7E0]"
+                        : ""
                     }`}
                   ></div>
                   <select
-                    value={formData.status}
+                    value={formData?.status}
                     onChange={(e) => handleChange("status", e.target.value)}
                     className="w-full h-12 bg-surface2 border border-divider rounded-lg px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-brand pl-8 typo-b3"
                   >
                     <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                    <option value="Suspended">Suspended</option>
+                    <option value="On Hold">On Hold</option>
+                    <option value="Completed">Completed</option>
                   </select>
                   <Icon
                     name="arrow"
@@ -340,39 +359,40 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
               <FormField label="Price">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.price}
-                  onChange={(val) => handleChange("price", val)}
+                  value={formData?.projectPrice}
+                  onChange={(val) => handleChange("projectPrice", val)}
                 />
               </FormField>
               <FormField label="Custom Price">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.customPrice}
+                  value={formData?.customPrice}
                   onChange={(val) => handleChange("customPrice", val)}
                 />
               </FormField>
               <FormField label="Discount">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.discount}
+                  value={formData?.discount}
                   onChange={(val) => handleChange("discount", val)}
                 />
               </FormField>
               <FormField label="Final Amount For Client">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.finalAmountForClient}
+                  value={formData?.finalAmountForClient}
                   onChange={(val) => handleChange("finalAmountForClient", val)}
+                  disabled
                 />
               </FormField>
               <FormField label="Mode of Payment">
                 <Dropdown
                   options={["Cash", "Bank Transfer", "Cheque", "Online"]}
-                  value={formData.modeOfPayment}
+                  value={formData?.modeOfPayment}
                   onChange={(val) => handleChange("modeOfPayment", val)}
                 />
               </FormField>
-              <FormField label="Date Paid By the Client">
+              {/* <FormField label="Date Paid By the Client">
                 <div className="relative">
                   <Input
                     type="date"
@@ -385,31 +405,33 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
                     className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
                   />
                 </div>
-              </FormField>
+              </FormField> */}
               <FormField label="Amount Paid By Client">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.amountPaidByClient}
+                  value={formData?.amountPaidByClient}
                   onChange={(val) => handleChange("amountPaidByClient", val)}
+                  disabled
                 />
               </FormField>
               <FormField label="Amount Owed By Client">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.amountOwedByClient}
+                  value={formData?.amountOwedByClient}
                   onChange={(val) => handleChange("amountOwedByClient", val)}
+                  disabled
                 />
               </FormField>
               <FormField label="Amount Payable To Members">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.amountPayableToMembers}
+                  value={formData?.amountPayableToMembers}
                   onChange={(val) =>
                     handleChange("amountPayableToMembers", val)
                   }
                 />
               </FormField>
-              <FormField label="Date Paid To The Members">
+              {/* <FormField label="Date Paid To The Members">
                 <div className="relative">
                   <Input
                     type="date"
@@ -422,26 +444,29 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
                     className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4"
                   />
                 </div>
-              </FormField>
+              </FormField> */}
               <FormField label="Amount Paid To Members">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.amountPaidToMembers}
+                  value={formData?.amountPaidToMembers}
                   onChange={(val) => handleChange("amountPaidToMembers", val)}
+                  disabled
                 />
               </FormField>
               <FormField label="Amount Owed To Members">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.amountOwedToMembers}
+                  value={formData?.amountOwedToMembers}
                   onChange={(val) => handleChange("amountOwedToMembers", val)}
+                  disabled
                 />
               </FormField>
               <FormField label="Final Amount Earned">
                 <InputMoney
                   placeholder="USD"
-                  value={formData.finalAmountEarned}
+                  value={formData?.finalAmountEarned}
                   onChange={(val) => handleChange("finalAmountEarned", val)}
+                  disabled
                 />
               </FormField>
               <FormField label="Comments">
@@ -490,7 +515,10 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
               </RedButton>
               <RedBorderButton
                 type="button"
-                onClick={handleSaveAndAddMore}
+                onClick={() => {
+                  handleSubmit(true);
+                  setMore(true);
+                }}
                 disabled={isLoading}
               >
                 {isLoading ? "Saving..." : "Save & Add More"}

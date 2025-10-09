@@ -115,7 +115,7 @@ export default function Sidebar({ sidebar, isMobileOpen, onClose }) {
   const theme = useAppStore((state) => state.theme);
   const company = useAppStore((state) => state.company);
   const user = useAuthStore((state) => state.user);
-  console.log(theme);
+  // console.log(theme);
   const userRole = user?.role || "";
   let logo;
   let mode;
