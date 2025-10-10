@@ -78,7 +78,7 @@ function SecuritySetting() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+      {/* <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
         <div className="p-4 bg-surface2 border border-divider rounded-lg flex flex-col gap-4">
           <div className="flex gap-6">
             <div className="flex-shrink-0">
@@ -117,8 +117,7 @@ function SecuritySetting() {
             </RedButton>
           </div>
         </div>
-        <div></div>
-      </div>
+      </div> */}
       <div className="border border-divider"></div>
       <div>
         <div className="flex items-center gap-2">
