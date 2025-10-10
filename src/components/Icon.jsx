@@ -414,7 +414,7 @@ export const Hambrger = ({ className }) => {
       fill="currentColor"
       className={className}
     >
-      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
       <g
         id="SVGRepo_tracerCarrier"
         strokeLinecap="round"
@@ -426,7 +426,7 @@ export const Hambrger = ({ className }) => {
         <g
           id="Page-1"
           stroke="none"
-          stroke-width="1"
+          strokeWidth="1"
           fill="none"
           fillRule="evenodd"
         >

@@ -58,7 +58,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       enabled: !id,
     }
   );
-  console.log(taskData);
+  // console.log(taskData);
   const creataeTask = useCreateTask();
 
   // File upload handler for images
@@ -94,6 +94,17 @@ function TaskModal({ stage, role = "member", id, onClose }) {
         file: file,
       },
     ]);
+  };
+
+  const handleDownload = (fileUrl, fileName) => {
+    const link = document.createElement("a");
+    link.href = `${baseURL}/${fileUrl}`;
+    console.log("Downloading file:", link.href);
+    link.download = fileName || "download";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log("Downloading file:", fileUrl);
   };
 
   const createComment = useCreateComment(id);
@@ -572,6 +583,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
               {role === "member" && (
                 <InfoItem label="Related File">
                   <div className="flex flex-col gap-4 max-w-20">
+                    {console.log("this is files", files)}
                     {files &&
                       files.length > 0 &&
                       files.map((f) => (
@@ -586,13 +598,17 @@ function TaskModal({ stage, role = "member", id, onClose }) {
                           <div className="typo-b3 text-text flex flex-col">
                             <h2
                               className="text-success underline typo-b2 pb-2 cursor-pointer truncate"
-                              onClick={() => window.open(f.url, "_blank")}
+                              onClick={() =>
+                                handleDownload(f.filePath, f.originalName)
+                              }
                             >
                               {f.originalName}
                             </h2>
                             <p
                               className="cursor-pointer"
-                              onClick={() => window.open(f.url, "_blank")}
+                              onClick={() =>
+                                handleDownload(f.filePath, f.originalName)
+                              }
                             >
                               View
                             </p>

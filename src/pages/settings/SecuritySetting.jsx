@@ -12,7 +12,7 @@ function SecuritySetting() {
     emailAuthEnabled: false,
     smsAuthEnabled: false,
     googleRecaptchaEnabled: false,
-    recaptchaVersion: "V2",
+    recaptchaVersion: "",
     recaptchaV2Key: "",
     recaptchaV2Secret: "",
   });
@@ -30,7 +30,7 @@ function SecuritySetting() {
         emailAuthEnabled: securityData.emailAuthEnabled || false,
         smsAuthEnabled: securityData.smsAuthEnabled || false,
         googleRecaptchaEnabled: securityData.googleRecaptchaEnabled || false,
-        recaptchaVersion: securityData.recaptchaVersion || "V2",
+        recaptchaVersion: securityData.recaptchaVersion || "v2",
         recaptchaV2Key: securityData.recaptchaV2Key || "",
         recaptchaV2Secret: securityData.recaptchaV2Secret || "",
       });
@@ -149,12 +149,12 @@ function SecuritySetting() {
               <input
                 type="radio"
                 name="recaptchaVersion"
-                value="V2"
-                checked={formData.recaptchaVersion === "V2"}
-                onChange={() => handleChange("recaptchaVersion", "V2")}
+                value="v2"
+                checked={formData.recaptchaVersion === "v2"}
+                onChange={() => handleChange("recaptchaVersion", "v2")}
                 className="hidden"
               />
-              <span>V2</span>
+              <span>v2</span>
             </label>
             <label
               className={`flex-1 h-12 flex items-center justify-center cursor-pointer rounded-r-lg ${
@@ -166,12 +166,12 @@ function SecuritySetting() {
               <input
                 type="radio"
                 name="recaptchaVersion"
-                value="V3"
-                checked={formData.recaptchaVersion === "V3"}
-                onChange={() => handleChange("recaptchaVersion", "V3")}
+                value="v3"
+                checked={formData.recaptchaVersion === "v3"}
+                onChange={() => handleChange("recaptchaVersion", "v3")}
                 className="hidden"
               />
-              <span>V3</span>
+              <span>v3</span>
             </label>
           </div>
         </FormField>

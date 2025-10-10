@@ -199,7 +199,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
         dueDate: projectData.dueDate?.split("T")[0] || "",
         noDeadline: projectData.noDeadline ?? false,
         service: projectData.service || null,
-        departments: projectData.department || [],
+        departments: projectData.departments || [],
         client: projectData.client?._id || null,
         members: projectData.members
           ? projectData.members?.map((m) => m._id)
@@ -625,8 +625,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
                 </div>
               </div>
 
-
-                {/* ["Amount Paid By Client", "amountPaidByClient"],
+              {/* ["Amount Paid By Client", "amountPaidByClient"],
                 ["Amount Owed By Client", "amountOwedByClient"],
                 ["Amount Paid To Team Members", "amountPaidToTeam"],
                 ["Amount Owed To Team Members", "amountOwedToTeam"], */}
