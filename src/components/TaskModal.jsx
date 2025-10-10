@@ -96,15 +96,18 @@ function TaskModal({ stage, role = "member", id, onClose }) {
     ]);
   };
 
-  const handleDownload = (fileUrl, fileName) => {
+  const handleDownload = async (filePath, fileName) => {
+    const fileUrl = `${baseURL}/${filePath}`;
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+
     const link = document.createElement("a");
-    link.href = `${baseURL}/${fileUrl}`;
-    console.log("Downloading file:", link.href);
-    link.download = fileName || "download";
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    console.log("Downloading file:", fileUrl);
+    URL.revokeObjectURL(link.href);
   };
 
   const createComment = useCreateComment(id);

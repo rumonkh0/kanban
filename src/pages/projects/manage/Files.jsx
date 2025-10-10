@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Icon from "@/components/Icon";
 import {
   useDeleteFile,
@@ -8,6 +8,7 @@ import {
 import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function Files() {
   const { id } = useParams();
@@ -83,6 +84,20 @@ function Files() {
 
     event.target.value = null;
   };
+  const handleDownload = async (filePath, fileName) => {
+    const fileUrl = `${baseURL}/${filePath}`;
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
   const deleteFile = useDeleteFile();
   // useEffect(() => {
   //   console.log(uploads);
@@ -185,7 +200,10 @@ function Files() {
                 className="mt-4 w-[220px] h-10 bg-divider flex justify-between items-center gap-2 p-2 rounded-sm"
               >
                 <Icon name="file" size={20} />
-                <div className="typo-b3 text-text flex flex-col truncate">
+                <div
+                  className="typo-b3 text-text flex flex-col truncate cursor-pointer"
+                  onClick={() => handleDownload(f.filePath, f.originalName)}
+                >
                   <h2 className="truncate">{f.originalName}</h2>
                 </div>
                 <Icon
