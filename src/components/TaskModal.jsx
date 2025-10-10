@@ -142,7 +142,7 @@ function TaskModal({ stage, role = "member", id, onClose }) {
       submitData.append("stage", formData.stage.id);
     }
 
-    formData.members.forEach((method) =>
+    formData.members?.forEach((method) =>
       submitData.append("members[]", method)
     );
     files.forEach((file) => submitData.append("files[]", file._id));
