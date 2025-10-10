@@ -131,9 +131,43 @@ function ClientForm({ edit, title = "Add Client" }) {
     // console.log(formData);
     // console.log(submitData);
     if (edit) {
-      updateClientMutation.mutate(submitData);
+      toast.promise(
+        updateClientMutation.mutateAsync(submitData),
+        {
+          pending: " Updateding Client",
+          success: "Client Updated Successfully ",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Update Client.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     } else {
-      createClientMutation.mutate(submitData);
+      toast.promise(
+        createClientMutation.mutateAsync(submitData),
+        {
+          pending: "Creating Client",
+          success: "Client Created",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Create Client.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     }
   };
 

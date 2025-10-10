@@ -25,6 +25,7 @@ import {
 } from "../../../components/Constants";
 import PhoneNumberInput from "../../../components/PhoneNumberInput";
 import Loading from "../../../components/Loading";
+import { toast } from "react-toastify";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TeamMemberForm({ edit, title = "Add Team Member" }) {
@@ -126,9 +127,43 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     submitData.append("mobile[countryCode]", formData.mobile.countryCode);
 
     if (edit) {
-      updateMember.mutate(submitData);
+      toast.promise(
+        updateMember.mutateAsync(submitData),
+        {
+          pending: "Updating Member Details",
+          success: "Member Updated",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Updating Member.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     } else {
-      createMember.mutate(submitData);
+      toast.promise(
+        createMember.mutateAsync(submitData),
+        {
+          pending: "Creating Member",
+          success: "Member Created",
+          error: {
+            render({ data }) {
+              const errorMessage =
+                data.response?.data?.message ||
+                data.response?.data?.error ||
+                data.message ||
+                "Failed to Create Member.";
+              return errorMessage;
+            },
+          },
+        },
+        { autoClose: 5000 }
+      );
     }
   };
 
@@ -658,7 +693,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? "Saving..." : edit ? "Update" : "Save"}
+              {createMember.isPending ? "Saving..." : edit ? "Update" : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -671,9 +706,9 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
                   handleSubmit(true);
                   setMore(true);
                 }}
-                disabled={isLoading}
+                disabled={createMember.isPending}
               >
-                {isLoading ? "Saving..." : "Save & Add More"}
+                {createMember.isPending ? "Saving..." : "Save & Add More"}
               </RedBorderButton>
             )}
           </div>
@@ -682,9 +717,9 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
             <RedButton
               type="button"
               onClick={handleDelete}
-              disabled={isLoading}
+              disabled={deleteMember.isPending}
             >
-              {isLoading ? "Deleting..." : "Delete Client"}
+              {deleteMember.isPending ? "Deleting..." : "Delete Client"}
             </RedButton>
           ) : (
             <Back>
