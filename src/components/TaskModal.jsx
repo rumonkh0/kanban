@@ -404,10 +404,10 @@ function TaskModal({ stage, role = "member", id, onClose }) {
                 <ClientSelect
                   value={formData?.members}
                   clients={freelancers.map((f) => ({
-                    id: f.freelancer._id,
-                    name: f.freelancer.name,
+                    id: f.freelancer?._id,
+                    name: f.freelancer?.name,
                     email: f.freelancer?.user?.email,
-                    profilePicture: f.freelancer.profilePicture,
+                    profilePicture: f.freelancer?.profilePicture,
                   }))}
                   onChange={(members) =>
                     setFormData((prev) => ({
