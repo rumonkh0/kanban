@@ -78,8 +78,6 @@ import ProtectedRedirect from "./components/Redirect";
 import Task from "./pages/member/Task";
 import useTheme from "./hooks/useTheme";
 import { useEffect } from "react";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
-const RECAPTCHA_SITE_KEY_V3 = import.meta.env.VITE_RECAPTCHA_V3_SITE_KEY;
 
 function App() {
   const applyTheme = useTheme();
@@ -89,9 +87,8 @@ function App() {
   }, []);
 
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY_V3}>
-      <Routes>
-        <Route path="/" element={<ProtectedRedirect />} />
+    <Routes>
+      <Route path="/" element={<ProtectedRedirect />} />
         <Route element={<LoginLayout />}>
           {/* <Route index element={<Navigate to="/login" replace />} /> */}
           <Route path="login" element={<Login />} />
@@ -100,197 +97,186 @@ function App() {
           <Route path="otp" element={<Otp />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-        <Route element={<RoleBasedRoute roles={["Freelancer"]} />}>
-          <Route path="/member" element={<RootLayout sidebar="member" />}>
+      <Route element={<RoleBasedRoute roles={["Freelancer"]} />}>
+        <Route path="/member" element={<RootLayout sidebar="member" />}>
+          <Route index element={<Navigate to="/member/dashboard" replace />} />
+          <Route path="dashboard" element={<MembersDashboard />} />
+          <Route path="tasks" element={<Task role="member" />} />
+          <Route path="settings" element={<MemberSettings role="member" />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Route>
+      <Route element={<RoleBasedRoute roles={["Client"]} />}>
+        <Route path="/client" element={<RootLayout sidebar="client" />}>
+          <Route index element={<Navigate to="/client/dashboard" replace />} />
+          <Route path="dashboard" element={<ClientDashboard />} />
+          <Route path="projects" element={<ClientProjects />} />
+          <Route path="settings" element={<Setting role="client" />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Route>
+      <Route element={<RoleBasedRoute roles={["Admin"]} />}>
+        <Route path="/admin" element={<RootLayout />}>
+          <Route
+            index
+            element={<Navigate to="/admin/dashboard/private" replace />}
+          />
+
+          <Route path="dashboard/private" element={<Private />} />
+          <Route path="dashboard/advanced" element={<Advanced />}>
             <Route
               index
-              element={<Navigate to="/member/dashboard" replace />}
+              element={
+                <Navigate to="/admin/dashboard/advanced/overview" replace />
+              }
             />
-            <Route path="dashboard" element={<MembersDashboard />} />
-            <Route path="tasks" element={<Task role="member" />} />
-            <Route path="settings" element={<MemberSettings role="member" />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="overview" element={<Overview />} />
+            <Route path="clients" element={<ClientsDashboard />} />
+            <Route path="projects" element={<ProjectsDashboard />} />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="hr" element={<Hr />} />
+            <Route path="finance" element={<Finance />} />
           </Route>
-        </Route>
-        <Route element={<RoleBasedRoute roles={["Client"]} />}>
-          <Route path="/client" element={<RootLayout sidebar="client" />}>
+
+          <Route path="clients" element={<ClientsLayout />}>
+            <Route index element={<Clients />} />
+            <Route path="add-client" element={<ClientForm />} />
+            <Route path=":id" element={<ClientDetails />} />
+            <Route path=":id/edit" element={<ClientForm edit />} />
+          </Route>
+
+          <Route path="projects" element={<ProjectsLayout />}>
+            <Route index element={<Projects />} />
+            <Route path="add-project" element={<ProjectForm />} />
+            <Route path=":id/manage" element={<ProjectManage />}>
+              <Route index element={<Navigate to="overview" replace />} />
+              <Route path="overview" element={<ProjectOverview />} />
+              <Route path="members" element={<ProjectMembers />} />
+              <Route path="files" element={<ProjectFiles />} />
+              <Route path="tasks" element={<ProjectTask />} />
+              <Route path="payment" element={<Payment from="projects" />} />
+              <Route
+                path="team-payment"
+                element={
+                  <TeamPayment
+                    toHref="/admin/projects/paid-to"
+                    from="projects"
+                  />
+                }
+              />
+              <Route path="notes" element={<ProjectNotes />} />
+              <Route path="activity" element={<ProjectActivity />} />
+            </Route>
+            <Route path=":id/edit" element={<ProjectForm edit />} />
+            <Route path="add-note" element={<AddNote />} />
+            <Route path="notes/:noteId/edit" element={<AddNote edit />} />
+            <Route path="paid-by" element={<PaidByForm from="projects" />} />
+            <Route path="paid-to" element={<PaidToForm from="projects" />} />
+            <Route
+              path="paid-by/:id/edit"
+              element={<PaidByForm from="projects" edit />}
+            />
+            <Route
+              path="paid-to/:id/edit"
+              element={<PaidToForm from="projects" edit />}
+            />
+          </Route>
+
+          <Route path="tasks" element={<ProjectTask />} />
+
+          <Route path="hr" element={<HrLayout />}>
             <Route
               index
-              element={<Navigate to="/client/dashboard" replace />}
+              element={<Navigate to="/admin/hr/team-members" replace />}
             />
-            <Route path="dashboard" element={<ClientDashboard />} />
-            <Route path="projects" element={<ClientProjects />} />
-            <Route path="settings" element={<Setting role="client" />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="team-members" element={<TeamMember />} />
+            <Route path="add-team-member" element={<TeamMemberForm />} />
+            <Route path="team-member/:id" element={<TeamMemberDetails />} />
+            <Route
+              path="team-member/:id/edit"
+              element={<TeamMemberForm edit title="Edit Team Member Details" />}
+            />
+
+            <Route path="departments" element={<DepartmentTable />} />
+            <Route path="add-department" element={<DepartmentForm />} />
+            <Route
+              path="department/:id/edit"
+              element={<DepartmentForm edit title="Edit Department" />}
+            />
+
+            <Route path="appreciations" element={<AppreciationTable />} />
+            <Route path="add-appreciation" element={<AppreciationForm />} />
+            <Route
+              path="appreciation/:id/edit"
+              element={<AppreciationForm edit title="Edit Appreciation" />}
+            />
+
+            <Route path="roles" element={<RoleTable />} />
+            <Route path="add-role" element={<RoleForm />} />
+            <Route
+              path="role/:id/edit"
+              element={<RoleForm edit title="Edit Role" />}
+            />
           </Route>
-        </Route>
-        <Route element={<RoleBasedRoute roles={["Admin"]} />}>
-          <Route path="/admin" element={<RootLayout />}>
+
+          <Route path="finance" element={<FinanceLayout />}>
+            <Route index element={<Navigate to="payment" replace />} />
+            <Route path="payments" element={<Payment from="finance" />} />
+            <Route
+              path="team-payments"
+              element={<TeamPayment toHref="/finance/paid-to" from="finance" />}
+            />
+            <Route path="paid-by" element={<PaidByForm from="finance" />} />
+            <Route path="paid-to" element={<PaidToForm from="finance" />} />
+            <Route
+              path="paid-by/:id/edit"
+              element={<PaidByForm from="finance" edit />}
+            />
+            <Route
+              path="paid-to/:id/edit"
+              element={<PaidToForm from="finance" edit />}
+            />
+          </Route>
+
+          <Route path="services" element={<ServiceLayout />}>
+            <Route element={<TableLayout />}>
+              <Route
+                index
+                element={<Navigate to="/admin/services/trackers" replace />}
+              />
+              <Route path="trackers" element={<MainTracker />} />
+              <Route path="services" element={<ServiceDetails />} />
+            </Route>
+            <Route path="add-tracker" element={<AddTracker />} />
+            <Route path="add-service" element={<AddService />} />
+            <Route
+              path="trackers/:id/edit"
+              element={<AddTracker edit title="Edit Tracker" />}
+            />
+            <Route
+              path="services/:id/edit"
+              element={<AddService edit title="Edit Service" />}
+            />
+          </Route>
+
+          <Route path="reports" element={<Reports />} />
+
+          <Route path="settings" element={<SettingLayout />}>
             <Route
               index
-              element={<Navigate to="/admin/dashboard/private" replace />}
+              element={<Navigate to="/admin/settings/company" replace />}
             />
-
-            <Route path="dashboard/private" element={<Private />} />
-            <Route path="dashboard/advanced" element={<Advanced />}>
-              <Route
-                index
-                element={
-                  <Navigate to="/admin/dashboard/advanced/overview" replace />
-                }
-              />
-              <Route path="overview" element={<Overview />} />
-              <Route path="clients" element={<ClientsDashboard />} />
-              <Route path="projects" element={<ProjectsDashboard />} />
-              <Route path="tasks" element={<Tasks />} />
-              <Route path="hr" element={<Hr />} />
-              <Route path="finance" element={<Finance />} />
-            </Route>
-
-            <Route path="clients" element={<ClientsLayout />}>
-              <Route index element={<Clients />} />
-              <Route path="add-client" element={<ClientForm />} />
-              <Route path=":id" element={<ClientDetails />} />
-              <Route path=":id/edit" element={<ClientForm edit />} />
-            </Route>
-
-            <Route path="projects" element={<ProjectsLayout />}>
-              <Route index element={<Projects />} />
-              <Route path="add-project" element={<ProjectForm />} />
-              <Route path=":id/manage" element={<ProjectManage />}>
-                <Route index element={<Navigate to="overview" replace />} />
-                <Route path="overview" element={<ProjectOverview />} />
-                <Route path="members" element={<ProjectMembers />} />
-                <Route path="files" element={<ProjectFiles />} />
-                <Route path="tasks" element={<ProjectTask />} />
-                <Route path="payment" element={<Payment from="projects" />} />
-                <Route
-                  path="team-payment"
-                  element={
-                    <TeamPayment
-                      toHref="/admin/projects/paid-to"
-                      from="projects"
-                    />
-                  }
-                />
-                <Route path="notes" element={<ProjectNotes />} />
-                <Route path="activity" element={<ProjectActivity />} />
-              </Route>
-              <Route path=":id/edit" element={<ProjectForm edit />} />
-              <Route path="add-note" element={<AddNote />} />
-              <Route path="notes/:noteId/edit" element={<AddNote edit />} />
-              <Route path="paid-by" element={<PaidByForm from="projects" />} />
-              <Route path="paid-to" element={<PaidToForm from="projects" />} />
-              <Route
-                path="paid-by/:id/edit"
-                element={<PaidByForm from="projects" edit />}
-              />
-              <Route
-                path="paid-to/:id/edit"
-                element={<PaidToForm from="projects" edit />}
-              />
-            </Route>
-
-            <Route path="tasks" element={<ProjectTask />} />
-
-            <Route path="hr" element={<HrLayout />}>
-              <Route
-                index
-                element={<Navigate to="/admin/hr/team-members" replace />}
-              />
-              <Route path="team-members" element={<TeamMember />} />
-              <Route path="add-team-member" element={<TeamMemberForm />} />
-              <Route path="team-member/:id" element={<TeamMemberDetails />} />
-              <Route
-                path="team-member/:id/edit"
-                element={
-                  <TeamMemberForm edit title="Edit Team Member Details" />
-                }
-              />
-
-              <Route path="departments" element={<DepartmentTable />} />
-              <Route path="add-department" element={<DepartmentForm />} />
-              <Route
-                path="department/:id/edit"
-                element={<DepartmentForm edit title="Edit Department" />}
-              />
-
-              <Route path="appreciations" element={<AppreciationTable />} />
-              <Route path="add-appreciation" element={<AppreciationForm />} />
-              <Route
-                path="appreciation/:id/edit"
-                element={<AppreciationForm edit title="Edit Appreciation" />}
-              />
-
-              <Route path="roles" element={<RoleTable />} />
-              <Route path="add-role" element={<RoleForm />} />
-              <Route
-                path="role/:id/edit"
-                element={<RoleForm edit title="Edit Role" />}
-              />
-            </Route>
-
-            <Route path="finance" element={<FinanceLayout />}>
-              <Route index element={<Navigate to="payment" replace />} />
-              <Route path="payments" element={<Payment from="finance" />} />
-              <Route
-                path="team-payments"
-                element={
-                  <TeamPayment toHref="/finance/paid-to" from="finance" />
-                }
-              />
-              <Route path="paid-by" element={<PaidByForm from="finance" />} />
-              <Route path="paid-to" element={<PaidToForm from="finance" />} />
-              <Route
-                path="paid-by/:id/edit"
-                element={<PaidByForm from="finance" edit />}
-              />
-              <Route
-                path="paid-to/:id/edit"
-                element={<PaidToForm from="finance" edit />}
-              />
-            </Route>
-
-            <Route path="services" element={<ServiceLayout />}>
-              <Route element={<TableLayout />}>
-                <Route
-                  index
-                  element={<Navigate to="/admin/services/trackers" replace />}
-                />
-                <Route path="trackers" element={<MainTracker />} />
-                <Route path="services" element={<ServiceDetails />} />
-              </Route>
-              <Route path="add-tracker" element={<AddTracker />} />
-              <Route path="add-service" element={<AddService />} />
-              <Route
-                path="trackers/:id/edit"
-                element={<AddTracker edit title="Edit Tracker" />}
-              />
-              <Route
-                path="services/:id/edit"
-                element={<AddService edit title="Edit Service" />}
-              />
-            </Route>
-
-            <Route path="reports" element={<Reports />} />
-
-            <Route path="settings" element={<SettingLayout />}>
-              <Route
-                index
-                element={<Navigate to="/admin/settings/company" replace />}
-              />
-              <Route path="company" element={<CompanySetting />} />
-              <Route path="business" element={<BusinessAdress />} />
-              <Route path="profile" element={<ProfileSetting role="admin" />} />
-              <Route path="security" element={<SecuritySetting />} />
-              <Route path="theme" element={<ThemeSetting />} />
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
+            <Route path="company" element={<CompanySetting />} />
+            <Route path="business" element={<BusinessAdress />} />
+            <Route path="profile" element={<ProfileSetting role="admin" />} />
+            <Route path="security" element={<SecuritySetting />} />
+            <Route path="theme" element={<ThemeSetting />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Route>
-      </Routes>
-    </GoogleReCaptchaProvider>
+      </Route>
+    </Routes>
   );
 }
 
