@@ -125,9 +125,12 @@ function SecuritySetting() {
           <input
             type="checkbox"
             id="googleRecaptcha"
-            checked={formData.googleRecaptchaEnabled}
+            checked={formData.recaptchaVersion !== "none"}
             onChange={(e) =>
-              handleChange("googleRecaptchaEnabled", e.target.checked)
+              handleChange(
+                "recaptchaVersion",
+                e.target.checked ? formData.recaptchaVersion : "none"
+              )
             }
             className="form-checkbox h-5 w-5 rounded border-divider bg-surface focus:ring-brand focus:ring-offset-0"
           />
@@ -141,7 +144,7 @@ function SecuritySetting() {
           <div className="flex typo-cta">
             <label
               className={`flex-1 h-12 flex items-center justify-center cursor-pointer rounded-l-lg ${
-                formData.recaptchaVersion === "V2"
+                formData.recaptchaVersion === "v2"
                   ? "bg-brand text-white"
                   : "bg-surface2 text-text"
               }`}
@@ -158,7 +161,7 @@ function SecuritySetting() {
             </label>
             <label
               className={`flex-1 h-12 flex items-center justify-center cursor-pointer rounded-r-lg ${
-                formData.recaptchaVersion === "V3"
+                formData.recaptchaVersion === "v3"
                   ? "bg-brand text-white"
                   : "bg-surface2 text-text"
               }`}
