@@ -145,7 +145,9 @@ function DepartmentForm({ title, edit }) {
             </RedButton>
           ) : (
             <Back>
-              <RedButton disabled={isLoading}>Cancel</RedButton>
+              <RedButton disabled={isLoading} onClick={() => navigate(-1)}>
+                Cancel
+              </RedButton>
             </Back>
           )}
         </div>
