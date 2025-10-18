@@ -25,7 +25,7 @@ function Private() {
   const month = now.getMonth();
   const year = now.getFullYear();
   const firstDayIndex = new Date(year, month, 1).getDay();
-  const totalDays = new Date(year, month + 1, 0).getDate(); 
+  const totalDays = new Date(year, month + 1, 0).getDate();
   const todayDate = now.getDate();
 
   if (isPending) return <Loading />;
@@ -141,8 +141,9 @@ function Private() {
       <div className="grid grid-cols-[repeat(auto-fill,minmax(310px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(510px,1fr))] gap-2">
         {dashboard.birthdays.clients.length > 0 && (
           <DuelCardHolder title="Upcoming Client's Birthdays">
-            {dashboard.birthdays.clients.map((per) => (
+            {dashboard.birthdays.clients.map((per, idx) => (
               <PersonCard
+                key={idx}
                 name={per.name}
                 designation="Client"
                 // id={34556}
@@ -153,8 +154,9 @@ function Private() {
         )}
         {dashboard.birthdays.freelancers.length > 0 && (
           <DuelCardHolder title="Upcoming Memmber's Birthdays">
-            {dashboard.birthdays.freelancers.map((per) => (
+            {dashboard.birthdays.freelancers.map((per, idx) => (
               <PersonCard
+                key={idx}
                 name={per.name}
                 designation="Member"
                 // id={34556}
@@ -165,8 +167,9 @@ function Private() {
         )}
         {dashboard.lastAppreciations.length > 0 && (
           <DuelCardHolder title="Team Appreciations">
-            {dashboard.lastAppreciations.map((per) => (
+            {dashboard.lastAppreciations.map((per, idx) => (
               <PersonCard
+                key={idx}
                 name={per.name}
                 designation="Member"
                 // id={34556}
@@ -177,8 +180,9 @@ function Private() {
         )}
         {dashboard.todaysJoining.length > 0 && (
           <DuelCardHolder title="Today's Joining">
-            {dashboard.todaysJoining.map((per) => (
+            {dashboard.todaysJoining.map((per, idx) => (
               <PersonCard
+                key={idx}
                 name={per.name}
                 designation="Member"
                 // id={34556}
@@ -189,8 +193,9 @@ function Private() {
         )}
         {dashboard.noticePeriodEnding.length > 0 && (
           <DuelCardHolder title="Notice Period Duration">
-            {dashboard.noticePeriodEnding.map((per) => (
+            {dashboard.noticePeriodEnding.map((per, idx) => (
               <PersonCard
+                key={idx}
                 name={per.name}
                 designation="Member"
                 // id={34556}
@@ -201,8 +206,9 @@ function Private() {
         )}
         {dashboard.probationEnding.length > 0 && (
           <DuelCardHolder title="Probation Date">
-            {dashboard.probationEnding.map((per) => (
+            {dashboard.probationEnding.map((per, idx) => (
               <PersonCard
+                key={idx}
                 name={per.name}
                 designation="Member"
                 // id={34556}

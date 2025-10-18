@@ -55,7 +55,7 @@ function DepartmentForm({ title, edit }) {
       });
       setMore(false);
     } else {
-      if (iscreated) navigate("/hr/departments");
+      if (iscreated) navigate("admin/hr/departments");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createDepartment.isSuccess]);

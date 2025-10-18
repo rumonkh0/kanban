@@ -47,7 +47,7 @@ const admin = [
     children: [
       { label: "Team Members", to: "/admin/hr/team-members" },
       { label: "Department", to: "/admin/hr/departments" },
-      { label: "Role", to: "/admin/hr/roles" },
+      // { label: "Role", to: "/admin/hr/roles" },
       { label: "Appreciation", to: "/admin/hr/appreciations" },
     ],
   },
@@ -202,7 +202,9 @@ export default function Sidebar({ sidebar, isMobileOpen, onClose }) {
         ) : (
           <div className="flex justify-between items-center mb-6">
             <div>
-              <div className="typo-cta text-brand">{company?.companyName || "Creative Zeth"}</div>
+              <div className="typo-cta text-brand">
+                {company?.companyName || "Creative Zeth"}
+              </div>
               <div className="typo-b3">{user?.user?.name}</div>
             </div>
             <div className="w-10">
