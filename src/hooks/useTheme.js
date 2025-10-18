@@ -19,17 +19,20 @@ function useTheme() {
           : "/logo.png";
         if (res?.data?.theme?.appName)
           document.title = res?.data?.theme?.appName;
-        if (user?.role === "Admin")
+        if (user?.role === "Admin" && res?.data?.theme?.adminPrimaryColor)
           document.documentElement.style.setProperty(
             "--brand",
             res?.data?.theme?.adminPrimaryColor
           );
-        if (user?.role === "Freelancer")
+        if (
+          user?.role === "Freelancer" &&
+          res?.data?.theme?.employeePrimaryColor
+        )
           document.documentElement.style.setProperty(
             "--brand",
             res?.data?.theme?.employeePrimaryColor
           );
-        if (user?.role === "Client")
+        if (user?.role === "Client" && res?.data?.theme?.clientPrimaryColor)
           document.documentElement.style.setProperty(
             "--brand",
             res?.data?.theme?.clientPrimaryColor

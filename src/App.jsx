@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate, HashRouter } from "react-router";
 import NotFound from "@/pages/NotFound";
 
 import RootLayout from "./Layout";

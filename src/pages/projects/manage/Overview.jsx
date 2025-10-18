@@ -166,7 +166,7 @@ function Overview() {
           className="h-20 w-20 sm:h-40 sm:w-auto aspect-square object-cover rounded-sm"
         />
         <div className="flex flex-col gap-2 items-center sm:items-start text-center sm:text-left">
-          <div className="typo-h4">{project.client.name}</div>
+          <div className="typo-h4">{project.client?.name}</div>
           <div className="typo-b2 text-text2">Client</div>
           <div className="typo-b2 text-text2">
             Total Project: {project.clientStats?.totalProjects}

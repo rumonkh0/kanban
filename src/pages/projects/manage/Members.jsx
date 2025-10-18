@@ -76,7 +76,7 @@ function Members() {
                   <Td>
                     <ImageName
                       className="first:rounded-l-[4px]"
-                      username={member.freelancer.name}
+                      username={member.freelancer?.name}
                       image={memberImage}
                     />
                   </Td>
