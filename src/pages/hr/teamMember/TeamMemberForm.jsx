@@ -130,61 +130,83 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     submitData.append("mobile[countryCode]", formData.mobile.countryCode);
 
     if (edit) {
-      toast.promise(
-        updateMember.mutateAsync(submitData),
-        {
-          pending: "Updating Member Details",
-          success: "Member Updated",
-          error: {
-            render({ data }) {
-              const errorMessage =
-                data.response?.data?.message ||
-                data.response?.data?.error ||
-                data.message ||
-                "Failed to Updating Member.";
-              return errorMessage;
-            },
+      toast.promise(updateMember.mutateAsync(submitData), {
+        pending: "Updating Member Details",
+        success: {
+          render() {
+            return "Member Updated";
           },
         },
-        { autoClose: 5000 }
-      );
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to update member.";
+            return errorMessage;
+          },
+        },
+      });
     } else {
-      toast.promise(
-        createMember.mutateAsync(submitData),
-        {
-          pending: "Creating Member",
-          success: "Member Created",
-          error: {
-            render({ data }) {
-              const errorMessage =
-                data.response?.data?.message ||
-                data.response?.data?.error ||
-                data.message ||
-                "Failed to Create Member.";
-              return errorMessage;
-            },
+      toast.promise(createMember.mutateAsync(submitData), {
+        pending: "Creating Member",
+        success: {
+          render() {
+            if (more) {
+              // 'more' state is already set by the button click
+              return "Member Created! You can add another.";
+            }
+            return "Member Created";
           },
         },
-        { autoClose: 5000 }
-      );
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to Create Member.";
+            return errorMessage;
+          },
+        },
+      });
     }
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this team member?")) {
-      deleteMember.mutate(id);
+      toast.promise(deleteMember.mutateAsync(id), {
+        pending: "Updating Member Details",
+        success: {
+          render() {
+            return "Member deleted successfully.";
+          },
+        },
+        error: {
+          render({ data }) {
+            const errorMessage =
+              data.response?.data?.message ||
+              data.response?.data?.error ||
+              data.message ||
+              "Failed to delete member.";
+            return errorMessage;
+          },
+        },
+      });
     }
   };
 
   useEffect(() => {
     const iscreated = createMember.isSuccess;
+    // If 'Save & Add More' was clicked and creation was successful
     if (iscreated && more) {
       setFormData({
         memberId: "",
         salutation: null,
         name: "",
         email: "",
-        password: "",
+        password: "", // Clear password field
         designation: "",
         department: null,
         country: "USA",
@@ -212,8 +234,10 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
       });
       setProfilePicture(null);
       setProfilePreview(null);
-    } else {
-      if (iscreated) back();
+      setMore(false);
+    } else if (iscreated) {
+      // If 'Save' was clicked and creation was successful
+      back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMember.isSuccess]);
@@ -263,8 +287,18 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
     }
   }, [teamMember]);
 
+  useEffect(() => {
+    if (updateMember.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateMember.isSuccess]);
+
+  useEffect(() => {
+    if (deleteMember.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteMember.isSuccess]);
+
   const isLoading =
-    createMember.isLoading || updateMember.isLoading || deleteMember.isLoading;
+    createMember.isPending || updateMember.isPending || deleteMember.isPending;
 
   if (edit && isLoadingTeamMember) {
     return <div>Loading team member data...</div>;
@@ -285,7 +319,6 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
           <div className="bg-surface1 rounded-xl">
             <form
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-              onSubmit={handleSubmit}
             >
               <FormField label="Members ID">
                 <Input
@@ -693,10 +726,14 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
           <div className="flex gap-4">
             <RedButton
               type="button"
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()} // No parameter
               disabled={isLoading}
             >
-              {createMember.isPending ? "Saving..." : edit ? "Update" : "Save"}
+              {(createMember.isPending || updateMember.isPending) && !more
+                ? "Saving..."
+                : edit
+                ? "Update"
+                : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -706,12 +743,14 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
               <RedBorderButton
                 type="button"
                 onClick={() => {
-                  handleSubmit(true);
                   setMore(true);
+                  handleSubmit();
                 }}
-                disabled={createMember.isPending}
+                disabled={isLoading}
               >
-                {createMember.isPending ? "Saving..." : "Save & Add More"}
+                {createMember.isPending && more
+                  ? "Saving..."
+                  : "Save & Add More"}
               </RedBorderButton>
             )}
           </div>
@@ -720,9 +759,9 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
             <RedButton
               type="button"
               onClick={handleDelete}
-              disabled={deleteMember.isPending}
+              disabled={isLoading}
             >
-              {deleteMember.isPending ? "Deleting..." : "Delete Client"}
+              {deleteMember.isPending ? "Deleting..." : "Delete Member"}
             </RedButton>
           ) : (
             <Back>

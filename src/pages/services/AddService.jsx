@@ -135,7 +135,6 @@ function AddService({ edit = false, title = "Add Service" }) {
         addons: serviceData.addons || "",
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serviceData]);
 
   if (edit && isLoadingService) {

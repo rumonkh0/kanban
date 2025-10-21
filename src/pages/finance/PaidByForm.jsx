@@ -20,6 +20,7 @@ import {
   useUpdatePaidFrom,
 } from "../../hooks/useFinance";
 import { useBack } from "../../hooks/useBack";
+import { toast } from "react-toastify";
 
 function PaidByForm({ edit = false, title = "Add Payment" }) {
   const { id } = useParams();
@@ -80,14 +81,13 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
       !formData.paidMethod
       // !formData.paymentStatus
     ) {
-      alert("Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
       return;
     }
 
     // Create FormData for file upload
     const submitData = new FormData();
 
-    // Append all form fields
     Object.keys(formData).forEach((key) => {
       const value = formData[key];
       if (value !== undefined && value !== null) {
@@ -95,21 +95,46 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
       }
     });
 
-    // Append file if selected
     if (relatedFile) {
       submitData.append("relatedFile", relatedFile);
     }
 
     if (edit) {
-      updateMutation.mutate(submitData);
+      toast.promise(updateMutation.mutateAsync(submitData), {
+        pending: "Updating Payment...",
+        success: "Payment updated successfully!",
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to update payment.",
+        },
+      });
     } else {
-      createMutation.mutate(submitData);
+      toast.promise(createMutation.mutateAsync(submitData), {
+        pending: "Creating Payment...",
+        success: {
+          render() {
+            if (more) return "Payment created! You can add another.";
+            return "Payment created successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to create payment.",
+        },
+      });
     }
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this payment?")) {
-      deleteMutation.mutate(id);
+      toast.promise(deleteMutation.mutateAsync(id), {
+        pending: "Deleting Payment...",
+        success: "Payment deleted successfully!",
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to delete payment.",
+        },
+      });
     }
   };
 
@@ -133,11 +158,21 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
       setInvoiceFile(null);
       setInvoicePreview(null);
       setMore(false);
-    } else {
-      if (iscreated) back();
+    } else if (iscreated) {
+      back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (updateMutation.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateMutation.isSuccess]);
+
+  useEffect(() => {
+    if (deleteMutation.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteMutation.isSuccess]);
 
   useEffect(() => {
     if (paidByData) {
@@ -400,8 +435,8 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
               <RedBorderButton
                 type="button"
                 onClick={() => {
-                  handleSubmit(true);
                   setMore(true);
+                  handleSubmit();
                 }}
                 disabled={isLoading}
               >
@@ -418,7 +453,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
               onClick={handleDelete}
               disabled={isLoading}
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete Client"}
+              {deleteMutation.isPending ? "Deleting..." : "Delete Payment"}
             </RedButton>
           ) : (
             <Back>

@@ -26,6 +26,7 @@ import {
   useProjects,
 } from "../../hooks/useProjects";
 import { useBack } from "../../hooks/useBack";
+import { toast } from "react-toastify";
 
 function PaidToForm({ edit = false, title = "Add Team Payment" }) {
   const { id } = useParams();
@@ -89,7 +90,7 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
       !formData.amountPaid ||
       !formData.paidMethod
     ) {
-      alert("Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
       return;
     }
 
@@ -110,15 +111,41 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
     }
 
     if (edit) {
-      updateMutation.mutate(submitData);
+      toast.promise(updateMutation.mutateAsync(submitData), {
+        pending: "Updating Team Payment...",
+        success: "Payment updated successfully!",
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to update payment.",
+        },
+      });
     } else {
-      createMutation.mutate(submitData);
+      toast.promise(createMutation.mutateAsync(submitData), {
+        pending: "Creating Team Payment...",
+        success: {
+          render() {
+            if (more) return "Payment created! You can add another.";
+            return "Payment created successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to create payment.",
+        },
+      });
     }
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this payment?")) {
-      deleteMutation.mutate(id);
+      toast.promise(deleteMutation.mutateAsync(id), {
+        pending: "Deleting Payment...",
+        success: "Payment deleted successfully!",
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to delete payment.",
+        },
+      });
     }
   };
 
@@ -140,17 +167,21 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
       setRelatedFile(null);
       setInvoicePreview(null);
       setMore(false); // Reset 'more' state after success
-    } else {
-      if (iscreated || updateMutation.isSuccess || deleteMutation.isSuccess) {
-        back();
-      }
+    } else if (iscreated) {
+      back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    createMutation.isSuccess,
-    updateMutation.isSuccess,
-    deleteMutation.isSuccess,
-  ]);
+  }, [createMutation.isSuccess]);
+
+  useEffect(() => {
+    if (updateMutation.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateMutation.isSuccess]);
+
+  useEffect(() => {
+    if (deleteMutation.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteMutation.isSuccess]);
 
   // --- useEffect for Editing (copied from PaidByForm) ---
   useEffect(() => {
@@ -380,7 +411,7 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
           <div className="flex gap-4">
             <RedButton
               type="button"
-              onClick={() => handleSubmit(false)} // Explicitly pass false for 'Save'
+              onClick={handleSubmit}
               disabled={isLoading}
             >
               {(createMutation.isPending || updateMutation.isPending) && !more
@@ -398,7 +429,7 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
                 type="button"
                 onClick={() => {
                   setMore(true);
-                  handleSubmit(true); // Explicitly pass true for 'Save & Add More'
+                  handleSubmit();
                 }}
                 disabled={isLoading}
               >

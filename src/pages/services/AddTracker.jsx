@@ -70,8 +70,6 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
   const isLoading = updateMutation.isPending;
 
   const handleSubmit = () => {
-    // console.log(formData);
-
     // Create FormData for file upload
     const submitData = new FormData();
 

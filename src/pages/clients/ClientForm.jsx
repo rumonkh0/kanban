@@ -135,8 +135,8 @@ function ClientForm({ edit, title = "Add Client" }) {
       toast.promise(
         updateClientMutation.mutateAsync(submitData),
         {
-          pending: " Updateding Client",
-          success: "Client Updated Successfully ",
+          pending: "Updating Client...",
+          success: "Client updated successfully!",
           error: {
             render({ data }) {
               const errorMessage =
@@ -155,7 +155,12 @@ function ClientForm({ edit, title = "Add Client" }) {
         createClientMutation.mutateAsync(submitData),
         {
           pending: "Creating Client",
-          success: "Client Created",
+          success: {
+            render() {
+              if (more) return "Client created! You can add another.";
+              return "Client created successfully!";
+            },
+          },
           error: {
             render({ data }) {
               const errorMessage =
@@ -174,23 +179,14 @@ function ClientForm({ edit, title = "Add Client" }) {
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this client?")) {
-      deleteClientMutation.mutate(id, {
-        onSuccess: () => {
-          back();
-          toast.success("Client Deleted Successfully");
-        },
-        onError: (err) => {
-          alert(err.message || "Failed to delete client");
-        },
+      toast.promise(deleteClientMutation.mutateAsync(id), {
+        pending: "Deleting Client...",
+        success: "Client deleted successfully!",
+        error: (err) =>
+          err?.response?.data?.message || "Failed to delete client.",
       });
     }
   };
-
-  useEffect(() => {
-    console.log(createClientMutation.error?.response?.data?.error);
-    createClientMutation.isError &&
-      toast.error(createClientMutation?.error?.response?.data?.error);
-  }, [createClientMutation.isError, createClientMutation.error]);
 
   useEffect(() => {
     const iscreated = createClientMutation.isSuccess;
@@ -228,11 +224,21 @@ function ClientForm({ edit, title = "Add Client" }) {
       setProfilePictureFile(null);
       setCompanyLogoFile(null);
       setMore(false);
-    } else {
-      if (iscreated) back();
+    } else if (iscreated) {
+      back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createClientMutation.isSuccess]);
+
+  useEffect(() => {
+    if (updateClientMutation.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateClientMutation.isSuccess]);
+
+  useEffect(() => {
+    if (deleteClientMutation.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteClientMutation.isSuccess]);
 
   useEffect(() => {
     if (clientData) {
@@ -727,8 +733,8 @@ function ClientForm({ edit, title = "Add Client" }) {
               <RedBorderButton
                 type="button"
                 onClick={() => {
-                  handleSubmit(true);
                   setMore(true);
+                  handleSubmit();
                 }}
                 disabled={isLoading}
               >

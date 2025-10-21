@@ -8,6 +8,7 @@ import {
 } from "@/components/Component";
 import PageTitle from "@/components/PageTitle";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   useCreateDepartment,
   useDeleteDepartment,
@@ -34,32 +35,82 @@ function DepartmentForm({ title, edit }) {
   };
 
   const handleSubmit = () => {
-    if (formData.title)
-      if (edit) {
-        updateDepartment.mutate(formData);
-      } else {
-        createDepartment.mutate(formData);
-      }
+    if (!formData.title) {
+      toast.error("Department name is required.");
+      return;
+    }
+    if (edit) {
+      toast.promise(updateDepartment.mutateAsync(formData), {
+        pending: "Updating Department...",
+        success: {
+          render() {
+            // back(); // Removed from here
+            return "Department updated successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to update department.",
+        },
+      });
+    } else {
+      toast.promise(createDepartment.mutateAsync(formData), {
+        pending: "Creating Department...",
+        success: {
+          render() {
+            if (more) {
+              return "Department created! You can add another.";
+            }
+            return "Department created successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to create department.",
+        },
+      });
+    }
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this client?")) {
-      deleteDepartment.mutate(id);
+    if (window.confirm("Are you sure you want to delete this department?")) {
+      toast.promise(deleteDepartment.mutateAsync(id), {
+        pending: "Deleting Department...",
+        success: {
+          render() {
+            // back(); // Removed from here
+            return "Department deleted successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to delete department.",
+        },
+      });
     }
   };
 
   useEffect(() => {
-    const iscreated = createDepartment.isSuccess;
-    if (iscreated && more) {
+    if (createDepartment.isSuccess && more) {
       setFormData({
         title: "",
       });
       setMore(false);
-    } else {
-      if (iscreated) back(-1);
+    } else if (createDepartment.isSuccess) {
+      back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createDepartment.isSuccess]);
+
+  useEffect(() => {
+    if (updateDepartment.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateDepartment.isSuccess]);
+
+  useEffect(() => {
+    if (deleteDepartment.isSuccess) back();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteDepartment.isSuccess]);
 
   useEffect(() => {
     if (departmentData) {
@@ -70,11 +121,11 @@ function DepartmentForm({ title, edit }) {
   }, [departmentData]);
 
   const isLoading =
-    createDepartment.isLoading ||
-    updateDepartment.isLoading ||
-    deleteDepartment.isLoading;
+    createDepartment.isPending ||
+    updateDepartment.isPending ||
+    deleteDepartment.isPending;
   if (edit && isloadingDepartment) {
-    return <div>Loading client data...</div>;
+    return <div>Loading department data...</div>;
   }
 
   return (
@@ -116,7 +167,12 @@ function DepartmentForm({ title, edit }) {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? "Saving..." : edit ? "Update" : "Save"}
+              {(createDepartment.isPending || updateDepartment.isPending) &&
+              !more
+                ? "Saving..."
+                : edit
+                ? "Update"
+                : "Save"}
             </RedButton>
             {edit ? (
               <Back>
@@ -126,12 +182,14 @@ function DepartmentForm({ title, edit }) {
               <RedBorderButton
                 type="button"
                 onClick={() => {
-                  handleSubmit(true);
                   setMore(true);
+                  handleSubmit();
                 }}
                 disabled={isLoading}
               >
-                {isLoading ? "Saving..." : "Save & Add More"}
+                {createDepartment.isPending && more
+                  ? "Saving..."
+                  : "Save & Add More"}
               </RedBorderButton>
             )}
           </div>
@@ -142,13 +200,11 @@ function DepartmentForm({ title, edit }) {
               onClick={handleDelete}
               disabled={isLoading}
             >
-              {isLoading ? "Deleting..." : "Delete Client"}
+              {deleteDepartment.isPending ? "Deleting..." : "Delete Department"}
             </RedButton>
           ) : (
             <Back>
-              <RedButton disabled={isLoading} onClick={() => back(-1)}>
-                Cancel
-              </RedButton>
+              <RedButton disabled={isLoading}>Cancel</RedButton>
             </Back>
           )}
         </div>
