@@ -1,6 +1,6 @@
 import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import ClientSelect from "@/components/ClientSelect";
 import {
   Dropdown,
@@ -21,11 +21,12 @@ import {
 import { useTeamMembers } from "../../hooks/useTeam";
 import { useClients } from "../../hooks/useClients";
 import { toast } from "react-toastify";
+import { useBack } from "../../hooks/useBack";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ProjectForm({ edit, title = "Add Project" }) {
-  const navigate = useNavigate();
+  const back = useBack("/admin/projects");
   const { id } = useParams();
   const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
@@ -131,7 +132,11 @@ function ProjectForm({ edit, title = "Add Project" }) {
         updateMutation.mutateAsync(submitData),
         {
           pending: "Updating Project",
-          success: "Project Updated",
+          success: {
+            render() {
+              return "Project Updated";
+            },
+          },
           error: {
             render({ data }) {
               const errorMessage =
@@ -150,7 +155,12 @@ function ProjectForm({ edit, title = "Add Project" }) {
         createMutation.mutateAsync(submitData),
         {
           pending: "Creating Project",
-          success: "Project Created",
+          success: {
+            render() {
+              if (more) return "Project Created! You can add another.";
+              return "Project Created";
+            },
+          },
           error: {
             render({ data }) {
               const errorMessage =
@@ -173,7 +183,11 @@ function ProjectForm({ edit, title = "Add Project" }) {
         deleteMutation.mutateAsync(id),
         {
           pending: "Deleting Project",
-          success: "Project Deleted",
+          success: {
+            render() {
+              return "Project Deleted";
+            },
+          },
           error: {
             render({ data }) {
               const errorMessage =
@@ -256,10 +270,9 @@ function ProjectForm({ edit, title = "Add Project" }) {
         notifyClients: true,
       });
       setRelatedFile(null);
-    } else {
-      if (iscreated) navigate(-1);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      setMore(false);
+    } else if (iscreated) back();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);
 
   useEffect(() => {
@@ -276,6 +289,20 @@ function ProjectForm({ edit, title = "Add Project" }) {
       }
     }
   }, [formData.service, services]);
+
+  useEffect(() => {
+    if (updateMutation.isSuccess) {
+      back();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateMutation.isSuccess]);
+
+  useEffect(() => {
+    if (deleteMutation.isSuccess) {
+      back();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteMutation.isSuccess]);
 
   const isLoading =
     createMutation.isPending ||
@@ -691,8 +718,8 @@ function ProjectForm({ edit, title = "Add Project" }) {
               <RedBorderButton
                 type="button"
                 onClick={() => {
-                  handleSubmit(true);
                   setMore(true);
+                  handleSubmit();
                 }}
                 disabled={isLoading}
               >

@@ -64,6 +64,7 @@ import LoginLayout from "./pages/login";
 import Login from "./pages/login/Login";
 import ForgotPassword from "./pages/login/ForgotPassword";
 import ResetPassword from "./pages/login/ResetPassword";
+import Logout from "./pages/login/Logout";
 import Otp from "./pages/login/Otp";
 import Reports from "./pages/reports/Reports";
 import MembersDashboard from "./pages/member/Dashboard";
@@ -82,6 +83,7 @@ import { useEffect } from "react";
 function App() {
   const applyTheme = useTheme();
   useEffect(() => {
+    console.log("Applying theme...");
     applyTheme();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,14 +91,15 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<ProtectedRedirect />} />
-        <Route element={<LoginLayout />}>
-          {/* <Route index element={<Navigate to="/login" replace />} /> */}
-          <Route path="login" element={<Login />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="reset-password" element={<ResetPassword />} />
-          <Route path="otp" element={<Otp />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
+      <Route path="/logout" element={<Logout />} />
+      <Route element={<LoginLayout />}>
+        {/* <Route index element={<Navigate to="/login" replace />} /> */}
+        <Route path="login" element={<Login />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="otp" element={<Otp />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
       <Route element={<RoleBasedRoute roles={["Freelancer"]} />}>
         <Route path="/member" element={<RootLayout sidebar="member" />}>
           <Route index element={<Navigate to="/member/dashboard" replace />} />

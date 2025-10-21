@@ -12,8 +12,6 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 // ⬇️ DEFINE SITE KEYS (Replace with your actual keys)
 const RECAPTCHA_SITE_KEY_V2 = import.meta.env.VITE_RECAPTCHA_V2_SITE_KEY;
 const RECAPTCHA_SITE_KEY_V3 = import.meta.env.VITE_RECAPTCHA_V3_SITE_KEY;
-console.log("V2 Site Key:", RECAPTCHA_SITE_KEY_V2);
-console.log("V3 Site Key:", RECAPTCHA_SITE_KEY_V3);
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);

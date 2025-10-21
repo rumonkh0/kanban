@@ -9,13 +9,12 @@ import {
 } from "@/components/Component";
 import PageTitle from "@/components/PageTitle";
 import { useCreateAppreciation } from "../../../hooks/hr/useAppreciations";
+import { useBack } from "../../../hooks/useBack";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useTeamMembers } from "../../../hooks/useTeam";
 
 function AppreciationForm({ title, edit }) {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     awardName: "",
     givingTo: null,
@@ -23,6 +22,7 @@ function AppreciationForm({ title, edit }) {
   });
   const [more, setMore] = useState(false);
 
+  const back = useBack("/admin/hr/appreciations");
   const createAppreciationMutation = useCreateAppreciation();
   const { data: teamMembers = [] } = useTeamMembers();
 
@@ -30,34 +30,26 @@ function AppreciationForm({ title, edit }) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (addMore) => {
+  const handleSubmit = () => {
     console.log(formData);
     if (!formData.awardName || !formData.givingTo) {
-      alert("Please fill in all required fields.");
+      toast.error("Please fill in all required fields.");
       return;
     }
 
-    toast.promise(
-      createAppreciationMutation.mutateAsync(formData),
-      {
-        pending: "Creating Appreciation",
-        success: "Appreciation Created",
-        error: {
-          render({ data }) {
-            const errorMessage =
-              data.response?.data?.message ||
-              data.response?.data?.error ||
-              data.message ||
-              "Failed to Create Appreciation.";
-            return errorMessage;
-          },
+    toast.promise(createAppreciationMutation.mutateAsync(formData), {
+      pending: "Creating Appreciation...",
+      success: {
+        render() {
+          if (more) return "Appreciation created! You can add another.";
+          return "Appreciation created successfully!";
         },
       },
-      { autoClose: 5000 }
-    );
-    if (addMore) {
-      setMore(true);
-    }
+      error: {
+        render: ({ data }) =>
+          data?.response?.data?.message || "Failed to create appreciation.",
+      },
+    });
   };
 
   useEffect(() => {
@@ -69,9 +61,8 @@ function AppreciationForm({ title, edit }) {
         // awardBy: "",
       });
       setMore(false);
-    } else {
-      if (iscreated) navigate("/admin/hr/appreciations");
-    }
+    } else if (iscreated) back();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createAppreciationMutation.isSuccess]);
 
@@ -131,13 +122,18 @@ function AppreciationForm({ title, edit }) {
         ) : (
           <div className="flex justify-between">
             <div className="flex gap-4">
-              <RedButton onClick={() => handleSubmit(false)}>Save</RedButton>
-              <RedBorderButton onClick={() => handleSubmit(true)}>
+              <RedButton onClick={handleSubmit}>Save</RedButton>
+              <RedBorderButton
+                onClick={() => {
+                  setMore(true);
+                  handleSubmit();
+                }}
+              >
                 Save & Add More
               </RedBorderButton>
             </div>
 
-            <RedButton onClick={() => navigate(-1)}>Cancel</RedButton>
+            <RedButton onClick={() => back()}>Cancel</RedButton>
           </div>
         )}
       </div>

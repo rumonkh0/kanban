@@ -9,8 +9,7 @@ import Icon, {
   Users,
 } from "./Icon";
 import { usePageTitleStore } from "@/stores/usePageTitleStore";
-import { Link, useNavigate } from "react-router";
-import { useAuthStore } from "../stores/authStore";
+import { Link } from "react-router";
 import {
   useGetNotifications,
   useMarkAllAsRead,
@@ -21,7 +20,6 @@ const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 const Header = React.memo(({ onMenuClick }) => {
   const title = usePageTitleStore((state) => state.title);
-  const navigate = useNavigate();
   const [openProfile, setOpenProfile] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
   const [openPlus, setOpenPlus] = useState(false);
@@ -34,9 +32,8 @@ const Header = React.memo(({ onMenuClick }) => {
   const plusRef = useRef(null);
   const searchRef = useRef(null);
   const mobileSearchRef = useRef(null);
-  const logout = useAuthStore((state) => state.logout);
 
-  const { data: me, isPending: mePending } = useMe();
+  const { data: me } = useMe();
 
   const role = me?.role;
   const userName = me?.profile?.name;
@@ -58,12 +55,6 @@ const Header = React.memo(({ onMenuClick }) => {
 
   const markAllAsRead = () => {
     markRead.mutate();
-  };
-
-  const handleLogout = () => {
-    logout();
-    setOpenProfile(false);
-    navigate("/login", { replace: true });
   };
 
   // Close dropdowns when clicking outside
@@ -106,7 +97,7 @@ const Header = React.memo(({ onMenuClick }) => {
         className="lg:hidden ml-2 md:ml-4 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg hover:bg-divider cursor-pointer"
       >
         {/* <Icon name="menu" size={20} /> */}
-        <Hambrger className="w-6 h-6"/>
+        <Hambrger className="w-6 h-6" />
       </button>
 
       {/* Title */}
@@ -350,13 +341,13 @@ const Header = React.memo(({ onMenuClick }) => {
                 <Settings className={`text-text2 group-hover:text-brand `} />
                 Settings
               </Link>
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2 text-brand group"
+              <Link
+                to="/logout"
+                className="px-4 py-3 hover:bg-divider cursor-pointer typo-b2 flex items-center gap-2 text-brand group"
               >
                 <LogOut className={`w-5`} />
                 Logout
-              </button>
+              </Link>
             </div>
           )}
         </div>

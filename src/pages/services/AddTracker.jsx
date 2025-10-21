@@ -11,7 +11,7 @@ import {
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import {
   useProject,
   useProjects,
@@ -19,9 +19,10 @@ import {
 } from "../../hooks/useProjects";
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
+import { useBack } from "../../hooks/useBack";
 
 function AddTracker({ edit = false, title = "Add Tracker" }) {
-  const navigate = useNavigate();
+  const back = useBack("/admin/services/trackers");
   const { id } = useParams();
   const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
@@ -69,8 +70,6 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
   const isLoading = updateMutation.isPending;
 
   const handleSubmit = () => {
-    // console.log(formData);
-
     // Create FormData for file upload
     const submitData = new FormData();
 
@@ -120,10 +119,7 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this tracker?")) {
       toast.promise(
-        updateMutation.mutateAsync(
-          { tracker: false },
-          { onSuccess: navigate(-1) }
-        ),
+        updateMutation.mutateAsync({ tracker: false }, { onSuccess: back }),
         {
           pending: "Deleting Tracker",
           success: "Tracker Deleted",
@@ -209,7 +205,7 @@ function AddTracker({ edit = false, title = "Add Tracker" }) {
       setMore(false);
       toast.success("You can add another Tracker now.");
     } else {
-      if (iscreated) navigate(-1);
+      if (iscreated) back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateMutation.isSuccess]);

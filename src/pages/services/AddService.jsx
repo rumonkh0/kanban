@@ -11,6 +11,7 @@ import {
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useTeamMembers } from "../../hooks/useTeam";
 import {
   useCreateService,
@@ -18,10 +19,11 @@ import {
   useService,
   useUpdateService,
 } from "../../hooks/useService";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
+import { useBack } from "../../hooks/useBack";
 
 function AddService({ edit = false, title = "Add Service" }) {
-  const navigate = useNavigate();
+  const back = useBack("/admin/services/services");
   const { id } = useParams();
 
   const [more, setMore] = useState(false);
@@ -48,38 +50,76 @@ function AddService({ edit = false, title = "Add Service" }) {
     updateMutation.isPending ||
     deleteMutation.isPending;
 
-  const handleSubmit = () => {
+  const handleSubmit = (addMore = false) => {
     // console.log(formData);
     if (!formData.serviceName || !formData.description) {
       alert("Please fill in the required fields.");
       return;
     }
     if (edit) {
-      updateMutation.mutate(formData);
+      toast.promise(updateMutation.mutateAsync(formData), {
+        pending: "Updating Service...",
+        success: {
+          render() {
+            back();
+            return "Service updated successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to update service.",
+        },
+      });
     } else {
-      createMutation.mutate(formData);
+      toast.promise(createMutation.mutateAsync(formData), {
+        pending: "Creating Service...",
+        success: {
+          render() {
+            if (addMore) {
+              setMore(true);
+              return "Service created! You can add another.";
+            }
+            back();
+            return "Service created successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to create service.",
+        },
+      });
     }
   };
 
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this service?")) {
-      deleteMutation.mutate(id);
+      toast.promise(deleteMutation.mutateAsync(id), {
+        pending: "Deleting Service...",
+        success: {
+          render() {
+            back();
+            return "Service deleted successfully!";
+          },
+        },
+        error: {
+          render: ({ data }) =>
+            data?.response?.data?.message || "Failed to delete service.",
+        },
+      });
     }
   };
 
   useEffect(() => {
-    const iscreated = createMutation.isSuccess;
-    if (iscreated && more) {
+    if (createMutation.isSuccess && more) {
       setFormData({
         serviceName: "",
         clientsPay: "",
         teamsPayment: "",
         description: "",
         addons: "",
+        freelancers: null,
       });
       setMore(false);
-    } else {
-      if (iscreated) navigate("/services/services");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);
@@ -95,7 +135,6 @@ function AddService({ edit = false, title = "Add Service" }) {
         addons: serviceData.addons || "",
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serviceData]);
 
   if (edit && isLoadingService) {
@@ -200,7 +239,6 @@ function AddService({ edit = false, title = "Add Service" }) {
                 type="button"
                 onClick={() => {
                   handleSubmit(true);
-                  setMore(true);
                 }}
                 disabled={isLoading}
               >
