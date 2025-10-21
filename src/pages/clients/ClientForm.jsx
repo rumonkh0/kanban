@@ -192,7 +192,6 @@ function ClientForm({ edit, title = "Add Client" }) {
 
   useEffect(() => {
     const iscreated = createClientMutation.isSuccess;
-    if (iscreated) toast.success("User Created");
     if (iscreated && more) {
       setFormData({
         salutation: "",
@@ -228,7 +227,7 @@ function ClientForm({ edit, title = "Add Client" }) {
       setCompanyLogoFile(null);
       setMore(false);
     } else {
-      if (iscreated) navigate("/clients");
+      if (iscreated) navigate("/admin/clients");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createClientMutation.isSuccess]);
