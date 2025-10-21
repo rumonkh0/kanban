@@ -9,13 +9,12 @@ import {
 } from "@/components/Component";
 import PageTitle from "@/components/PageTitle";
 import { useCreateAppreciation } from "../../../hooks/hr/useAppreciations";
+import { useBack } from "../../../hooks/useBack";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useTeamMembers } from "../../../hooks/useTeam";
 
 function AppreciationForm({ title, edit }) {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     awardName: "",
     givingTo: null,
@@ -23,6 +22,7 @@ function AppreciationForm({ title, edit }) {
   });
   const [more, setMore] = useState(false);
 
+  const back = useBack("/admin/hr/appreciations");
   const createAppreciationMutation = useCreateAppreciation();
   const { data: teamMembers = [] } = useTeamMembers();
 
@@ -70,7 +70,7 @@ function AppreciationForm({ title, edit }) {
       });
       setMore(false);
     } else {
-      if (iscreated) navigate("/admin/hr/appreciations");
+      if (iscreated) back(-1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createAppreciationMutation.isSuccess]);
@@ -137,7 +137,7 @@ function AppreciationForm({ title, edit }) {
               </RedBorderButton>
             </div>
 
-            <RedButton onClick={() => navigate(-1)}>Cancel</RedButton>
+            <RedButton onClick={() => back()}>Cancel</RedButton>
           </div>
         )}
       </div>

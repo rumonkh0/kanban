@@ -10,7 +10,7 @@ import {
   RedBorderButton,
   RedButton,
 } from "@/components/Component";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import PageTitle from "@/components/PageTitle";
 import { useProject, useProjects } from "../../hooks/useProjects";
 import {
@@ -19,12 +19,12 @@ import {
   usePaidFrom,
   useUpdatePaidFrom,
 } from "../../hooks/useFinance";
+import { useBack } from "../../hooks/useBack";
 
 function PaidByForm({ edit = false, title = "Add Payment" }) {
   const { id } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
-
+  const back = useBack("/admin/finance/payments");
   const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
     project: location.state?.projectId || "",
@@ -134,7 +134,7 @@ function PaidByForm({ edit = false, title = "Add Payment" }) {
       setInvoicePreview(null);
       setMore(false);
     } else {
-      if (iscreated) navigate(-1);
+      if (iscreated) back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);

@@ -11,13 +11,14 @@ import {
 import Icon from "@/components/Icon";
 import PageTitle from "@/components/PageTitle";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import {
   useCreateTeamMember,
   useDeleteTeamMember,
   useTeamMember,
   useUpdateTeamMember,
 } from "../../../hooks/useTeam";
+import { useBack } from "../../../hooks/useBack";
 import { useDepartments } from "../../../hooks/hr/useDepartments";
 import {
   generateCountryOptions,
@@ -29,12 +30,12 @@ import { toast } from "react-toastify";
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function TeamMemberForm({ edit, title = "Add Team Member" }) {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const [showPassword, setShowPassword] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
+  const back = useBack("/admin/hr/team-members");
   const [more, setMore] = useState(false);
 
   const countryOptions = useMemo(() => generateCountryOptions(), []);
@@ -102,8 +103,10 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
 
   const handleSubmit = () => {
     // Basic validation
+    console.log(formData.name, formData.email, formData.joiningDate);
+    console.log("Submitting form data:", formData);
     if (!formData.name || !formData.email || !formData.joiningDate) {
-      alert("Please fill in all required fields.");
+      alert("Please fill in all requireds fields.");
       return;
     }
 
@@ -210,7 +213,7 @@ function TeamMemberForm({ edit, title = "Add Team Member" }) {
       setProfilePicture(null);
       setProfilePreview(null);
     } else {
-      if (iscreated) navigate("/hr/team-members");
+      if (iscreated) back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMember.isSuccess]);

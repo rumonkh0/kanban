@@ -9,7 +9,7 @@ import {
 import Icon from "@/components/Icon";
 import { useEffect, useMemo, useState } from "react";
 import { Back } from "../../components/Component";
-import { Navigate, useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { toast } from "react-toastify";
 import PageTitle from "@/components/PageTitle";
 import {
@@ -23,9 +23,10 @@ import {
   generateCountryOptions,
   generateLanguageOptions,
 } from "../../components/Constants"; // The new utility
+import { useBack } from "../../hooks/useBack";
 
 function ClientForm({ edit, title = "Add Client" }) {
-  const navigate = useNavigate();
+  const back = useBack("/admin/clients");
   const { id } = useParams();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -175,7 +176,8 @@ function ClientForm({ edit, title = "Add Client" }) {
     if (window.confirm("Are you sure you want to delete this client?")) {
       deleteClientMutation.mutate(id, {
         onSuccess: () => {
-          navigate("/clients");
+          back();
+          toast.success("Client Deleted Successfully");
         },
         onError: (err) => {
           alert(err.message || "Failed to delete client");
@@ -227,7 +229,7 @@ function ClientForm({ edit, title = "Add Client" }) {
       setCompanyLogoFile(null);
       setMore(false);
     } else {
-      if (iscreated) navigate("/admin/clients");
+      if (iscreated) back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createClientMutation.isSuccess]);

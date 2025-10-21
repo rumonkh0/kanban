@@ -1,6 +1,6 @@
 import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import ClientSelect from "@/components/ClientSelect";
 import {
   Dropdown,
@@ -21,11 +21,12 @@ import {
 import { useTeamMembers } from "../../hooks/useTeam";
 import { useClients } from "../../hooks/useClients";
 import { toast } from "react-toastify";
+import { useBack } from "../../hooks/useBack";
 
 const baseURL = import.meta.env.VITE_FILE_API_URL || "http://localhost:5000";
 
 function ProjectForm({ edit, title = "Add Project" }) {
-  const navigate = useNavigate();
+  const back = useBack("/admin/projects");
   const { id } = useParams();
   const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
@@ -257,7 +258,7 @@ function ProjectForm({ edit, title = "Add Project" }) {
       });
       setRelatedFile(null);
     } else {
-      if (iscreated) navigate(-1);
+      if (iscreated) back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createMutation.isSuccess]);

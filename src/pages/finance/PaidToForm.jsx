@@ -10,7 +10,7 @@ import {
   RedBorderButton,
   RedButton,
 } from "@/components/Component";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import PageTitle from "@/components/PageTitle";
 // Assuming these hooks exist for PaidTo, similar to the PaidFrom example
 import {
@@ -25,11 +25,12 @@ import {
   useProjectMembers,
   useProjects,
 } from "../../hooks/useProjects";
+import { useBack } from "../../hooks/useBack";
 
 function PaidToForm({ edit = false, title = "Add Team Payment" }) {
   const { id } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
+  const back = useBack("/admin/finance/team-payments");
   const [more, setMore] = useState(false);
   // const [selectedMember, setSelectedMember] = useState(null);
   const [formData, setFormData] = useState({
@@ -141,7 +142,7 @@ function PaidToForm({ edit = false, title = "Add Team Payment" }) {
       setMore(false); // Reset 'more' state after success
     } else {
       if (iscreated || updateMutation.isSuccess || deleteMutation.isSuccess) {
-        navigate(-1);
+        back();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -14,15 +14,16 @@ import {
   useDepartment,
   useUpdateDepartment,
 } from "../../../hooks/hr/useDepartments";
-import { useNavigate, useParams } from "react-router";
+import { useBack } from "../../../hooks/useBack";
+import { useParams } from "react-router";
 
 function DepartmentForm({ title, edit }) {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [more, setMore] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
   });
+  const back = useBack("/admin/hr/departments");
 
   const { data: departmentData, isloadingDepartment } = useDepartment(id);
   const createDepartment = useCreateDepartment();
@@ -55,7 +56,7 @@ function DepartmentForm({ title, edit }) {
       });
       setMore(false);
     } else {
-      if (iscreated) navigate("admin/hr/departments");
+      if (iscreated) back(-1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createDepartment.isSuccess]);
@@ -145,7 +146,7 @@ function DepartmentForm({ title, edit }) {
             </RedButton>
           ) : (
             <Back>
-              <RedButton disabled={isLoading} onClick={() => navigate(-1)}>
+              <RedButton disabled={isLoading} onClick={() => back(-1)}>
                 Cancel
               </RedButton>
             </Back>
