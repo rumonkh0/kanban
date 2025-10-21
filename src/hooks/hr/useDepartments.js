@@ -49,7 +49,7 @@ export const useDeleteDepartment = () => {
     mutationFn: (id) => departmentsApi.delete(id),
     onSuccess: () => {
       // queryClient.invalidateQueries({ queryKey: ["departments"] });
-      navigate("/hr/departments");
+      navigate("/admin/hr/departments");
     },
     onError: (err) => {
       alert(err.message || "Failed to delete client");

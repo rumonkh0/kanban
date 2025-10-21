@@ -17,7 +17,7 @@ function Private() {
     "Saturday",
   ];
 
-  const { data: dashboard, isPending } = usePrivate();
+  const { data: dashboard = {}, isPending } = usePrivate();
   const { data: me, isPending: mePending } = useMe();
   const { data: calendarData = [], isPending: calanderPending } =
     usePrivateCalander();
@@ -47,20 +47,20 @@ function Private() {
         )}
         <MetricCard
           title="Pending Task:"
-          value={dashboard.tasks.pendingTasks}
+          value={dashboard.tasks?.pendingTasks}
         />
         <MetricCard
           title="Overdue Task:"
-          value={dashboard.tasks.overdueTasks}
+          value={dashboard.tasks?.overdueTasks}
           color="red"
         />
         <MetricCard
           title="In Progress Projects:"
-          value={dashboard.projects.activeProjects}
+          value={dashboard.projects?.activeProjects}
         />
         <MetricCard
           title="Overdue Projects:"
-          value={dashboard.projects.overdueProjects}
+          value={dashboard.projects?.overdueProjects}
           color="red"
         />
       </div>
@@ -139,9 +139,9 @@ function Private() {
       </div>
 
       <div className="grid grid-cols-[repeat(auto-fill,minmax(310px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(510px,1fr))] gap-2">
-        {dashboard.birthdays.clients.length > 0 && (
+        {dashboard.birthdays?.clients?.length > 0 && (
           <DuelCardHolder title="Upcoming Client's Birthdays">
-            {dashboard.birthdays.clients.map((per, idx) => (
+            {dashboard.birthdays?.clients.map((per, idx) => (
               <PersonCard
                 key={idx}
                 name={per.name}
@@ -152,7 +152,7 @@ function Private() {
             ))}
           </DuelCardHolder>
         )}
-        {dashboard.birthdays.freelancers.length > 0 && (
+        {dashboard.birthdays?.freelancers.length > 0 && (
           <DuelCardHolder title="Upcoming Memmber's Birthdays">
             {dashboard.birthdays.freelancers.map((per, idx) => (
               <PersonCard
@@ -165,7 +165,7 @@ function Private() {
             ))}
           </DuelCardHolder>
         )}
-        {dashboard.lastAppreciations.length > 0 && (
+        {dashboard.lastAppreciations?.length > 0 && (
           <DuelCardHolder title="Team Appreciations">
             {dashboard.lastAppreciations.map((per, idx) => (
               <PersonCard
@@ -178,7 +178,7 @@ function Private() {
             ))}
           </DuelCardHolder>
         )}
-        {dashboard.todaysJoining.length > 0 && (
+        {dashboard.todaysJoining?.length > 0 && (
           <DuelCardHolder title="Today's Joining">
             {dashboard.todaysJoining.map((per, idx) => (
               <PersonCard
@@ -191,7 +191,7 @@ function Private() {
             ))}
           </DuelCardHolder>
         )}
-        {dashboard.noticePeriodEnding.length > 0 && (
+        {dashboard.noticePeriodEnding?.length > 0 && (
           <DuelCardHolder title="Notice Period Duration">
             {dashboard.noticePeriodEnding.map((per, idx) => (
               <PersonCard
@@ -204,7 +204,7 @@ function Private() {
             ))}
           </DuelCardHolder>
         )}
-        {dashboard.probationEnding.length > 0 && (
+        {dashboard.probationEnding?.length > 0 && (
           <DuelCardHolder title="Probation Date">
             {dashboard.probationEnding.map((per, idx) => (
               <PersonCard
